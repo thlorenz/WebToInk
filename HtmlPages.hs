@@ -4,8 +4,9 @@ import Text.HTML.TagSoup
 main = do 
     src <- findAllPages
     let result = extractLinks src
-    return result
+    putStrLn $ unlines result
 
+-- extractLinksInSameFolder = (filter isInSameFolder extractLinks
 extractLinks src = map extractLink hrefs 
     where
         hrefs = [x | x <- parseTags src, x ~== "<a href>"]
