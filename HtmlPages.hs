@@ -1,10 +1,14 @@
-module HtmlPages (getHtmlPages) where 
+module HtmlPages (openUrl, getHtmlPages) where 
 
 import Network.HTTP(simpleHTTP, getResponseBody, getRequest)
 import Text.HTML.TagSoup(parseTags, Tag(..), (~==))
 import System.FilePath(takeExtension)
 import Data.List(nub)
 
+openUrl ::  String -> IO String
+openUrl url = simpleHTTP (getRequest url) >>= getResponseBody
+
+getHtmlPages ::  [Char] -> IO [([Char], [Char])]
 getHtmlPages tocUrl = do
     toc <- getIndexContents tocUrl
     return (getNameUrlMap tocUrl toc)
@@ -29,6 +33,3 @@ filterHrefs ::  [Tag [Char]] -> [Tag [Char]]
 filterHrefs = filter (~== "<a href>") 
 
 getIndexContents url = readFile "index.html" -- openUrl url
-
-openUrl ::  String -> IO String
-openUrl url = simpleHTTP (getRequest url) >>= getResponseBody
