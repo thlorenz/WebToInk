@@ -1,7 +1,6 @@
 import HtmlPages(openUrl, getHtmlPages)
 import Download(downloadPages)
 
-import System.FilePath(dropExtension)
 import System.Directory(createDirectoryIfMissing, setCurrentDirectory)
 
 main = do 
@@ -13,11 +12,3 @@ main = do
     setCurrentDirectory folder
     -- downloadPages dic
     setCurrentDirectory ".."
-
-    let xmlItems = map (\(fileName, _) -> xmlForItem "pages" fileName) dic
-    putStrLn $ unlines xmlItems
-
-xmlForItem folder fileName =
-    "<item id=\"" ++ itemName ++ "\" " ++ "media-type=\"application/xhtml+xml\" href=\"" ++ folder ++ "/" ++ fileName ++"\" />"
-    where itemName = dropExtension fileName
-
