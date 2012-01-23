@@ -3,7 +3,6 @@ import Download(downloadPages)
 
 import System.Directory(createDirectoryIfMissing, setCurrentDirectory)
 
-
 main = do 
     let url = "http://book.realworldhaskell.org/read/"
     dic <- getHtmlPages url

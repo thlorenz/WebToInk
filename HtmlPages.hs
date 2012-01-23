@@ -8,12 +8,12 @@ import Data.List(nub)
 openUrl ::  String -> IO String
 openUrl url = simpleHTTP (getRequest url) >>= getResponseBody
 
-getHtmlPages ::  [Char] -> IO [([Char], [Char])]
+getHtmlPages ::  String -> IO [(String, String)]
 getHtmlPages tocUrl = do
     toc <- getIndexContents tocUrl
-    return (getNameUrlMap tocUrl toc)
+    return $ [("toc.html", tocUrl)] ++ (getNameUrlMap tocUrl toc)
 
-getNameUrlMap ::  [Char] -> [Char] -> [([Char], [Char])]
+getNameUrlMap ::  String -> String -> [(String, String)]
 getNameUrlMap tocUrl = (map (\x -> (x, tocUrl ++ x))) . getHtmlNamesInRootFolder 
 
 getHtmlNamesInRootFolder = getSameFolderHtmls . filterHrefs . parseTags
