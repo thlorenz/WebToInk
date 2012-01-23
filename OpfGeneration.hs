@@ -20,8 +20,8 @@ generateOpfXml pagesFolder dic title language creator = unlines $
         [generateManifest 1 pagesFolder dic] ++
     ["</package>"]
 
-generateMetaData indent title language creator =
-    unlines $ map ((getTabs indent)++) $
+generateMetaData indent title language creator = unlines $ 
+    map ((getTabs indent)++) $
         ["<metadata xmlns:dc=\"http://purl.org/dc/elements/1.1/\"" ++
           "xmlns:opf=\"http://www.idpf.org/2007/opf\">"] ++
         map ((getTabs $ indent + 1)++) 
@@ -31,14 +31,14 @@ generateMetaData indent title language creator =
             ["<meta name=\"cover\" content=\"cover\"/>"]) ++
         ["</metadata>"]
 
-generateManifest indent pagesFolder dic = 
-    unlines $ [(getTabs indent) ++ "<manifest>"] ++ 
-              (generateItems pagesFolder dic) ++ 
-              [(getTabs indent) ++ "</manifest>"]
+generateManifest indent pagesFolder dic = unlines $ 
+    [(getTabs indent) ++ "<manifest>"] ++ 
+       (generateItems pagesFolder dic) ++ 
+    [(getTabs indent) ++ "</manifest>"]
     where 
         generateItems pagesFolder dic = 
-            map (\(fileName, _) -> xmlForItem pagesFolder fileName) dic
-        xmlForItem folder fileName =
+            map (\(fileName, _) -> generateItem pagesFolder fileName) dic
+        generateItem folder fileName =
             getTabs (indent + 1) ++
             "<item id=\"" ++ itemName ++ "\" " ++ 
             "media-type=\"application/xhtml+xml\" href=\"" ++ 
