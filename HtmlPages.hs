@@ -1,17 +1,16 @@
 module HtmlPages (getHtmlPages) where 
 
-import Network.HTTP
-import Text.HTML.TagSoup
-import Text.StringLike
-import System.FilePath
-import Data.List
+import Network.HTTP(simpleHTTP, getResponseBody, getRequest)
+import Text.HTML.TagSoup(parseTags, Tag(..), (~==))
+import System.FilePath(takeExtension)
+import Data.List(nub)
 
 getHtmlPages tocUrl = do
     toc <- getIndexContents tocUrl
-    return (getNameUrlIndex tocUrl toc)
+    return (getNameUrlMap tocUrl toc)
 
-getNameUrlIndex ::  [Char] -> [Char] -> [([Char], [Char])]
-getNameUrlIndex tocUrl = (map (\x -> (x, tocUrl ++ x))) . getHtmlNamesInRootFolder 
+getNameUrlMap ::  [Char] -> [Char] -> [([Char], [Char])]
+getNameUrlMap tocUrl = (map (\x -> (x, tocUrl ++ x))) . getHtmlNamesInRootFolder 
 
 getHtmlNamesInRootFolder = getSameFolderHtmls . filterHrefs . parseTags
 
