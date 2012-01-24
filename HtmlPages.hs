@@ -25,7 +25,7 @@ getSameFolderHtmls = nub . filterHtmls . filterLocalLinks . getLinks
         getLinks = map (snd . getUrl)
             where getUrl (TagOpen tag urls) = head urls
 
-filterHrefs ::  [Tag [Char]] -> [Tag [Char]]
+filterHrefs ::  [Tag String] -> [Tag String]
 filterHrefs = filter (~== "<a href>") 
 
 getIndexContents url = readFile "index.html" -- openUrl url
