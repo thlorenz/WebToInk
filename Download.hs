@@ -1,6 +1,7 @@
 module Download(downloadPages) where
 
-import HtmlPages(openUrl, getHtmlPages)
+import Utils(openUrl)
+import HtmlPages(getHtmlPages)
 import System.Directory(createDirectoryIfMissing, setCurrentDirectory)
 import System.IO(hPutStr, withFile, IOMode(..))
 

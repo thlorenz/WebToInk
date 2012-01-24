@@ -1,12 +1,8 @@
-module HtmlPages (openUrl, getHtmlPages) where 
+module HtmlPages (getHtmlPages) where 
 
-import Network.HTTP(simpleHTTP, getResponseBody, getRequest)
 import Text.HTML.TagSoup(parseTags, Tag(..), (~==))
 import System.FilePath(takeExtension)
 import Data.List(nub)
-
-openUrl ::  String -> IO String
-openUrl url = simpleHTTP (getRequest url) >>= getResponseBody
 
 getHtmlPages ::  String -> IO [(String, String)]
 getHtmlPages tocUrl = do
