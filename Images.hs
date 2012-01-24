@@ -22,15 +22,18 @@ filterImages = filter (~== "<img src>")
 
 tests = TestList $ map TestCase
     [ assertEqual "extracting images when one is contained"
-        (getImages pageContentsWithOneImage)
-        ["/support/figs/tip.png"]
+        (getImages pageContentsWithOneImage)    ["/support/figs/tip.png"]
+    , assertEqual "extracting images when two are contained"
+        (getImages pageContentsWithTwoImages)   ["/support/figs/tip.png", 
+                                                 "/support/figs/other.png"]
     , assertEqual "extracting images when none is contained"
-        (getImages pageContentsWithoutImage)
-        [] 
+        (getImages pageContentsWithoutImage)    [] 
     ]
     where 
-        pageContentsWithOneImage ="<img alt=\"[Tip]\" src=\"/support/figs/tip.png\""
-        pageContentsWithoutImage ="<span>see no image</span>"
+        pageContentsWithOneImage  ="<img alt=\"[Tip]\" src=\"/support/figs/tip.png\">"
+        pageContentsWithTwoImages = "<img alt=\"[Tip]\" src=\"/support/figs/tip.png\">" ++
+                                    "<img alt=\"[Oth]\" src=\"/support/figs/other.png\">" 
+        pageContentsWithoutImage  ="<span>see no image</span>"
 
 
 runTests = do
