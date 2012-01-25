@@ -7,7 +7,7 @@ import Data.List(nub, find)
 import Data.Maybe(fromJust)
 import Test.HUnit
 
-getImages :: PageContents -> [RelativeUrl]
+getImages :: PageContents -> [Url]
 getImages = getUrls . filterImages . parseTags
     where 
         getUrls = map getUrl
@@ -24,7 +24,7 @@ filterImages = filter (~== "<img src>")
 -- Tests
 -- ===================
 
-tests = TestList $ map TestCase
+getImagesTests = TestList $ map TestCase
     [ assertEqual "extracting images when one is contained"
         (getImages pageContentsWithOneImage)    ["/support/figs/tip.png"]
     , assertEqual "extracting images when two are contained"
@@ -39,6 +39,6 @@ tests = TestList $ map TestCase
                                     "<img alt=\"[Oth]\" src=\"/support/figs/other.png\">" 
         pageContentsWithoutImage  ="<span>see no image</span>"
 
-
+tests = getImagesTests 
 runTests = do
     runTestTT tests

@@ -1,11 +1,10 @@
 import HtmlPages(getHtmlPages)
+import Constants
 import System.FilePath(dropExtension)
 
-pagesFolder = "pages"
 title = "Real World Haskell"
 language = "en-us"
 creator = "Bryan O'Sullivan, Don Stewart, and John Goerzen"
-tocPage = "toc.html"
 
 main = do 
     let url = "http://book.realworldhaskell.org/read/"

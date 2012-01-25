@@ -1,4 +1,4 @@
 module Types where
 
 type PageContents = String
-type RelativeUrl  = String
+type Url          = String
