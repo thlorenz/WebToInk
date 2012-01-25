@@ -3,14 +3,18 @@ module Images(getImages) where
 import Types
 import Text.HTML.TagSoup(parseTags, Tag(..), (~==))
 import System.FilePath(takeExtension)
-import Data.List(nub)
+import Data.List(nub, find)
 import Test.HUnit
 
 getImages :: PageContents -> [RelativeUrl]
 getImages = getUrls . filterImages . parseTags
     where 
-        getUrls = map (snd . getUrl)
-        getUrl (TagOpen tag urls) = urls !! 1 -- identify by url id
+        getUrls = map getUrl
+        getUrl (TagOpen tag pairs) = extractImgSrcUrl pairs
+            where 
+                extractImgSrcUrl = snd . justValue . findSrcPair
+                findSrcPair = find (\(name, url) -> name == "src")
+                justValue (Just x) = x
 
 filterImages ::  [Tag String] -> [Tag String]
 filterImages = filter (~== "<img src>") 
