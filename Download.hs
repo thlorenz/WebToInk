@@ -1,20 +1,21 @@
-module Download(downloadPages) where
+module Download(downloadPages, downloadImages) where
 
 import Types
 import Constants(pagesFolder, imagesFolder)
 import Utils(openUrl)
-import System.Directory(createDirectoryIfMissing, setCurrentDirectory)
+import System.Directory(createDirectoryIfMissing, setCurrentDirectory, doesFileExist)
 import System.IO(hPutStr, withFile, IOMode(..))
 import System.FilePath(takeFileName)
 import Data.List(isPrefixOf)
 
+import Network.HTTP.Conduit
+import qualified Data.ByteString.Lazy as L
+
 import Test.HUnit
 
-downLoadImages rootUrl imageUrls = do
+downloadImages rootUrl imageUrls = do
     createDirectoryIfMissing False imagesFolder
-    setCurrentDirectory imagesFolder
-
-    setCurrentDirectory ".."
+    mapM (downloadImage imagesFolder rootUrl) imageUrls
 
 downloadPages ::  [(FilePath, String)] -> IO ()
 downloadPages dic = do
@@ -30,6 +31,15 @@ downloadPage (fileName, url) = do
     write fileName pageContents 
     where write fileName pageContents = do 
             withFile fileName WriteMode (\handle -> hPutStr handle pageContents)
+
+downloadImage :: FilePath -> Url -> Url -> IO ()
+downloadImage targetFolder rootUrl url = do
+    let fullUrl = resolveUrl rootUrl url
+    let fullPath = getImageFilePath targetFolder url
+    imageWasDownloadedBefore <- doesFileExist fullPath
+    if imageWasDownloadedBefore 
+        then return undefined
+        else simpleHttp fullUrl >>= L.writeFile fullPath
 
 resolveUrl :: Url -> Url -> Url
 resolveUrl rootUrl url
