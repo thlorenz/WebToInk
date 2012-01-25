@@ -5,6 +5,7 @@ import Constants(pagesFolder, imagesFolder)
 import Utils(openUrl)
 import System.Directory(createDirectoryIfMissing, setCurrentDirectory)
 import System.IO(hPutStr, withFile, IOMode(..))
+import System.FilePath(takeFileName)
 import Data.List(isPrefixOf)
 
 import Test.HUnit
@@ -12,6 +13,7 @@ import Test.HUnit
 downLoadImages rootUrl imageUrls = do
     createDirectoryIfMissing False imagesFolder
     setCurrentDirectory imagesFolder
+
     setCurrentDirectory ".."
 
 downloadPages ::  [(FilePath, String)] -> IO ()
@@ -34,11 +36,14 @@ resolveUrl rootUrl url
         | "http://" `isPrefixOf` url = url
         | otherwise                  = rootUrl ++ "/" ++ url
 
+getImageFilePath :: FilePath -> Url -> FilePath
+getImageFilePath targetFolder url = targetFolder ++ "/" ++ (takeFileName url)
+
 -- ===================
 -- Tests
 -- ===================
 
-resolveUrlTests = TestList $ map TestCase   
+resolveUrlTests = 
     [ assertEqual "resolving relative url appends it to root url"
         (resolveUrl root relativeUrl) (root ++ "/" ++ relativeUrl)
     , assertEqual "resolving absolute url returns it as is"
@@ -49,6 +54,18 @@ resolveUrlTests = TestList $ map TestCase
         relativeUrl = "relative/to/root/some.png"
         absoluteUrl = "http://some.absolute.com"
 
-tests = resolveUrlTests 
+getImageFilePathTests = 
+    [ assertEqual "getting file path for valid image url"
+        (getImageFilePath targetFolder imgUrl) (targetFolder ++ "/" ++ imgFileName)
+    ]
+    where
+        targetFolder = "someFolder"
+        imgFileName = "some.png"
+        imgUrl = "/images/" ++ imgFileName
+        
+tests = TestList $ map TestCase $
+    resolveUrlTests ++ 
+    getImageFilePathTests 
+
 runTests = do
     runTestTT tests
