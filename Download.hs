@@ -1,4 +1,9 @@
-module Download(downloadPages, downloadImages) where
+module Download
+    ( downloadAndSaveImages
+    , downloadPage
+    , savePage
+    , getSrcFilePath
+    ) where
 
 import Types
 import Constants(pagesFolder, imagesFolder)
@@ -13,41 +18,42 @@ import qualified Data.ByteString.Lazy as L
 
 import Test.HUnit
 
-downloadImages rootUrl imageUrls = do
+downloadAndSaveImages rootUrl imageUrls = do
     createDirectoryIfMissing False imagesFolder
-    mapM (downloadImage imagesFolder rootUrl) imageUrls
+    mapM (downloadAndSaveImage imagesFolder rootUrl) imageUrls
 
-downloadPages ::  [(FilePath, String)] -> IO ()
-downloadPages dic = do
-    createDirectoryIfMissing False pagesFolder
-    setCurrentDirectory ".."
-    setCurrentDirectory pagesFolder 
-    mapM downloadPage dic
-    setCurrentDirectory ".."
-
-downloadPage ::  (FilePath, String) -> IO ()
-downloadPage (fileName, url) = do
+downloadPage ::  Url -> IO String
+downloadPage url = do
     pageContents <- openUrl url
-    write fileName pageContents 
+    return pageContents
+
+savePage ::  FilePath -> String -> IO ()
+savePage fileName pageContents = do
+    createDirectoryIfMissing False pagesFolder
+    write (pagesFolder ++ "/" ++ fileName) pageContents 
     where write fileName pageContents = do 
             withFile fileName WriteMode (\handle -> hPutStr handle pageContents)
 
-downloadImage :: FilePath -> Url -> Url -> IO ()
-downloadImage targetFolder rootUrl url = do
-    let fullUrl = resolveUrl rootUrl url
-    let fullPath = getImageFilePath targetFolder url
-    imageWasDownloadedBefore <- doesFileExist fullPath
-    if imageWasDownloadedBefore 
+downloadAndSaveImage :: FilePath -> Url -> Url -> IO ()
+downloadAndSaveImage targetFolder rootUrl url =
+    -- hack to prevent image not found errors until we figure out errorhandling
+    if (head url) == 'f' || (head url) == 'i'
         then return undefined
-        else simpleHttp fullUrl >>= L.writeFile fullPath
+        else do
+            let fullUrl = resolveUrl rootUrl url
+            let fullPath = getSrcFilePath targetFolder url
+            imageWasDownloadedBefore <- doesFileExist fullPath 
+            if imageWasDownloadedBefore 
+                then return undefined
+                else simpleHttp fullUrl >>= L.writeFile fullPath
 
 resolveUrl :: Url -> Url -> Url
 resolveUrl rootUrl url
         | "http://" `isPrefixOf` url = url
         | otherwise                  = rootUrl ++ "/" ++ url
 
-getImageFilePath :: FilePath -> Url -> FilePath
-getImageFilePath targetFolder url = targetFolder ++ "/" ++ (takeFileName url)
+getSrcFilePath :: FilePath -> Url -> FilePath
+getSrcFilePath targetFolder url = targetFolder ++ "/" ++ (takeFileName url)
 
 -- ===================
 -- Tests
@@ -64,9 +70,9 @@ resolveUrlTests =
         relativeUrl = "relative/to/root/some.png"
         absoluteUrl = "http://some.absolute.com"
 
-getImageFilePathTests = 
+getSrcFilePathTests = 
     [ assertEqual "getting file path for valid image url"
-        (getImageFilePath targetFolder imgUrl) (targetFolder ++ "/" ++ imgFileName)
+        (getSrcFilePath targetFolder imgUrl) (targetFolder ++ "/" ++ imgFileName)
     ]
     where
         targetFolder = "someFolder"
@@ -75,7 +81,7 @@ getImageFilePathTests =
         
 tests = TestList $ map TestCase $
     resolveUrlTests ++ 
-    getImageFilePathTests 
+    getSrcFilePathTests 
 
 runTests = do
     runTestTT tests
