@@ -8,7 +8,7 @@ import Data.Maybe(fromJust)
 import Test.HUnit
 
 getImages :: PageContents -> [Url]
-getImages = getUrls . filterImages . parseTags
+getImages = nub . getUrls . filterImages . parseTags
     where 
         getUrls = map getUrl
         getUrl (TagOpen tag pairs) = extractImgSrcUrl pairs
