@@ -47,6 +47,7 @@ downloadAndSaveImage targetFolder rootUrl url =
                 then return undefined
                 else simpleHttp fullUrl >>= L.writeFile fullPath
 
+
 resolveUrl :: Url -> Url -> Url
 resolveUrl rootUrl url
         | "http://" `isPrefixOf` url = url
