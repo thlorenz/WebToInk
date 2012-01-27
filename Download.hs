@@ -15,6 +15,9 @@ import Data.List(isPrefixOf)
 
 import Network.HTTP.Conduit
 import qualified Data.ByteString.Lazy as L
+import qualified Data.ByteString as B
+import qualified Data.ByteString.UTF8 as U
+import Control.Exception as X
 
 import Test.HUnit
 
@@ -55,6 +58,25 @@ resolveUrl rootUrl url
 
 getSrcFilePath :: FilePath -> Url -> FilePath
 getSrcFilePath targetFolder url = targetFolder ++ "/" ++ (takeFileName url)
+
+downloadString :: Url -> IO (Maybe String)
+downloadString url = do
+    result <- downloadByteString url
+    case result of
+        Nothing         -> return Nothing
+        Just byteString -> return (Just "a")
+
+downloadByteString :: Url -> IO (Maybe L.ByteString)
+downloadByteString url = do
+    byteString <- (simpleHttp url) `X.catch` statusCodeExceptionHandler
+    case byteString of x | x == L.empty -> return Nothing 
+                         | otherwise    -> return (Just byteString)
+    where
+        statusCodeExceptionHandler ::  HttpException -> IO L.ByteString
+        statusCodeExceptionHandler (StatusCodeException status headers) = 
+            putStrLn ("An error when trying to download: " ++ url)
+            >> (putStrLn $ show status)
+            >> (return L.empty)
 
 -- ===================
 -- Tests
