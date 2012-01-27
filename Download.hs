@@ -38,17 +38,18 @@ savePage fileName pageContents = do
             withFile fileName WriteMode (\handle -> hPutStr handle pageContents)
 
 downloadAndSaveImage :: FilePath -> Url -> Url -> IO ()
-downloadAndSaveImage targetFolder rootUrl url =
-    -- hack to prevent image not found errors until we figure out errorhandling
-    if (head url) == 'f' || (head url) == 'i'
+downloadAndSaveImage targetFolder rootUrl url = do
+    let fullUrl = resolveUrl rootUrl url
+    let fullPath = getSrcFilePath targetFolder url
+
+    imageWasDownloadedBefore <- doesFileExist fullPath 
+    if imageWasDownloadedBefore 
         then return undefined
-        else do
-            let fullUrl = resolveUrl rootUrl url
-            let fullPath = getSrcFilePath targetFolder url
-            imageWasDownloadedBefore <- doesFileExist fullPath 
-            if imageWasDownloadedBefore 
-                then return undefined
-                else simpleHttp fullUrl >>= L.writeFile fullPath
+        else do 
+            byteString <- downloadByteString fullUrl
+            case byteString of 
+                Nothing      -> return () 
+                (Just bytes) -> L.writeFile fullPath bytes
 
 
 resolveUrl :: Url -> Url -> Url
@@ -59,13 +60,6 @@ resolveUrl rootUrl url
 getSrcFilePath :: FilePath -> Url -> FilePath
 getSrcFilePath targetFolder url = targetFolder ++ "/" ++ (takeFileName url)
 
-downloadString :: Url -> IO (Maybe String)
-downloadString url = do
-    result <- downloadByteString url
-    case result of
-        Nothing         -> return Nothing
-        Just byteString -> return (Just "a")
-
 downloadByteString :: Url -> IO (Maybe L.ByteString)
 downloadByteString url = do
     byteString <- (simpleHttp url) `X.catch` statusCodeExceptionHandler
@@ -74,7 +68,7 @@ downloadByteString url = do
     where
         statusCodeExceptionHandler ::  HttpException -> IO L.ByteString
         statusCodeExceptionHandler (StatusCodeException status headers) = 
-            putStrLn ("An error when trying to download: " ++ url)
+            putStrLn ("An error occured while trying to download: " ++ url)
             >> (putStrLn $ show status)
             >> (return L.empty)
 
