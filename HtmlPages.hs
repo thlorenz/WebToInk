@@ -3,8 +3,9 @@ module HtmlPages (getHtmlPages) where
 import Text.HTML.TagSoup(parseTags, Tag(..), (~==))
 import System.FilePath(takeExtension)
 import Data.List(nub)
+import Types
 
-getHtmlPages ::  String -> IO [(String, String)]
+getHtmlPages ::  Url -> IO [(FilePath, Url)]
 getHtmlPages tocUrl = do
     toc <- getIndexContents tocUrl
     return $ [("toc.html", tocUrl)] ++ (getNameUrlMap tocUrl toc)

@@ -3,13 +3,16 @@ import Constants
 import System.FilePath(dropExtension)
 import Utils(getTabs)
 
+import Test.HUnit
+
+-- this assumes that the first page in pagesDic is the "toc.html" (table of contents)
 generateToc pagesDic title language author = unlines $
     ["<?xml version=\"1.0\" encoding=\"utf-8\"?>"] ++
     ["<!DOCTYPE ncx PUBLIC \"-//NISO//DTD ncx 2005-1//EN\" \"http://www.daisy.org/z3986/2005/ncx-2005-1.dtd\">"] ++
     ["<ncx xmlns=\"http://www.daisy.org/z3986/2005/ncx/\" version=\"2005-1\" xml:lang=\"" ++ language ++ "\">"] ++
-        [generateHead             1 ] ++
+        [generateHead              1 ] ++
         [generateDocTitleAndAuthor 1 title author] ++
-        [generateNavMap           1 pagesDic] ++
+        [generateNavMap            1 pagesDic] ++
     ["</ncx>"] 
 
 generateHead indent = unlines $
@@ -27,4 +30,24 @@ generateDocTitleAndAuthor indent title author = unlines $
        (["<docTitle><text>" ++ title ++ "</text></docTitle>"] ++
         ["<docAuthor><text>" ++ author ++ "</text></docAuthor>"])
 
-generateNavMap = undefined
+generateNavMap indent pagedDic =  unlines $
+    map ((getTabs indent)++)
+        (["<navMap>"] ++
+        ["</navMap>"])
+    where
+        generateNavPoint clazz page = undefined
+           
+-----------------------
+-- ----  Tests  ---- --
+-----------------------
+
+generateNavMapTests =
+    [ assertEqual "generating nav map for toc and another page"
+        (1) (1)
+    ]    
+
+tests = TestList $ map TestCase $
+    generateNavMapTests
+
+runTests = do
+    runTestTT tests

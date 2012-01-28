@@ -70,9 +70,9 @@ downloadByteString url = do
             >> (putStrLn $ show status)
             >> (return Nothing)
 
--- ===================
--- Tests
--- ===================
+-----------------------
+-- ----  Tests  ---- --
+-----------------------
 
 resolveUrlTests = 
     [ assertEqual "resolving relative url appends it to root url"
