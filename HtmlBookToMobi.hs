@@ -1,6 +1,7 @@
 import HtmlPages(getHtmlPages)
 import Images(getImages)
 import Download(downloadPage, savePage, downloadAndSaveImages, getSrcFilePath)
+import OpfGeneration(generateOpf)
 import Types
 import Constants
 
@@ -11,6 +12,10 @@ import Data.String.Utils(replace)
 import Test.HUnit
 
 main = do 
+    let title = "Real World Haskell"
+    let language = "en-us"
+    let creator = "Bryan O'Sullivan, Don Stewart, and John Goerzen"
+
     let url = "http://book.realworldhaskell.org/read/"
     let rootUrl = "http://book.realworldhaskell.org/"
 
@@ -21,7 +26,10 @@ main = do
 
     setCurrentDirectory folder
 
-    downloadPages rootUrl pagesDic
+    -- downloadPages rootUrl pagesDic
+
+    let opfString = generateOpf pagesFolder pagesDic title language creator 
+    writeFile "book.opf" opfString
 
     setCurrentDirectory ".."
 

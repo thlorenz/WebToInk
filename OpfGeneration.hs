@@ -1,17 +1,7 @@
-import HtmlPages(getHtmlPages)
+module OpfGeneration(generateOpf) where
+
 import Constants
 import System.FilePath(dropExtension)
-
-title = "Real World Haskell"
-language = "en-us"
-creator = "Bryan O'Sullivan, Don Stewart, and John Goerzen"
-
-main = do 
-    let url = "http://book.realworldhaskell.org/read/"
-    dic <- getHtmlPages url
-
-    putStrLn $ generateOpf pagesFolder dic title language creator 
-
 
 generateOpf pagesFolder dic title language creator = unlines $
     ["<?xml version=\"1.0\" encoding=\"utf-8\"?>"] ++
