@@ -7,10 +7,9 @@ generateToc pagesDic title language author = unlines $
     ["<?xml version=\"1.0\" encoding=\"utf-8\"?>"] ++
     ["<!DOCTYPE ncx PUBLIC \"-//NISO//DTD ncx 2005-1//EN\" \"http://www.daisy.org/z3986/2005/ncx-2005-1.dtd\">"] ++
     ["<ncx xmlns=\"http://www.daisy.org/z3986/2005/ncx/\" version=\"2005-1\" xml:lang=\"" ++ language ++ "\">"] ++
-        [generateHead      1] ++
-        [generateDocTitle  1 title] ++
-        [generateDocAuthor 1 author] ++
-        [generateNavMap    1 pagesDic] ++
+        [generateHead             1 ] ++
+        [generateDocTitleAndAuthor 1 title author] ++
+        [generateNavMap           1 pagesDic] ++
     ["</ncx>"] 
 
 generateHead indent = unlines $
@@ -23,8 +22,9 @@ generateHead indent = unlines $
          ["<meta name=\"dtb:maxPageNumber\" content=\"0\"/>"])++
       ["</head>"])
 
-generateDocTitle = undefined
-
-generateDocAuthor = undefined
+generateDocTitleAndAuthor indent title author = unlines $
+    map ((getTabs indent)++)
+       (["<docTitle><text>" ++ title ++ "</text></docTitle>"] ++
+        ["<docAuthor><text>" ++ author ++ "</text></docAuthor>"])
 
 generateNavMap = undefined
