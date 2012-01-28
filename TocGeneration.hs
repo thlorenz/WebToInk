@@ -36,18 +36,18 @@ generateNavMap indent (toc:chapters) =  unlines $
     map ((getTabs indent)++)
         (["<navMap>"] ++
             [generateNavPoint "toc" toc] ++
-            [""] ++ 
             map (generateNavPoint "chapter") chapters ++
         ["</navMap>"])
     where
         generateNavPoint clazz page = unlines $
            map ((getTabs $ indent + 1)++)
             (["<navPoint class=\"" ++ clazz ++ "\" id=\"" ++ itemName ++ "\">"] ++
-             ["  <navLabel>"] ++
-             ["    <text>" ++ (makeTitle itemName) ++ "</text>"] ++
-             ["  </navLabel>"] ++
-             ["  <content src=\"" ++ pagesFolder ++ "/" ++ page ++ "\"/>"] ++
-             ["</navPoint>"])
+            (map ((getTabs $ indent + 2)++)
+            (["<navLabel>"] ++
+             [(getTabs $ indent) ++ "<text>" ++ (makeTitle itemName) ++ "</text>"] ++ 
+             ["</navLabel>"] ++
+             ["<content src=\"" ++ pagesFolder ++ "/" ++ page ++ "\"/>"])) ++
+             [(getTabs $ indent) ++ "</navPoint>"])
             where itemName = dropExtension page
                   makeTitle "toc"  = "Table of Contents"
                   makeTitle chapter = capitalizeWords . (map dashToSpace) $ chapter
