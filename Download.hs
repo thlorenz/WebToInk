@@ -62,15 +62,13 @@ getSrcFilePath targetFolder url = targetFolder ++ "/" ++ (takeFileName url)
 
 downloadByteString :: Url -> IO (Maybe L.ByteString)
 downloadByteString url = do
-    byteString <- (simpleHttp url) `X.catch` statusCodeExceptionHandler
-    case byteString of x | x == L.empty -> return Nothing 
-                         | otherwise    -> return (Just byteString)
-    where
-        statusCodeExceptionHandler ::  HttpException -> IO L.ByteString
-        statusCodeExceptionHandler (StatusCodeException status headers) = 
+    byteString <- try (simpleHttp url)
+    case byteString of
+        Right x                                   -> return (Just x)
+        Left (StatusCodeException status headers) ->
             putStrLn ("An error occured while trying to download: " ++ url)
             >> (putStrLn $ show status)
-            >> (return L.empty)
+            >> (return Nothing)
 
 -- ===================
 -- Tests
