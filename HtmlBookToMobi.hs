@@ -32,7 +32,7 @@ main = do
     -- let opfString = generateOpf pagesFolder pagesDic title language creator 
     -- writeFile "book.opf" opfString
 
-    let tocString = generateToc pagesDic title language creator
+    let tocString = generateToc (map fst pagesDic) title language creator
     putStrLn tocString
     setCurrentDirectory ".."
 
