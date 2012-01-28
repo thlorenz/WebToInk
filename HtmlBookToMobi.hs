@@ -2,6 +2,7 @@ import HtmlPages(getHtmlPages)
 import Images(getImages)
 import Download(downloadPage, savePage, downloadAndSaveImages, getSrcFilePath)
 import OpfGeneration(generateOpf)
+import TocGeneration(generateToc)
 import Types
 import Constants
 
@@ -28,9 +29,11 @@ main = do
 
     -- downloadPages rootUrl pagesDic
 
-    let opfString = generateOpf pagesFolder pagesDic title language creator 
-    writeFile "book.opf" opfString
+    -- let opfString = generateOpf pagesFolder pagesDic title language creator 
+    -- writeFile "book.opf" opfString
 
+    let tocString = generateToc pagesDic title language creator
+    putStrLn tocString
     setCurrentDirectory ".."
 
 downloadPages rootUrl pagesDic = do

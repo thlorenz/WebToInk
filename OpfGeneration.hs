@@ -2,6 +2,7 @@ module OpfGeneration(generateOpf) where
 
 import Constants
 import System.FilePath(dropExtension)
+import Utils(getTabs)
 
 generateOpf pagesFolder dic title language creator = unlines $
     ["<?xml version=\"1.0\" encoding=\"utf-8\"?>"] ++
@@ -55,4 +56,3 @@ generateGuide indent pagesFolder tocPage = unlines $
     [(getTabs indent) ++ "</guide>"]
  
 
-getTabs indent = replicate (indent * 2) ' '
