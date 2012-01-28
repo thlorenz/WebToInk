@@ -27,13 +27,14 @@ main = do
 
     setCurrentDirectory folder
 
-    -- downloadPages rootUrl pagesDic
+    downloadPages rootUrl pagesDic
 
-    -- let opfString = generateOpf pagesFolder pagesDic title language creator 
-    -- writeFile "book.opf" opfString
+    let opfString = generateOpf pagesFolder pagesDic title language creator 
+    writeFile "book.opf" opfString
 
     let tocString = generateToc (map fst pagesDic) title language creator
-    putStrLn tocString
+    writeFile "toc.ncx" tocString
+
     setCurrentDirectory ".."
 
 downloadPages rootUrl pagesDic = do
@@ -42,12 +43,11 @@ downloadPages rootUrl pagesDic = do
         pageContents <- downloadPage url
 
         let imageUrls = getImages pageContents
-        putStrLn $ "Downloading contained images: " ++ (show imageUrls)
         downloadAndSaveImages rootUrl imageUrls
 
         let localizedPageContents = 
                 localizeSrcUrls ("../" ++ imagesFolder) pageContents imageUrls 
-        putStrLn "Saving page "
+
         savePage fileName localizedPageContents
         )
 
