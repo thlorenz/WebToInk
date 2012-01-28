@@ -2,17 +2,18 @@ module TocGeneration(generateToc) where
 import Constants
 import System.FilePath(dropExtension)
 import Utils(getTabs)
+import Data.Char(toUpper)
 
 import Test.HUnit
 
--- this assumes that the first page in pagesDic is the "toc.html" (table of contents)
-generateToc pagesDic title language author = unlines $
+-- this assumes that the first page in pages is the "toc.html" (table of contents)
+generateToc pages title language author = unlines $
     ["<?xml version=\"1.0\" encoding=\"utf-8\"?>"] ++
     ["<!DOCTYPE ncx PUBLIC \"-//NISO//DTD ncx 2005-1//EN\" \"http://www.daisy.org/z3986/2005/ncx-2005-1.dtd\">"] ++
     ["<ncx xmlns=\"http://www.daisy.org/z3986/2005/ncx/\" version=\"2005-1\" xml:lang=\"" ++ language ++ "\">"] ++
         [generateHead              1 ] ++
         [generateDocTitleAndAuthor 1 title author] ++
-        [generateNavMap            1 pagesDic] ++
+        [generateNavMap            1 pages] ++
     ["</ncx>"] 
 
 generateHead indent = unlines $
@@ -30,24 +31,37 @@ generateDocTitleAndAuthor indent title author = unlines $
        (["<docTitle><text>" ++ title ++ "</text></docTitle>"] ++
         ["<docAuthor><text>" ++ author ++ "</text></docAuthor>"])
 
-generateNavMap indent pagedDic =  unlines $
+generateNavMap :: Int -> [FilePath] -> String
+generateNavMap indent (toc:chapters) =  unlines $
     map ((getTabs indent)++)
         (["<navMap>"] ++
+            [generateNavPoint "toc" toc] ++
+            [""] ++ 
+            map (generateNavPoint "chapter") chapters ++
         ["</navMap>"])
     where
-        generateNavPoint clazz page = undefined
+        generateNavPoint clazz page = unlines $
+           map ((getTabs $ indent + 1)++)
+            (["<navPoint class=\"" ++ clazz ++ "\" id=\"" ++ itemName ++ "\">"] ++
+             ["  <navLabel>"] ++
+             ["    <text>" ++ (makeTitle itemName) ++ "</text>"] ++
+             ["  </navLabel>"] ++
+             ["  <content src=\"" ++ pagesFolder ++ "/" ++ page ++ "\"/>"] ++
+             ["</navPoint>"])
+            where itemName = dropExtension page
+                  makeTitle "toc"  = "Table of Contents"
+                  makeTitle chapter = capitalizeWords . (map dashToSpace) $ chapter
+
+capitalizeWords = (unwords . (map capitalize) . words)
+    where capitalize (x:xs) = (toUpper x) : xs
+
+dashToSpace '-' = ' '
+dashToSpace c   = c
            
 -----------------------
 -- ----  Tests  ---- --
 -----------------------
 
-generateNavMapTests =
-    [ assertEqual "generating nav map for toc and another page"
-        (1) (1)
-    ]    
-
-tests = TestList $ map TestCase $
-    generateNavMapTests
-
-runTests = do
-    runTestTT tests
+debug = do
+    let pages = ["toc.html", "this-is-the-title.html"]
+    putStrLn $ generateToc pages "title" "en-us" "Some Author"
