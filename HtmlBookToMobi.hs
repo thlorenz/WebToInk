@@ -3,30 +3,40 @@ import Images(getImages)
 import Download(downloadPage, savePage, downloadAndSaveImages, getSrcFilePath)
 import OpfGeneration(generateOpf)
 import TocGeneration(generateToc)
+import CommandLineParser(Args(..), legend, parseArgs)
 import Types
 import Constants
 
 import System.Directory(createDirectoryIfMissing, setCurrentDirectory)
 import Control.Monad(forM)
 import Data.String.Utils(replace)
+import Data.Maybe(fromJust)
+import System.Environment(getArgs)
 
 import Test.HUnit
 import List(nub)
 
 main = do 
-    let title = "Real World Haskell"
-    let language = "en-us"
-    let creator = "Bryan O'Sullivan, Don Stewart, and John Goerzen"
+    argsList <- getArgs
 
-    let url = "http://book.realworldhaskell.org/read/"
-    let rootUrl = "http://book.realworldhaskell.org/"
+    -- TODO: check args to be valid
+    let args = parseArgs argsList
 
-    pagesDic <- getHtmlPages url
+    prepareKindleGeneration 
+        (fromJust $ title args)
+        (fromJust $ author args) 
+        (language args) 
+        (fromJust $ tocUrl args) 
+        (fromJust $ rootUrl args)
 
-    let folder = "real-haskell-book"
-    createDirectoryIfMissing False folder 
 
-    setCurrentDirectory folder
+prepareKindleGeneration title creator language tocUrl rootUrl = do
+
+    pagesDic <- getHtmlPages tocUrl
+
+    createDirectoryIfMissing False title  
+
+    setCurrentDirectory title
 
     referencedImages <- downloadPages rootUrl pagesDic
 
