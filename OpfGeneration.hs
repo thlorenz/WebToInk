@@ -4,12 +4,12 @@ import Constants
 import System.FilePath(dropExtension)
 import Utils(getTabs)
 
-generateOpf pagesDic images title language creator = unlines $
+generateOpf pages images title language creator = unlines $
     ["<?xml version=\"1.0\" encoding=\"utf-8\"?>"] ++
     ["<package xmlns=\"http://www.idpf.org/2007/opf\" version=\"2.0\">"] ++
         [generateMetaData 1 title language creator] ++
-        [generateManifest 1 (map fst pagesDic) images] ++
-        [generateSpine    1 pagesDic] ++
+        [generateManifest 1 pages images] ++
+        [generateSpine    1 pages] ++
         [generateGuide    1 pagesFolder tocPage] ++
     ["</package>"]
 
@@ -46,12 +46,13 @@ generateManifest indent pages images = unlines $
             getTabs (indent + 1) ++
             "<item media-type=\"image/png\" href=\"" ++ imagesFolder ++ "/" ++ fileName ++ "\"/>"
 
-generateSpine indent pagesDic = unlines $
+generateSpine :: Int -> [FilePath] -> String
+generateSpine indent pages = unlines $
     [(getTabs indent) ++ "<spine toc=\"ncx-toc\">"] ++ 
-       (map generateItemRef pagesDic) ++ 
+       (map generateItemRef pages) ++ 
     [(getTabs indent) ++ "</spine>"]
     where
-        generateItemRef (fileName, _) =
+        generateItemRef fileName =
             getTabs (indent + 1) ++
             "<itemref idref=\"" ++ itemName ++ "\"/>"
             where itemName = dropExtension fileName

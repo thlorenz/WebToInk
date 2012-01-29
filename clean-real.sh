@@ -1,3 +1,3 @@
-cd real-haskell-book
-rm -rf pages images *.opf *.mobi
+cd Real\ World\ Haskell
+rm -rf pages images *.opf *.mobi *.ncx
 

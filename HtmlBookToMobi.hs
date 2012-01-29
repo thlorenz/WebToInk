@@ -1,4 +1,4 @@
-import HtmlPages(getHtmlPages)
+import HtmlPages(getHtmlPages, filterOutSections, isTopLink)
 import Images(getImages)
 import Download(downloadPage, savePage, downloadAndSaveImages, getSrcFilePath)
 import OpfGeneration(generateOpf)
@@ -34,19 +34,30 @@ prepareKindleGeneration title creator language tocUrl rootUrl = do
 
     pagesDic <- getHtmlPages tocUrl
 
-    createDirectoryIfMissing False title  
+    putStrLn $ prettifyList pagesDic
+    
+    createKindleStructure pagesDic    
 
-    setCurrentDirectory title
+    where
+        createKindleStructure pagesDic = do
+            let topPagesDic = filter (isTopLink . fst) pagesDic
+            let pages = map fst pagesDic
+            let topPages = map fst topPagesDic
 
-    referencedImages <- downloadPages rootUrl pagesDic
+            createDirectoryIfMissing False title  
+            setCurrentDirectory title
 
-    let opfString = generateOpf pagesDic referencedImages title language creator 
-    writeFile "book.opf" opfString
+            referencedImages <- downloadPages rootUrl topPagesDic
 
-    let tocString = generateToc (map fst pagesDic) title language creator
-    writeFile "toc.ncx" tocString
+            -- let referencedImages = []
+            putStrLn $ prettifyList topPages 
+            let opfString = generateOpf topPages referencedImages title language creator 
+            writeFile "book.opf" opfString
 
-    setCurrentDirectory ".."
+            let tocString = generateToc topPages title language creator
+            writeFile "toc.ncx" tocString
+
+            setCurrentDirectory ".."
 
 downloadPages rootUrl pagesDic = do
     allImageUrls <- mapM (\(fileName, url) -> do
@@ -70,6 +81,9 @@ localizeSrcUrls targetFolder pageContents srcUrls =
     foldr (\srcUrl contents -> 
         replace ("src=\"" ++ srcUrl) ("src=\"" ++ (getSrcFilePath targetFolder srcUrl)) contents) 
         pageContents srcUrls
+
+prettifyList :: Show a => [a] -> String
+prettifyList = foldr (++) "" . map ((++)"\n" . show) 
 
 -- ===================
 -- Tests
