@@ -11,6 +11,7 @@ import Control.Monad(forM)
 import Data.String.Utils(replace)
 
 import Test.HUnit
+import List(nub)
 
 main = do 
     let title = "Real World Haskell"
@@ -27,9 +28,9 @@ main = do
 
     setCurrentDirectory folder
 
-    downloadPages rootUrl pagesDic
+    referencedImages <- downloadPages rootUrl pagesDic
 
-    let opfString = generateOpf pagesFolder pagesDic title language creator 
+    let opfString = generateOpf pagesDic referencedImages title language creator 
     writeFile "book.opf" opfString
 
     let tocString = generateToc (map fst pagesDic) title language creator
@@ -38,7 +39,7 @@ main = do
     setCurrentDirectory ".."
 
 downloadPages rootUrl pagesDic = do
-    forM pagesDic (\(fileName, url) -> do
+    allImageUrls <- mapM (\(fileName, url) -> do
         putStrLn $ "Downloading: " ++ fileName
         pageContents <- downloadPage url
 
@@ -49,7 +50,10 @@ downloadPages rootUrl pagesDic = do
                 localizeSrcUrls ("../" ++ imagesFolder) pageContents imageUrls 
 
         savePage fileName localizedPageContents
-        )
+
+        return imageUrls
+        ) pagesDic 
+    return $ (map (getSrcFilePath "") . nub . concat) allImageUrls
 
 localizeSrcUrls :: FilePath -> PageContents -> [Url] -> PageContents
 localizeSrcUrls targetFolder pageContents srcUrls =
