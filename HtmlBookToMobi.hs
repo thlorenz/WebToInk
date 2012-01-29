@@ -34,22 +34,21 @@ prepareKindleGeneration title creator language tocUrl rootUrl = do
 
     pagesDic <- getHtmlPages tocUrl
 
-    putStrLn $ prettifyList pagesDic
+    let topPagesDic = filter (isTopLink . fst) pagesDic
+    let topPages = map fst topPagesDic
+
+    putStrLn $ prettifyList topPagesDic
     
-    createKindleStructure pagesDic    
+    createKindleStructure topPagesDic topPages
 
     where
-        createKindleStructure pagesDic = do
-            let topPagesDic = filter (isTopLink . fst) pagesDic
-            let pages = map fst pagesDic
-            let topPages = map fst topPagesDic
+        createKindleStructure topPagesDic topPages = do
 
             createDirectoryIfMissing False title  
             setCurrentDirectory title
 
             referencedImages <- downloadPages rootUrl topPagesDic
 
-            -- let referencedImages = []
             putStrLn $ prettifyList topPages 
             let opfString = generateOpf topPages referencedImages title language creator 
             writeFile "book.opf" opfString
@@ -59,7 +58,7 @@ prepareKindleGeneration title creator language tocUrl rootUrl = do
 
             setCurrentDirectory ".."
 
-downloadPages rootUrl pagesDic = do
+downloadPages rootUrl topPagesDic = do
     allImageUrls <- mapM (\(fileName, url) -> do
         putStrLn $ "Downloading: " ++ fileName
         pageContents <- downloadPage url
@@ -73,7 +72,7 @@ downloadPages rootUrl pagesDic = do
         savePage fileName localizedPageContents
 
         return imageUrls
-        ) pagesDic 
+        ) topPagesDic 
     return $ (map (getSrcFilePath "") . nub . concat) allImageUrls
 
 localizeSrcUrls :: FilePath -> PageContents -> [Url] -> PageContents
