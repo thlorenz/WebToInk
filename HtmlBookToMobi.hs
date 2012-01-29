@@ -32,7 +32,7 @@ main = do
 
 prepareKindleGeneration title creator language tocUrl rootUrl = do
 
-    pagesDic <- getHtmlPages tocUrl
+    pagesDic <- getHtmlPages tocUrl rootUrl
 
     let topPagesDic = filter (isTopLink . fst) pagesDic
     let topPages = map fst topPagesDic

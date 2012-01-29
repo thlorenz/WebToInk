@@ -8,10 +8,10 @@ import Text.HTML.TagSoup(parseTags, Tag(..), (~==))
 import System.FilePath(takeFileName, takeExtension, takeBaseName)
 import Data.List(nub)
 
-getHtmlPages ::  Url -> IO [(FilePath, Url)]
-getHtmlPages tocUrl = do
+getHtmlPages ::  Url -> Url -> IO [(FilePath, Url)]
+getHtmlPages tocUrl rootUrl = do
     toc <- downloadPage tocUrl
-    return $ [("toc.html", tocUrl)] ++ (getNameUrlMap tocUrl toc)
+    return $ [("toc.html", tocUrl)] ++ (getNameUrlMap rootUrl toc)
 
 filterOutSections ::  [String] -> [String]
 filterOutSections = filter isTopLink 
