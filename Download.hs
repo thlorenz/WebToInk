@@ -21,9 +21,10 @@ import Control.Exception as X
 
 import Test.HUnit
 
-downloadAndSaveImages rootUrl imageUrls = do
+downloadAndSaveImages ::  Url -> Url -> [Url] -> IO [Either a b]
+downloadAndSaveImages rootUrl tocUrl imageUrls = do
     createDirectoryIfMissing False imagesFolder
-    mapM (downloadAndSaveImage imagesFolder rootUrl) imageUrls
+    mapM (downloadAndSaveImage imagesFolder tocUrl rootUrl) imageUrls
 
 downloadPage ::  Url -> IO String
 downloadPage url = do
@@ -37,19 +38,28 @@ savePage fileName pageContents = do
     where write fileName pageContents = do 
             withFile fileName WriteMode (\handle -> hPutStr handle pageContents)
 
-downloadAndSaveImage :: FilePath -> Url -> Url -> IO ()
-downloadAndSaveImage targetFolder rootUrl url = do
-    let fullUrl = resolveUrl rootUrl url
+downloadAndSaveImage :: FilePath -> Url -> Url -> Url -> IO (Either a b)
+downloadAndSaveImage targetFolder rootUrl tocUrl url = do
+    let fullRootUrl = resolveUrl rootUrl url
+    let fullTocUrl = resolveUrl tocUrl url
     let fullPath = getSrcFilePath targetFolder url
 
     imageWasDownloadedBefore <- doesFileExist fullPath 
     if imageWasDownloadedBefore 
-        then return undefined
+        then return $ Right undefined 
         else do 
-            byteString <- downloadByteString fullUrl
-            case byteString of 
-                Nothing      -> return () 
-                (Just bytes) -> L.writeFile fullPath bytes
+            -- Try to find image at root and then at toc location otherwise we are out of luck
+            bytesFromFullPath <- tryDownloadAndSave fullPath fullRootUrl
+            case bytesFromFullPath of
+                (Left _)  -> tryDownloadAndSave fullPath fullTocUrl
+                right     -> return right  
+
+
+    where tryDownloadAndSave fullPath url = do 
+                byteString <- downloadByteString url
+                case byteString of 
+                    Nothing      -> return $ Left undefined 
+                    (Just bytes) -> do { L.writeFile fullPath bytes; return $ Right undefined }
 
 
 resolveUrl :: Url -> Url -> Url
