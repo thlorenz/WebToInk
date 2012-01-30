@@ -1,4 +1,4 @@
-module HtmlPages (getHtmlPages, filterOutSections, isTopLink) where 
+module HtmlPages (getHtmlPages, filterOutSections, isTopLink, containsBaseHref) where 
 
 import Types
 import Utils(openUrl)
@@ -7,6 +7,8 @@ import Download(downloadPage)
 import Text.HTML.TagSoup(parseTags, Tag(..), (~==))
 import System.FilePath(takeFileName, takeExtension, takeBaseName)
 import Data.List(nub)
+
+import Test.HUnit
 
 getHtmlPages ::  Url -> Url -> IO [(FilePath, Url)]
 getHtmlPages tocUrl rootUrl = do
@@ -34,3 +36,21 @@ getSameFolderHtmls = nub . filterLocalLinks . getLinks
 
 filterHrefs ::  [Tag String] -> [Tag String]
 filterHrefs = filter (~== "<a href>") 
+
+containsBaseHref :: Line -> Bool
+containsBaseHref = (/=[]) . filter (~== "<base href>") . parseTags
+
+containsBaseHrefTests = 
+    [ assertBool "containsBaseHref" $
+         containsBaseHref lineContainingHref
+    , assertBool "contains no BaseHref" $
+        (not . containsBaseHref) lineContainingNoHref
+    ]
+    where lineContainingHref = "<base href=\"http://learnyouahaskell.com/\">"
+          lineContainingNoHref = "<a href=\"whatever.com\" />"
+
+tests = TestList $ map TestCase $
+    containsBaseHrefTests 
+
+runTests = do
+    runTestTT tests

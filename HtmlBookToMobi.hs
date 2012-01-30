@@ -1,4 +1,4 @@
-import HtmlPages(getHtmlPages, filterOutSections, isTopLink)
+import HtmlPages(getHtmlPages, filterOutSections, isTopLink, containsBaseHref)
 import Images(getImages)
 import Download(downloadPage, savePage, downloadAndSaveImages, getSrcFilePath)
 import OpfGeneration(generateOpf)
@@ -64,10 +64,11 @@ downloadPages rootUrl topPagesDic = do
         pageContents <- downloadPage url
 
         let imageUrls = getImages pageContents
+
+        putStrLn $ prettifyList imageUrls 
         downloadAndSaveImages rootUrl imageUrls
 
-        let localizedPageContents = 
-                localizeSrcUrls ("../" ++ imagesFolder) pageContents imageUrls 
+        let localizedPageContents = localizePageContents imageUrls pageContents
 
         savePage fileName localizedPageContents
 
@@ -75,12 +76,19 @@ downloadPages rootUrl topPagesDic = do
         ) topPagesDic 
     return $ (map (getSrcFilePath "") . nub . concat) allImageUrls
 
-localizeSrcUrls :: FilePath -> PageContents -> [Url] -> PageContents
-localizeSrcUrls targetFolder pageContents srcUrls =
+localizePageContents :: [Url] -> PageContents -> PageContents
+localizePageContents imageUrls pageContents = 
+    removeBaseHref .  (localizeSrcUrls ("../" ++ imagesFolder) imageUrls) $ pageContents 
+
+localizeSrcUrls :: FilePath -> [Url] -> PageContents  -> PageContents
+localizeSrcUrls targetFolder srcUrls pageContents =
     foldr (\srcUrl contents -> 
         replace ("src=\"" ++ srcUrl) ("src=\"" ++ (getSrcFilePath targetFolder srcUrl)) contents) 
         pageContents srcUrls
 
+removeBaseHref :: PageContents -> PageContents
+removeBaseHref = unlines . filter (not . containsBaseHref) . lines
+    
 prettifyList :: Show a => [a] -> String
 prettifyList = foldr (++) "" . map ((++)"\n" . show) 
 
@@ -90,7 +98,7 @@ prettifyList = foldr (++) "" . map ((++)"\n" . show)
 
 localizeSrcUrlsTests =
     [ assertEqual "localizing src urls"
-        (localizeSrcUrls filePath pageContents imageUrls) localizedPageContents 
+        (localizeSrcUrls filePath imageUrls pageContents) localizedPageContents 
     ]
     where
         filePath = "../images"
@@ -108,9 +116,22 @@ localizeSrcUrlsTests =
                 "<img src=\"" ++ filePath ++ "/ball.png\"/>" ++
             "</body>"
 
-
+removeBaseHrefTests = 
+    [ assertEqual "removing base href"
+        processedPageContents (removeBaseHref pageContents)
+    ]
+    where 
+        pageContents =
+            "<head>\n" ++
+                "<base href=\"http://learnyouahaskell.com/\">\n" ++ 
+            "</head>\n"
+        processedPageContents = 
+            "<head>\n" ++
+            "</head>\n"
+    
 tests = TestList $ map TestCase $
-    localizeSrcUrlsTests 
+    localizeSrcUrlsTests ++
+    removeBaseHrefTests 
 
 runTests = do
     runTestTT tests
