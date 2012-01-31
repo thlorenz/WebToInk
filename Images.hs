@@ -10,10 +10,13 @@ import Test.HUnit
 getImages :: PageContents -> [Url]
 getImages = nub . getUrls . filterImages . parseTags
     where 
-        getUrls = map getUrl
+        getUrls = map (addPrefixIfNeeded . getUrl)
+        addPrefixIfNeeded ('/':xs) = '/':xs 
+        addPrefixIfNeeded xs       = '/':xs
+
         getUrl (TagOpen tag pairs) = extractImgSrcUrl pairs
             where 
-                extractImgSrcUrl = snd . fromJust . findSrcPair
+                extractImgSrcUrl = dropWhile (==' ') . snd . fromJust . findSrcPair
                 findSrcPair = find (\(name, url) -> name == "src")
 
 filterImages ::  [Tag String] -> [Tag String]
@@ -26,15 +29,20 @@ filterImages = filter (~== "<img src>")
 
 getImagesTests = TestList $ map TestCase
     [ assertEqual "extracting images when one is contained"
-        (getImages pageContentsWithOneImage)    ["/support/figs/tip.png"]
+        ["/support/figs/tip.png"] (getImages pageContentsWithOneImage) 
+    , assertEqual "extracting images when one is contained missing / prefix"
+        ["/support/figs/tip.png"] (getImages pageContentsWithOneImageMissingPrefix)  
+
     , assertEqual "extracting images when two are contained"
-        (getImages pageContentsWithTwoImages)   ["/support/figs/tip.png", 
-                                                 "/support/figs/other.png"]
+           ["/support/figs/tip.png", "/support/figs/other.png"]
+           (getImages pageContentsWithTwoImages)
     , assertEqual "extracting images when none is contained"
-        (getImages pageContentsWithoutImage)    [] 
+        []  (getImages pageContentsWithoutImage) 
     ]
     where 
         pageContentsWithOneImage  ="<img alt=\"[Tip]\" src=\"/support/figs/tip.png\">"
+        pageContentsWithOneImageMissingPrefix =
+            "<img alt=\"[Tip]\" src=\"support/figs/tip.png\">"
         pageContentsWithTwoImages = "<img alt=\"[Tip]\" src=\"/support/figs/tip.png\">" ++
                                     "<img alt=\"[Oth]\" src=\"/support/figs/other.png\">" 
         pageContentsWithoutImage  ="<span>see no image</span>"
