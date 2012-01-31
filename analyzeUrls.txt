@@ -1,0 +1,9 @@
+Image reference relative to root of site:
+       http://book.realworldhaskell.org/read/getting-started.html
+image: http://book.realworldhaskell.org/support/figs/note.png
+  url: src=                           "/support/figs/note.png" 
+
+Image reference relative to root, but missing / prefix
+       http://book.realworldhaskell.org/read/testing-and-quality-assurance.html
+image: http://book.realworldhaskell.org/read/figs/ch11-coverage-screen.png
+  url: src=                                 "figs/ch11-coverage-screen.png"

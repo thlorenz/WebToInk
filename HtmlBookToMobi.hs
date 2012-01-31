@@ -36,14 +36,14 @@ prepareKindleGeneration title creator language tocUrl rootUrl = do
     -- root defaults to tocRoot
     -- pagesRoot defaults to tocRoot
     -- imagesRoot defaults to root and also uses tocRoot
-    pagesDic <- getHtmlPages tocUrl rootUrl
+    pagesDic <- getHtmlPages tocUrl
 
     let topPagesDic = filter (isTopLink . fst) pagesDic
     let topPages = map fst topPagesDic
 
     putStrLn $ prettifyList topPagesDic
     
-    createKindleStructure topPagesDic topPages
+    -- createKindleStructure topPagesDic topPages
 
     where
         createKindleStructure topPagesDic topPages = do

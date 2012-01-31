@@ -5,15 +5,16 @@ import Utils(openUrl)
 import Download(downloadPage)
 
 import Text.HTML.TagSoup(parseTags, Tag(..), (~==))
-import System.FilePath(takeFileName, takeExtension, takeBaseName)
+import System.FilePath(takeDirectory, takeFileName, takeExtension, takeBaseName)
 import Data.List(nub)
+import Data.String.Utils(split)
 
 import Test.HUnit
 
-getHtmlPages ::  Url -> Url -> IO [(FilePath, Url)]
-getHtmlPages tocUrl rootUrl = do
+getHtmlPages ::  Url -> IO [(FilePath, Url)]
+getHtmlPages tocUrl = do
     toc <- downloadPage tocUrl
-    return $ [("toc.html", tocUrl)] ++ (getNameUrlMap rootUrl toc)
+    return $ [("toc.html", tocUrl)] ++ (getNameUrlMap (getFolderUrl tocUrl) toc)
 
 filterOutSections ::  [String] -> [String]
 filterOutSections = filter isTopLink 
@@ -28,6 +29,7 @@ getHtmlNamesInRootFolder = getSameFolderHtmls . filterHrefs . parseTags
 getSameFolderHtmls = nub . filterLocalLinks . getLinks
     where
         filterLocalLinks = filter (not . any(=='/'))
+        -- filterLocalLinks = filter (not . ("http" `isPrefixOf`))
 
         getLinks ::  [Tag String] -> [String]
         getLinks = map (snd . getUrl)
@@ -40,6 +42,10 @@ filterHrefs = filter (~== "<a href>")
 containsBaseHref :: Line -> Bool
 containsBaseHref = (/=[]) . filter (~== "<base href>") . parseTags
 
+getFolderUrl :: Url -> Url
+getFolderUrl = takeDirectory
+
+
 containsBaseHrefTests = 
     [ assertBool "containsBaseHref" $
          containsBaseHref lineContainingHref
@@ -49,8 +55,21 @@ containsBaseHrefTests =
     where lineContainingHref = "<base href=\"http://learnyouahaskell.com/\">"
           lineContainingNoHref = "<a href=\"whatever.com\" />"
 
+getFolderUrlTests =
+    [ assertEqual "get folder url with html file"
+        tocFolderUrl (getFolderUrl tocUrl)
+    , assertEqual "get folder url without html file"
+        tocFolderUrl (getFolderUrl tocUrlNoHtml)
+    ]
+    where
+        tocUrl  = "http://the.root/pages/read/index.html"
+        tocUrlNoHtml  = "http://the.root/pages/read/"
+        tocFolderUrl = "http://the.root/pages/read"
+         
+
 tests = TestList $ map TestCase $
-    containsBaseHrefTests 
+    containsBaseHrefTests ++
+    getFolderUrlTests 
 
 runTests = do
     runTestTT tests
