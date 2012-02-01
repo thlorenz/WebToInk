@@ -10,9 +10,7 @@ import Test.HUnit
 getImages :: PageContents -> [Url]
 getImages = nub . getUrls . filterImages . parseTags
     where 
-        getUrls = map (addPrefixIfNeeded . getUrl)
-        addPrefixIfNeeded ('/':xs) = '/':xs 
-        addPrefixIfNeeded xs       = '/':xs
+        getUrls = map getUrl
 
         getUrl (TagOpen tag pairs) = extractImgSrcUrl pairs
             where 
@@ -30,9 +28,6 @@ filterImages = filter (~== "<img src>")
 getImagesTests = TestList $ map TestCase
     [ assertEqual "extracting images when one is contained"
         ["/support/figs/tip.png"] (getImages pageContentsWithOneImage) 
-    , assertEqual "extracting images when one is contained missing / prefix"
-        ["/support/figs/tip.png"] (getImages pageContentsWithOneImageMissingPrefix)  
-
     , assertEqual "extracting images when two are contained"
            ["/support/figs/tip.png", "/support/figs/other.png"]
            (getImages pageContentsWithTwoImages)
@@ -41,8 +36,6 @@ getImagesTests = TestList $ map TestCase
     ]
     where 
         pageContentsWithOneImage  ="<img alt=\"[Tip]\" src=\"/support/figs/tip.png\">"
-        pageContentsWithOneImageMissingPrefix =
-            "<img alt=\"[Tip]\" src=\"support/figs/tip.png\">"
         pageContentsWithTwoImages = "<img alt=\"[Tip]\" src=\"/support/figs/tip.png\">" ++
                                     "<img alt=\"[Oth]\" src=\"/support/figs/other.png\">" 
         pageContentsWithoutImage  ="<span>see no image</span>"
