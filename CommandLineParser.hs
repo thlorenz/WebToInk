@@ -9,34 +9,28 @@ data Args  = Args   { title           :: Maybe String
                     , language        :: String
                     , author          :: Maybe String
                     , tocUrl          :: Maybe Url
-                    , rootUrl         :: Maybe Url
                     } deriving (Show, Eq)
 
 titleOpt    = "--title"
 languageOpt = "--language"
 authorOpt   = "--author"
 tocOpt      = "--toc"
-rootOpt     = "--root"
 
-options = [ titleOpt, languageOpt, authorOpt, tocOpt, rootOpt ]
+options = [ titleOpt, languageOpt, authorOpt, tocOpt ]
 
 legend = 
      [ (titleOpt, normalizeOption titleOpt, "Book title (required)")
      , (languageOpt, normalizeOption languageOpt, "Language (default en-US)")
      , (authorOpt, normalizeOption authorOpt, "Book author")
      , (tocOpt, normalizeOption tocOpt, "Url to the page that contains the table of contents of the book")
-     , (rootOpt, normalizeOption rootOpt, "Url that points to the root of the book (e.g, to resolve images)")
      ]
 
 parseArgs :: [String] -> Args
-parseArgs options = Args {
-        title    = tryGetArg titleOpt,
-        language = getArg languageOpt "en-us",
-        author   = tryGetArg authorOpt,
-        tocUrl   = tryGetArg tocOpt,
-        rootUrl  = tryGetArg rootOpt
-    }
-
+parseArgs options = Args { title    = tryGetArg titleOpt
+                         , language = getArg languageOpt "en-us"
+                         , author   = tryGetArg authorOpt
+                         , tocUrl   = tryGetArg tocOpt
+                         }
     where 
         normOpts = normalizeOptions options
         tryGetArg option = (extractArg . dropWhile (/= option)) normOpts 
@@ -56,7 +50,6 @@ normalizeOption "-t" = titleOpt
 normalizeOption "-l" = languageOpt
 normalizeOption "-a" = authorOpt
 normalizeOption "-c" = tocOpt
-normalizeOption "-r" = rootOpt
 normalizeOption x    = x
 
 -----------------------
@@ -77,15 +70,15 @@ normalizeOptionsTests =
 
 parseArgsTests =
     [ assertEqual "no args" 
-        (Args Nothing defLang  Nothing  Nothing  Nothing) $ parseArgs []
+        (Args Nothing defLang  Nothing  Nothing) $ parseArgs []
     , assertEqual "title given"
-        (Args (Just givenTitle) defLang  Nothing  Nothing  Nothing) $
+        (Args (Just givenTitle) defLang  Nothing Nothing) $
         parseArgs ["--title", givenTitle]
     , assertEqual "title and author given"
-        (Args (Just givenTitle) defLang  (Just givenAuthor)  Nothing  Nothing) $
+        (Args (Just givenTitle) defLang  (Just givenAuthor) Nothing) $
         parseArgs ["--title", givenTitle, "-a", givenAuthor]
     , assertEqual "title, language and author given"
-        (Args (Just givenTitle) givenLanguage (Just givenAuthor)  Nothing  Nothing) $
+        (Args (Just givenTitle) givenLanguage (Just givenAuthor) Nothing) $
         parseArgs ["--title", givenTitle, "-a", givenAuthor, "-l", givenLanguage]
     ]
 

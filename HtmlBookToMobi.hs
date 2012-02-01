@@ -1,4 +1,4 @@
-import HtmlPages(getHtmlPages, filterOutSections, isTopLink, containsBaseHref)
+import HtmlPages(getHtmlPages, filterOutSections, isTopLink, containsBaseHref, getRootUrl)
 import Images(getImages)
 import Download(downloadPage, savePage, downloadAndSaveImages, getSrcFilePath)
 import OpfGeneration(generateOpf)
@@ -27,10 +27,9 @@ main = do
         (fromJust $ author args) 
         (language args) 
         (fromJust $ tocUrl args) 
-        (fromJust $ rootUrl args)
 
-
-prepareKindleGeneration title creator language tocUrl rootUrl = do
+prepareKindleGeneration :: String -> String -> String -> Url -> IO ()
+prepareKindleGeneration title creator language tocUrl = do
 
     pagesDic <- getHtmlPages tocUrl
 
@@ -47,7 +46,7 @@ prepareKindleGeneration title creator language tocUrl rootUrl = do
             createDirectoryIfMissing False title  
             setCurrentDirectory title
 
-            referencedImages <- downloadPages rootUrl tocUrl topPagesDic
+            referencedImages <- downloadPages tocUrl topPagesDic    
 
             putStrLn $ prettifyList topPages 
             let opfString = generateOpf topPages referencedImages title language creator 
@@ -58,7 +57,10 @@ prepareKindleGeneration title creator language tocUrl rootUrl = do
 
             setCurrentDirectory ".."
 
-downloadPages rootUrl tocUrl topPagesDic = do
+downloadPages :: Url -> [(FilePath, Url)] -> IO ([Url])
+downloadPages tocUrl topPagesDic = do
+    let rootUrl = getRootUrl tocUrl
+
     allImageUrls <- mapM (\(fileName, pageUrl) -> do
         putStrLn $ "Downloading: " ++ fileName
         pageContents <- downloadPage pageUrl

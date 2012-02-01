@@ -1,4 +1,10 @@
-module HtmlPages (getHtmlPages, filterOutSections, isTopLink, containsBaseHref) where 
+module HtmlPages 
+    ( getHtmlPages
+    , filterOutSections
+    , isTopLink
+    , containsBaseHref
+    , getRootUrl
+    ) where 
 
 import Types
 import Utils(openUrl)
@@ -45,6 +51,10 @@ containsBaseHref = (/=[]) . filter (~== "<base href>") . parseTags
 getFolderUrl :: Url -> Url
 getFolderUrl = takeDirectory
 
+-- | drop "http://" then gobble everything up to first / and stick it onto "http://"
+getRootUrl :: Url -> Url
+getRootUrl url = http ++ (takeWhile (not . (=='/')) . drop (length http)) url
+    where http ="http://"
 
 containsBaseHrefTests = 
     [ assertBool "containsBaseHref" $
@@ -66,10 +76,19 @@ getFolderUrlTests =
         tocUrlNoHtml  = "http://the.root/pages/read/"
         tocFolderUrl = "http://the.root/pages/read"
          
+getRootUrlTests =
+    map (\(url, root) -> assertEqual url root (getRootUrl url))
+    [ ("http://root.com", "http://root.com")
+    , ("http://root.com/pages", "http://root.com")
+    , ("http://root.com/pages/index.html", "http://root.com")
+    , ("http://root.com/pages/chapter1/toc.htm", "http://root.com")
+    ]
 
 tests = TestList $ map TestCase $
     containsBaseHrefTests ++
-    getFolderUrlTests 
+    getFolderUrlTests ++
+    getRootUrlTests
+    
 
 runTests = do
     runTestTT tests
