@@ -10,7 +10,7 @@ import Constants(pagesFolder, imagesFolder)
 import Utils(openUrl)
 import System.Directory(createDirectoryIfMissing, setCurrentDirectory, doesFileExist)
 import System.IO(hPutStr, withFile, IOMode(..))
-import System.FilePath(takeFileName)
+import System.FilePath(takeFileName, takeDirectory)
 import Data.List(isPrefixOf)
 
 import Network.HTTP.Conduit
@@ -22,9 +22,9 @@ import Control.Exception as X
 import Test.HUnit
 
 downloadAndSaveImages ::  Url -> Url -> [Url] -> IO [()]
-downloadAndSaveImages rootUrl tocUrl imageUrls = do
+downloadAndSaveImages rootUrl pageUrl imageUrls = do
     createDirectoryIfMissing False imagesFolder
-    mapM (downloadAndSaveImage imagesFolder rootUrl) imageUrls
+    mapM (downloadAndSaveImage imagesFolder rootUrl pageUrl) imageUrls
 
 downloadPage ::  Url -> IO String
 downloadPage url = do
@@ -38,9 +38,9 @@ savePage fileName pageContents = do
     where write fileName pageContents = do 
             withFile fileName WriteMode (\handle -> hPutStr handle pageContents)
 
-downloadAndSaveImage :: FilePath -> Url -> Url -> IO ()
-downloadAndSaveImage targetFolder rootUrl url = do
-    let fullUrl = resolveUrl rootUrl url
+downloadAndSaveImage :: FilePath -> Url -> Url -> Url -> IO ()
+downloadAndSaveImage targetFolder rootUrl pageUrl url = do
+    let fullUrl = resolveUrl rootUrl pageUrl url
     let fullPath = getSrcFilePath targetFolder url
 
     imageWasDownloadedBefore <- doesFileExist fullPath 
@@ -53,10 +53,12 @@ downloadAndSaveImage targetFolder rootUrl url = do
                     (Just bytes) -> L.writeFile fullPath bytes
 
 
-resolveUrl :: Url -> Url -> Url
-resolveUrl rootUrl url
+resolveUrl :: Url -> Url -> Url -> Url
+resolveUrl rootUrl pageUrl url
         | "http://" `isPrefixOf` url = url
-        | otherwise                  = rootUrl ++ "/" ++ url
+        | "/"       `isPrefixOf` url = rootUrl ++ url
+        | otherwise                  = pageFolder ++ "/" ++ url
+        where pageFolder = takeDirectory pageUrl
 
 getSrcFilePath :: FilePath -> Url -> FilePath
 getSrcFilePath targetFolder url = targetFolder ++ "/" ++ (takeFileName url)
@@ -76,14 +78,22 @@ downloadByteString url = do
 -----------------------
 
 resolveUrlTests = 
-    [ assertEqual "resolving relative url appends it to root url"
-        (resolveUrl root relativeUrl) (root ++ "/" ++ relativeUrl)
+    [ assertEqual "resolving relative to page url appends it to page url"
+        resolvedToPageUrl (resolveUrl root page relativeToPageUrl) 
+    , assertEqual "resolving relative to root url appends it to root url"
+        resolvedToRootUrl (resolveUrl root page relativeToRootUrl) 
     , assertEqual "resolving absolute url returns it as is"
-        (resolveUrl root absoluteUrl) (absoluteUrl) 
+        (resolveUrl root page absoluteUrl) (absoluteUrl) 
     ]
     where 
         root = "http://my.root.url"
-        relativeUrl = "relative/to/root/some.png"
+        relativeToRootUrl = "/a/b/some.png" -- / means root 
+        resolvedToRootUrl = root ++ relativeToRootUrl
+
+        page = "http://my.root.url/pages/page.html"
+        relativeToPageUrl = "a/b/some.png"
+        resolvedToPageUrl = "http://my.root.url/pages/a/b/some.png"
+
         absoluteUrl = "http://some.absolute.com"
 
 getSrcFilePathTests = 

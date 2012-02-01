@@ -59,14 +59,14 @@ prepareKindleGeneration title creator language tocUrl rootUrl = do
             setCurrentDirectory ".."
 
 downloadPages rootUrl tocUrl topPagesDic = do
-    allImageUrls <- mapM (\(fileName, url) -> do
+    allImageUrls <- mapM (\(fileName, pageUrl) -> do
         putStrLn $ "Downloading: " ++ fileName
-        pageContents <- downloadPage url
+        pageContents <- downloadPage pageUrl
 
         let imageUrls = getImages pageContents
 
         putStrLn $ prettifyList imageUrls 
-        downloadAndSaveImages rootUrl tocUrl imageUrls
+        downloadAndSaveImages rootUrl pageUrl imageUrls
 
         let localizedPageContents = localizePageContents imageUrls pageContents
 
