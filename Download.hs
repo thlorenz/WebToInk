@@ -43,6 +43,8 @@ downloadAndSaveImage targetFolder rootUrl pageUrl url = do
     let fullUrl = resolveUrl rootUrl pageUrl url
     let fullPath = getSrcFilePath targetFolder url
 
+    putStrLn $ "Downloading image at " ++ fullUrl
+
     imageWasDownloadedBefore <- doesFileExist fullPath 
     if imageWasDownloadedBefore 
             then return undefined
@@ -55,10 +57,12 @@ downloadAndSaveImage targetFolder rootUrl pageUrl url = do
 
 resolveUrl :: Url -> Url -> Url -> Url
 resolveUrl rootUrl pageUrl url
-        | "http://" `isPrefixOf` url = url
-        | "/"       `isPrefixOf` url = rootUrl ++ url
-        | otherwise                  = pageFolder ++ "/" ++ url
+        | "http://"  `isPrefixOf` url = cleanedUrl
+        | "https://" `isPrefixOf` url = cleanedUrl
+        | "/"        `isPrefixOf` url = rootUrl ++ cleanedUrl
+        | otherwise                  = pageFolder ++ "/" ++ cleanedUrl
         where pageFolder = takeDirectory pageUrl
+              cleanedUrl = takeWhile (/='?') url
 
 getSrcFilePath :: FilePath -> Url -> FilePath
 getSrcFilePath targetFolder url = targetFolder ++ "/" ++ (takeFileName url)
@@ -83,7 +87,9 @@ resolveUrlTests =
     , assertEqual "resolving relative to root url appends it to root url"
         resolvedToRootUrl (resolveUrl root page relativeToRootUrl) 
     , assertEqual "resolving absolute url returns it as is"
-        (resolveUrl root page absoluteUrl) (absoluteUrl) 
+        (absoluteUrl) (resolveUrl root page absoluteUrl)
+    , assertEqual "resolving image url containing ?" 
+       "http://some/image.png" (resolveUrl root page "http://some/image.png?query")
     ]
     where 
         root = "http://my.root.url"

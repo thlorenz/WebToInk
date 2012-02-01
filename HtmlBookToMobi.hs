@@ -11,6 +11,7 @@ import System.Directory(createDirectoryIfMissing, setCurrentDirectory)
 import Control.Monad(forM)
 import Data.String.Utils(replace)
 import Data.Maybe(fromJust)
+import Data.List(isPrefixOf)
 import System.Environment(getArgs)
 
 import Test.HUnit
@@ -65,7 +66,7 @@ downloadPages tocUrl topPagesDic = do
         putStrLn $ "Downloading: " ++ fileName
         pageContents <- downloadPage pageUrl
 
-        let imageUrls = getImages pageContents
+        let imageUrls = (filter (not . ("https:" `isPrefixOf`)) . getImages) pageContents
 
         putStrLn $ prettifyList imageUrls 
         downloadAndSaveImages rootUrl pageUrl imageUrls
