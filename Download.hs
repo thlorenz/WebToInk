@@ -28,7 +28,7 @@ downloadAndSaveImages rootUrl pageUrl imageUrls = do
 
 downloadPage ::  Url -> IO String
 downloadPage url = do
-    pageContents <- openUrl url
+    pageContents <- (openUrl . cleanUrl) url
     return pageContents
 
 savePage ::  FilePath -> String -> IO ()
@@ -62,7 +62,9 @@ resolveUrl rootUrl pageUrl url
         | "/"        `isPrefixOf` url = rootUrl ++ cleanedUrl
         | otherwise                  = pageFolder ++ "/" ++ cleanedUrl
         where pageFolder = takeDirectory pageUrl
-              cleanedUrl = takeWhile (/='?') url
+              cleanedUrl = cleanUrl url
+
+cleanUrl = takeWhile (\x -> x /= '?' && x /= '#')
 
 getSrcFilePath :: FilePath -> Url -> FilePath
 getSrcFilePath targetFolder url = targetFolder ++ "/" ++ (takeFileName url)
