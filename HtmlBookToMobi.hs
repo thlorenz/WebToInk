@@ -39,7 +39,7 @@ prepareKindleGeneration title creator language tocUrl = do
 
     putStrLn $ prettifyList topPagesDic
     
-    createKindleStructure topPagesDic topPages
+    -- createKindleStructure topPagesDic topPages
 
     where
         createKindleStructure topPagesDic topPages = do

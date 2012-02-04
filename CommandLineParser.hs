@@ -4,6 +4,7 @@ import Types
 
 import System.Environment(getArgs)
 import Test.HUnit
+import Data.Maybe
 
 data Args  = Args   { title           :: Maybe String
                     , language        :: String
@@ -37,10 +38,7 @@ parseArgs options = Args { title    = tryGetArg titleOpt
             where extractArg (x1:x2:xs) = Just x2
                   extractArg _          = Nothing
 
-        getArg option alternative = 
-            case tryGetArg option of
-               Just arg -> arg
-               Nothing  -> alternative
+        getArg option alternative = fromMaybe alternative (tryGetArg option)
 
 normalizeOptions :: [String] -> [String]
 normalizeOptions = map normalizeOption
@@ -91,5 +89,4 @@ tests = TestList $ map TestCase $
     normalizeOptionsTests ++
     parseArgsTests 
 
-runTests = do
-    runTestTT tests
+runTests = runTestTT tests
