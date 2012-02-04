@@ -11,11 +11,10 @@ import System.Directory(createDirectoryIfMissing, setCurrentDirectory)
 import Control.Monad(forM)
 import Data.String.Utils(replace)
 import Data.Maybe(fromJust)
-import Data.List(isPrefixOf)
+import Data.List(isPrefixOf, nub)
 import System.Environment(getArgs)
 
 import Test.HUnit
-import List(nub)
 
 main = do 
     argsList <- getArgs
@@ -39,7 +38,7 @@ prepareKindleGeneration title creator language tocUrl = do
 
     putStrLn $ prettifyList topPagesDic
     
-    -- createKindleStructure topPagesDic topPages
+    createKindleStructure topPagesDic topPages
 
     where
         createKindleStructure topPagesDic topPages = do
@@ -58,7 +57,7 @@ prepareKindleGeneration title creator language tocUrl = do
 
             setCurrentDirectory ".."
 
-downloadPages :: Url -> [(FilePath, Url)] -> IO ([Url])
+downloadPages :: Url -> [(FilePath, Url)] -> IO [Url]
 downloadPages tocUrl topPagesDic = do
     let rootUrl = getRootUrl tocUrl
 
@@ -81,19 +80,19 @@ downloadPages tocUrl topPagesDic = do
 
 localizePageContents :: [Url] -> PageContents -> PageContents
 localizePageContents imageUrls pageContents = 
-    removeBaseHref .  (localizeSrcUrls ("../" ++ imagesFolder) imageUrls) $ pageContents 
+    removeBaseHref .  localizeSrcUrls ("../" ++ imagesFolder) imageUrls $ pageContents 
 
 localizeSrcUrls :: FilePath -> [Url] -> PageContents  -> PageContents
 localizeSrcUrls targetFolder srcUrls pageContents =
     foldr (\srcUrl contents -> 
-        replace ("src=\"" ++ srcUrl) ("src=\"" ++ (getSrcFilePath targetFolder srcUrl)) contents) 
+        replace ("src=\"" ++ srcUrl) ("src=\"" ++ getSrcFilePath targetFolder srcUrl) contents) 
         pageContents srcUrls
 
 removeBaseHref :: PageContents -> PageContents
 removeBaseHref = unlines . filter (not . containsBaseHref) . lines
     
 prettifyList :: Show a => [a] -> String
-prettifyList = foldr (++) "" . map ((++)"\n" . show) 
+prettifyList = foldr ((++) . (++) "\n" . show) ""
 
 -- ===================
 -- Tests
@@ -136,6 +135,5 @@ tests = TestList $ map TestCase $
     localizeSrcUrlsTests ++
     removeBaseHrefTests 
 
-runTests = do
-    runTestTT tests
+runTests = runTestTT tests
 

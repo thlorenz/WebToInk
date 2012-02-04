@@ -1,6 +1,7 @@
+cd ../books
 rm -rf Learn\ You\ a\ Haskell
 
-runghc HtmlBookToMobi.hs \
+runghc ../src/HtmlBookToMobi.hs \
     --title "Learn You a Haskell" \
     --language "en-us" \
     --author "Miran Lipovaca" \

@@ -1,6 +1,7 @@
-sh clean-real.sh
+cd ../books
+rm -rf Real\ World\ Haskell
 
-runghc HtmlBookToMobi.hs \
+runghc ../src/HtmlBookToMobi.hs \
     --title "Real World Haskell" \
     --language "en-us" \
     --author "Bryan O'Sullivan, Don Stewart, and John Goerzen" \

@@ -1,5 +1,7 @@
+cd ../books
 rm -rf Data\ List
-runghc HtmlBookToMobi.hs \
+
+runghc ../src/HtmlBookToMobi.hs \
     --title "Data List" \
     --language "en-us" \
     --author "hackage" \
