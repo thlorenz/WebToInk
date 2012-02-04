@@ -50,10 +50,10 @@ generateNavMap indent (toc:chapters) =  unlines $
              [(getTabs $ indent) ++ "</navPoint>"])
             where itemName = dropExtension page
                   makeTitle "toc"  = "Table of Contents"
-                  makeTitle chapter = capitalizeWords . (map dashToSpace) $ chapter
+                  makeTitle chapter = capitalizeWords . map dashToSpace $ chapter
 
-capitalizeWords = (unwords . (map capitalize) . words)
-    where capitalize (x:xs) = (toUpper x) : xs
+capitalizeWords = unwords . map capitalize . words
+    where capitalize (x:xs) = toUpper x : xs
 
 dashToSpace '-' = ' '
 dashToSpace c   = c

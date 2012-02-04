@@ -41,5 +41,4 @@ getImagesTests = TestList $ map TestCase
         pageContentsWithoutImage  ="<span>see no image</span>"
 
 tests = getImagesTests 
-runTests = do
-    runTestTT tests
+runTests = runTestTT tests
