@@ -27,16 +27,14 @@ downloadAndSaveImages rootUrl pageUrl imageUrls = do
     mapM (downloadAndSaveImage imagesFolder rootUrl pageUrl) imageUrls
 
 downloadPage ::  Url -> IO String
-downloadPage url = do
-    pageContents <- (openUrl . cleanUrl) url
-    return pageContents
+downloadPage = openUrl . cleanUrl
 
 savePage ::  FilePath -> String -> IO ()
 savePage fileName pageContents = do
     createDirectoryIfMissing False pagesFolder
     write (pagesFolder ++ "/" ++ fileName) pageContents 
-    where write fileName pageContents = do 
-            withFile fileName WriteMode (\handle -> hPutStr handle pageContents)
+    where write fileName pageContents =
+            withFile fileName WriteMode (`hPutStr` pageContents)
 
 downloadAndSaveImage :: FilePath -> Url -> Url -> Url -> IO ()
 downloadAndSaveImage targetFolder rootUrl pageUrl url = do
@@ -67,7 +65,7 @@ resolveUrl rootUrl pageUrl url
 cleanUrl = takeWhile (\x -> x /= '?' && x /= '#')
 
 getSrcFilePath :: FilePath -> Url -> FilePath
-getSrcFilePath targetFolder url = targetFolder ++ "/" ++ (takeFileName url)
+getSrcFilePath targetFolder url = targetFolder ++ "/" ++ takeFileName url
 
 downloadByteString :: Url -> IO (Maybe L.ByteString)
 downloadByteString url = do
@@ -76,8 +74,8 @@ downloadByteString url = do
         Right x                                   -> return (Just x)
         Left (StatusCodeException status headers) ->
             putStrLn ("An error occured while trying to download: " ++ url)
-            >> (putStrLn $ show status)
-            >> (return Nothing)
+            >> print status
+            >> return Nothing
 
 -----------------------
 -- ----  Tests  ---- --
@@ -89,7 +87,7 @@ resolveUrlTests =
     , assertEqual "resolving relative to root url appends it to root url"
         resolvedToRootUrl (resolveUrl root page relativeToRootUrl) 
     , assertEqual "resolving absolute url returns it as is"
-        (absoluteUrl) (resolveUrl root page absoluteUrl)
+        absoluteUrl (resolveUrl root page absoluteUrl)
     , assertEqual "resolving image url containing ?" 
        "http://some/image.png" (resolveUrl root page "http://some/image.png?query")
     ]
@@ -117,5 +115,4 @@ tests = TestList $ map TestCase $
     resolveUrlTests ++ 
     getSrcFilePathTests 
 
-runTests = do
-    runTestTT tests
+runTests = runTestTT tests
