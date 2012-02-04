@@ -1,4 +1,4 @@
-module HtmlPages 
+module Converter.HtmlPages 
     ( getHtmlPages
     , filterOutSections
     , isTopLink
@@ -6,9 +6,9 @@ module HtmlPages
     , getRootUrl
     ) where 
 
-import Types
-import Utils(openUrl)
-import Download(downloadPage)
+import Converter.Types
+import Converter.Utils(openUrl)
+import Converter.Download(downloadPage)
 
 import Text.HTML.TagSoup(parseTags, Tag(..), (~==))
 import System.FilePath(takeDirectory, takeFileName, takeExtension, takeBaseName)

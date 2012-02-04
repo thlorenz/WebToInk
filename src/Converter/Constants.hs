@@ -1,4 +1,4 @@
-module Constants where
+module Converter.Constants where
 
 imagesFolder = "images"
 pagesFolder = "pages"

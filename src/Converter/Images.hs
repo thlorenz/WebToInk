@@ -1,6 +1,7 @@
-module Images(getImages) where
+module Converter.Images(getImages) where
 
-import Types
+import Converter.Types
+
 import Text.HTML.TagSoup(parseTags, Tag(..), (~==))
 import System.FilePath(takeExtension)
 import Data.List(nub, find)

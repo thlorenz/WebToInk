@@ -1,6 +1,6 @@
-module CommandLineParser(Args(..), legend, parseArgs) where
+module Converter.CommandLineParser(Args(..), legend, parseArgs) where
 
-import Types
+import Converter.Types
 
 import System.Environment(getArgs)
 import Test.HUnit

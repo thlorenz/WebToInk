@@ -1,13 +1,14 @@
-module Download
+module Converter.Download
     ( downloadAndSaveImages
     , downloadPage
     , savePage
     , getSrcFilePath
     ) where
 
-import Types
-import Constants(pagesFolder, imagesFolder)
-import Utils(openUrl)
+import Converter.Types
+import Converter.Constants(pagesFolder, imagesFolder)
+import Converter.Utils(openUrl)
+
 import System.Directory(createDirectoryIfMissing, setCurrentDirectory, doesFileExist)
 import System.IO(hPutStr, withFile, IOMode(..))
 import System.FilePath(takeFileName, takeDirectory)

@@ -1,8 +1,9 @@
-module OpfGeneration(generateOpf) where
+module Converter.OpfGeneration(generateOpf) where
 
-import Constants
+import Converter.Constants
+import Converter.Utils(getTabs)
+
 import System.FilePath(dropExtension)
-import Utils(getTabs)
 
 generateOpf pages images title language creator = unlines $
     ["<?xml version=\"1.0\" encoding=\"utf-8\"?>"] ++

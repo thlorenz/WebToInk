@@ -1,4 +1,4 @@
-module Utils(openUrl, getTabs) where
+module Converter.Utils(openUrl, getTabs) where
 
 import Network.HTTP(simpleHTTP, getResponseBody, getRequest)
 

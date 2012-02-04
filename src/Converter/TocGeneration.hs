@@ -1,7 +1,9 @@
-module TocGeneration(generateToc) where
-import Constants
+module Converter.TocGeneration(generateToc) where
+
+import Converter.Constants
+import Converter.Utils(getTabs)
+
 import System.FilePath(dropExtension)
-import Utils(getTabs)
 import Data.Char(toUpper)
 
 import Test.HUnit

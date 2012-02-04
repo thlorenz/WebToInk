@@ -1,11 +1,13 @@
-import HtmlPages(getHtmlPages, filterOutSections, isTopLink, containsBaseHref, getRootUrl)
-import Images(getImages)
-import Download(downloadPage, savePage, downloadAndSaveImages, getSrcFilePath)
-import OpfGeneration(generateOpf)
-import TocGeneration(generateToc)
-import CommandLineParser(Args(..), legend, parseArgs)
-import Types
-import Constants
+module Converter where
+
+import Converter.HtmlPages(getHtmlPages, filterOutSections, isTopLink, containsBaseHref, getRootUrl)
+import Converter.Images(getImages)
+import Converter.Download(downloadPage, savePage, downloadAndSaveImages, getSrcFilePath)
+import Converter.OpfGeneration(generateOpf)
+import Converter.TocGeneration(generateToc)
+import Converter.CommandLineParser(Args(..), legend, parseArgs)
+import Converter.Types
+import Converter.Constants
 
 import System.Directory(createDirectoryIfMissing, setCurrentDirectory)
 import Control.Monad(forM)

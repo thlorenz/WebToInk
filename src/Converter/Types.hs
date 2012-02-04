@@ -1,4 +1,4 @@
-module Types where
+module Converter.Types where
 
 type Line         = String
 type PageContents = String
