@@ -10,7 +10,7 @@ data Args  = Args   { title           :: Maybe String
                     , language        :: String
                     , author          :: Maybe String
                     , tocUrl          :: Maybe Url
-                    , folder          :: String
+                    , folder          :: FilePath
                     } deriving (Show, Eq)
 
 titleOpt    = "--title"

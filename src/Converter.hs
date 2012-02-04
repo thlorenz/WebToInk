@@ -18,7 +18,7 @@ import System.Environment(getArgs)
 
 import Test.HUnit
 
-main = do 
+main = do   
     argsList <- getArgs
 
     -- TODO: check args to be valid
@@ -29,9 +29,10 @@ main = do
         (fromJust $ author args) 
         (language args) 
         (fromJust $ tocUrl args) 
+        (folder args)
 
-prepareKindleGeneration :: String -> String -> String -> Url -> IO ()
-prepareKindleGeneration title creator language tocUrl = do
+prepareKindleGeneration :: String -> String -> String -> Url -> FilePath -> IO ()
+prepareKindleGeneration title creator language tocUrl folder = do
 
     pagesDic <- getHtmlPages tocUrl
 
@@ -43,10 +44,12 @@ prepareKindleGeneration title creator language tocUrl = do
     createKindleStructure topPagesDic topPages
 
     where
+        targetFolder = folder ++ "/" ++ title
+
         createKindleStructure topPagesDic topPages = do
 
-            createDirectoryIfMissing False title  
-            setCurrentDirectory title
+            createDirectoryIfMissing False targetFolder  
+            setCurrentDirectory targetFolder
 
             referencedImages <- downloadPages tocUrl topPagesDic    
 
