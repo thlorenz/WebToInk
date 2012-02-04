@@ -20,21 +20,21 @@ import Test.HUnit
 getHtmlPages ::  Url -> IO [(FilePath, Url)]
 getHtmlPages tocUrl = do
     toc <- downloadPage tocUrl
-    return $ [("toc.html", tocUrl)] ++ (getNameUrlMap (getFolderUrl tocUrl) toc)
+    return $ ("toc.html", tocUrl) : getNameUrlMap (getFolderUrl tocUrl) toc
 
 filterOutSections ::  [String] -> [String]
 filterOutSections = filter isTopLink 
 
-isTopLink = not . any(=='#')
+isTopLink = notElem '#' 
 
 getNameUrlMap ::  String -> String -> [(String, String)]
-getNameUrlMap rootUrl = (map (\x -> (x, rootUrl ++ "/" ++ x))) . getHtmlNamesInRootFolder 
+getNameUrlMap rootUrl = map (\x -> (x, rootUrl ++ "/" ++ x)) . getHtmlNamesInRootFolder 
 
 getHtmlNamesInRootFolder = getSameFolderHtmls . filterHrefs . parseTags
            
 getSameFolderHtmls = nub . filterLocalLinks . getLinks
     where
-        filterLocalLinks = filter (not . any(=='/'))
+        filterLocalLinks = filter (notElem '/') 
         -- filterLocalLinks = filter (not . ("http" `isPrefixOf`))
 
         getLinks ::  [Tag String] -> [String]
@@ -90,5 +90,4 @@ tests = TestList $ map TestCase $
     getRootUrlTests
     
 
-runTests = do
-    runTestTT tests
+runTests = runTestTT tests
