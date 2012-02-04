@@ -10,20 +10,23 @@ data Args  = Args   { title           :: Maybe String
                     , language        :: String
                     , author          :: Maybe String
                     , tocUrl          :: Maybe Url
+                    , folder          :: String
                     } deriving (Show, Eq)
 
 titleOpt    = "--title"
 languageOpt = "--language"
 authorOpt   = "--author"
 tocOpt      = "--toc"
+folderOpt   = "--folder"
 
 options = [ titleOpt, languageOpt, authorOpt, tocOpt ]
 
 legend = 
-     [ (titleOpt, normalizeOption titleOpt, "Book title (required)")
-     , (languageOpt, normalizeOption languageOpt, "Language (default en-US)")
-     , (authorOpt, normalizeOption authorOpt, "Book author")
-     , (tocOpt, normalizeOption tocOpt, "Url to the page that contains the table of contents of the book")
+     [ (titleOpt     ,  normalizeOption titleOpt    ,  "Book title (required)")
+     ,  (languageOpt ,  normalizeOption languageOpt ,  "Language (default en-US)")
+     ,  (authorOpt   ,  normalizeOption authorOpt   ,  "Book author")
+     ,  (tocOpt      ,  normalizeOption tocOpt      ,  "Url to the page that contains the table of contents of the book")
+     ,  (folderOpt   ,  normalizeOption folderOpt   ,  "Target folder in which to create book folder to store downloaded pages ,  images and generated mobi (default is '.')")
      ]
 
 parseArgs :: [String] -> Args
@@ -31,6 +34,7 @@ parseArgs options = Args { title    = tryGetArg titleOpt
                          , language = getArg languageOpt "en-us"
                          , author   = tryGetArg authorOpt
                          , tocUrl   = tryGetArg tocOpt
+                         , folder   = getArg folderOpt "."
                          }
     where 
         normOpts = normalizeOptions options
@@ -48,6 +52,7 @@ normalizeOption "-t" = titleOpt
 normalizeOption "-l" = languageOpt
 normalizeOption "-a" = authorOpt
 normalizeOption "-c" = tocOpt
+normalizeOption "-f" = folderOpt
 normalizeOption x    = x
 
 -----------------------
@@ -68,22 +73,24 @@ normalizeOptionsTests =
 
 parseArgsTests =
     [ assertEqual "no args" 
-        (Args Nothing defLang  Nothing  Nothing) $ parseArgs []
+        (Args Nothing defLang  Nothing  Nothing defFolder) $ parseArgs []
     , assertEqual "title given"
-        (Args (Just givenTitle) defLang  Nothing Nothing) $
+        (Args (Just givenTitle) defLang  Nothing Nothing defFolder) $
         parseArgs ["--title", givenTitle]
     , assertEqual "title and author given"
-        (Args (Just givenTitle) defLang  (Just givenAuthor) Nothing) $
+        (Args (Just givenTitle) defLang  (Just givenAuthor) Nothing defFolder) $
         parseArgs ["--title", givenTitle, "-a", givenAuthor]
     , assertEqual "title, language and author given"
-        (Args (Just givenTitle) givenLanguage (Just givenAuthor) Nothing) $
-        parseArgs ["--title", givenTitle, "-a", givenAuthor, "-l", givenLanguage]
+        (Args (Just givenTitle) givenLanguage (Just givenAuthor) Nothing givenFolder) $
+        parseArgs ["--title", givenTitle, "-a", givenAuthor, "-l", givenLanguage, "-f", givenFolder]
     ]
 
     where defLang = "en-us"
+          defFolder = "."
           givenTitle = "the title"
           givenAuthor = "the author"
           givenLanguage = "de-DE"
+          givenFolder = "../mybooks"
 
 tests = TestList $ map TestCase $
     normalizeOptionsTests ++
