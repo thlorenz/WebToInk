@@ -34,36 +34,40 @@ main = do
 prepareKindleGeneration :: String -> String -> String -> Url -> FilePath -> IO ()
 prepareKindleGeneration title creator language tocUrl folder = do
 
-    pagesDic <- getHtmlPages tocUrl
+    maybePagesDic <- getHtmlPages tocUrl
 
-    let topPagesDic = filter (isTopLink . fst) pagesDic
-    let topPages = map fst topPagesDic
+    case maybePagesDic of
+        Just pagesDic -> prepare pagesDic
+        Nothing       ->  putStrLn "Error could not download table of contents and processed no html pages!!!"
+    where 
+        prepare pagesDic = do
+            let topPagesDic = filter (isTopLink . fst) pagesDic
+            let topPages = map fst topPagesDic
 
-    putStrLn $ prettifyList topPagesDic
-    
-    createKindleStructure topPagesDic topPages
-
-    where
-        targetFolder = folder ++ "/" ++ title
-
-        createKindleStructure topPagesDic topPages = do
-
-            createDirectoryIfMissing False targetFolder  
-            setCurrentDirectory targetFolder
-
-            referencedImages <- downloadPages tocUrl topPagesDic    
-            let referencedImages = []
+            putStrLn $ prettifyList topPagesDic
             
-            putStrLn $ prettifyList topPages 
-            {--
-            let opfString = generateOpf topPages referencedImages title language creator 
-            writeFile "book.opf" opfString
+            createKindleStructure topPagesDic topPages
 
-            let tocString = generateToc topPages title language creator
-            writeFile "toc.ncx" tocString
-            --}
+            where
+                targetFolder = folder ++ "/" ++ title
 
-            setCurrentDirectory ".."
+                createKindleStructure topPagesDic topPages = do
+
+                    createDirectoryIfMissing False targetFolder  
+                    setCurrentDirectory targetFolder
+
+                    referencedImages <- downloadPages tocUrl topPagesDic    
+                    let referencedImages = []
+                    
+                    putStrLn $ prettifyList topPages 
+
+                    let opfString = generateOpf topPages referencedImages title language creator 
+                    writeFile "book.opf" opfString
+
+                    let tocString = generateToc topPages title language creator
+                    writeFile "toc.ncx" tocString
+
+                    setCurrentDirectory ".."
 
 downloadPages :: Url -> [(FilePath, Url)] -> IO [Url]
 downloadPages tocUrl topPagesDic = do
@@ -71,20 +75,25 @@ downloadPages tocUrl topPagesDic = do
 
     allImageUrls <- mapM (\(fileName, pageUrl) -> do
         putStrLn $ "Downloading: " ++ fileName
-        pageContents <- downloadPage pageUrl
+        maybePageContents <- downloadPage pageUrl
 
-        let imageUrls = (filter (not . ("https:" `isPrefixOf`)) . getImages) pageContents
-
-        putStrLn $ prettifyList imageUrls 
-        downloadAndSaveImages rootUrl pageUrl imageUrls
-
-        let localizedPageContents = localizePageContents imageUrls pageContents
-
-        savePage fileName localizedPageContents
-
-        return imageUrls
+        case maybePageContents of
+            Just pageContents -> processPage pageContents rootUrl pageUrl fileName
+            Nothing           -> return []
         ) topPagesDic 
     return $ (map (getSrcFilePath "") . nub . concat) allImageUrls
+
+processPage pageContents rootUrl pageUrl fileName = do
+    let imageUrls = (filter (not . ("https:" `isPrefixOf`)) . getImages) pageContents
+
+    putStrLn $ prettifyList imageUrls 
+    downloadAndSaveImages rootUrl pageUrl imageUrls
+
+    let localizedPageContents = localizePageContents imageUrls pageContents
+
+    savePage fileName localizedPageContents
+
+    return imageUrls
 
 localizePageContents :: [Url] -> PageContents -> PageContents
 localizePageContents imageUrls pageContents = 

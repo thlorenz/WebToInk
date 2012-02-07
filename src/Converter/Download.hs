@@ -7,7 +7,7 @@ module Converter.Download
 
 import Converter.Types
 import Converter.Constants(pagesFolder, imagesFolder)
-import Converter.Utils(openUrl)
+import Converter.Utils (openUrl, downloadByteString)
 
 import System.Directory(createDirectoryIfMissing, setCurrentDirectory, doesFileExist)
 import System.IO(hPutStr, withFile, IOMode(..))
@@ -27,7 +27,7 @@ downloadAndSaveImages rootUrl pageUrl imageUrls = do
     createDirectoryIfMissing False imagesFolder
     mapM (downloadAndSaveImage imagesFolder rootUrl pageUrl) imageUrls
 
-downloadPage ::  Url -> IO String
+downloadPage ::  Url -> IO (Maybe String)
 downloadPage = openUrl . cleanUrl
 
 savePage ::  FilePath -> String -> IO ()
@@ -65,16 +65,6 @@ cleanUrl = takeWhile (\x -> x /= '?' && x /= '#')
 
 getSrcFilePath :: FilePath -> Url -> FilePath
 getSrcFilePath targetFolder url = targetFolder ++ "/" ++ takeFileName url
-
-downloadByteString :: Url -> IO (Maybe L.ByteString)
-downloadByteString url = do
-    byteString <- try (simpleHttp url)
-    case byteString of
-        Right x                                   -> return (Just x)
-        Left (StatusCodeException status headers) ->
-            putStrLn ("An error occured while trying to download: " ++ url)
-            >> print status
-            >> return Nothing
 
 -----------------------
 -- ----  Tests  ---- --

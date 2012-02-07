@@ -17,10 +17,13 @@ import Data.String.Utils(split)
 
 import Test.HUnit
 
-getHtmlPages ::  Url -> IO [(FilePath, Url)]
+getHtmlPages ::  Url -> IO (Maybe [(FilePath, Url)])
 getHtmlPages tocUrl = do
-    toc <- downloadPage tocUrl
-    return $ ("toc.html", tocUrl) : getNameUrlMap (getFolderUrl tocUrl) toc
+    maybeToc <- downloadPage tocUrl
+    case maybeToc of
+        Just toc -> 
+            return $ Just $ ("toc.html", tocUrl) : getNameUrlMap (getFolderUrl tocUrl) toc
+        Nothing  -> return Nothing
 
 filterOutSections ::  [String] -> [String]
 filterOutSections = filter isTopLink 
