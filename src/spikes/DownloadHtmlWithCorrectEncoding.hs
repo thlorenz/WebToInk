@@ -1,8 +1,9 @@
 import Network.HTTP.Enumerator (simpleHttp)
 import qualified Data.ByteString.Lazy as L
+import qualified Data.ByteString.Lazy.UTF8 as U
 
--- openUrl :: Control.Monad.IO.Class.MonadIO m => String -> m L.ByteString
-openUrl url = simpleHttp url
+openUrl = simpleHttp
 
 main = do
-    openUrl "http://blog.bjrn.se/2008/10/lets-build-mp3-decoder.html" >>= L.putStrLn
+    bs <- openUrl "http://blog.bjrn.se/2008/10/lets-build-mp3-decoder.html" 
+    putStrLn $ U.toString bs
