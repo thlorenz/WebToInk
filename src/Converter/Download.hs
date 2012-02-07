@@ -33,9 +33,7 @@ downloadPage = openUrl . cleanUrl
 savePage ::  FilePath -> String -> IO ()
 savePage fileName pageContents = do
     createDirectoryIfMissing False pagesFolder
-    write (pagesFolder ++ "/" ++ fileName) pageContents 
-    where write fileName pageContents =
-            withFile fileName WriteMode (`hPutStr` pageContents)
+    writeFile (pagesFolder ++ "/" ++ fileName) pageContents 
 
 downloadAndSaveImage :: FilePath -> Url -> Url -> Url -> IO ()
 downloadAndSaveImage targetFolder rootUrl pageUrl url = do

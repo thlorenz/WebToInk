@@ -52,13 +52,16 @@ prepareKindleGeneration title creator language tocUrl folder = do
             setCurrentDirectory targetFolder
 
             referencedImages <- downloadPages tocUrl topPagesDic    
-
+            let referencedImages = []
+            
             putStrLn $ prettifyList topPages 
+            {--
             let opfString = generateOpf topPages referencedImages title language creator 
             writeFile "book.opf" opfString
 
             let tocString = generateToc topPages title language creator
             writeFile "toc.ncx" tocString
+            --}
 
             setCurrentDirectory ".."
 
