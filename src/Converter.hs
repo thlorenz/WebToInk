@@ -56,42 +56,61 @@ prepareKindleGeneration title creator language tocUrl folder = do
                     createDirectoryIfMissing False targetFolder  
                     setCurrentDirectory targetFolder
 
-                    referencedImages <- downloadPages tocUrl topPagesDic    
-                    let referencedImages = []
+                    result <- downloadPages tocUrl topPagesDic    
                     
-                    putStrLn $ prettifyList topPages 
+                    let failedFileNames = map fileName $ failedPages result
+                    let goodTopPages = filter (`notElem` failedFileNames) topPages
 
-                    let opfString = generateOpf topPages referencedImages title language creator 
+                    putStrLn "\nDownload Summary"
+                    putStrLn   "----------------\n"
+
+                    putStr "Successfully downloaded:"
+                    putStrLn $ (prettifyList goodTopPages) ++ "\n"
+
+                    putStr "Failed to download:"
+                    putStrLn $ (prettifyList failedFileNames) ++"\n"
+
+                    putStrLn "Generating book.opf"
+                    let opfString = generateOpf goodTopPages (allImageUrls result) title language creator 
                     writeFile "book.opf" opfString
 
-                    let tocString = generateToc topPages title language creator
+                    putStrLn "Generating toc.ncx"
+                    let tocString = generateToc goodTopPages title language creator
                     writeFile "toc.ncx" tocString
 
                     setCurrentDirectory ".."
 
-downloadPages :: Url -> [(FilePath, Url)] -> IO [Url]
+downloadPages :: Url -> [(FilePath, Url)] -> IO DownloadPagesResult 
 downloadPages tocUrl topPagesDic = do
     let rootUrl = getRootUrl tocUrl
 
-    allImageUrls <- mapM (\(fileName, pageUrl) -> do
-        putStrLn $ "Downloading: " ++ fileName
-        maybePageContents <- downloadPage pageUrl
+    downloadResults <- mapM (\(fileName, pageUrl) ->
+        tryProcessPage $ PageInfo rootUrl pageUrl fileName) topPagesDic 
+    
+    let uniqueImageUrls = 
+            map (getSrcFilePath "") . nub . concat . map allImageUrls $ downloadResults 
+    let allFailedPages = concat . map failedPages $ downloadResults
+    return $ DownloadPagesResult uniqueImageUrls allFailedPages
 
-        case maybePageContents of
-            Just pageContents -> processPage pageContents rootUrl pageUrl fileName
-            Nothing           -> return []
-        ) topPagesDic 
-    return $ (map (getSrcFilePath "") . nub . concat) allImageUrls
+tryProcessPage :: PageInfo -> IO (DownloadPagesResult)
+tryProcessPage pi = do
+    maybePageContents <- downloadPage (pageUrl pi)
 
-processPage pageContents rootUrl pageUrl fileName = do
+    case maybePageContents of
+        Just pageContents -> do
+            imageUrls <- processPage pi pageContents 
+            return $ DownloadPagesResult imageUrls []
+        Nothing           -> return $ DownloadPagesResult [] [pi]
+        
+processPage :: PageInfo -> PageContents -> IO [String]
+processPage pi pageContents = do
     let imageUrls = (filter (not . ("https:" `isPrefixOf`)) . getImages) pageContents
 
-    putStrLn $ prettifyList imageUrls 
-    downloadAndSaveImages rootUrl pageUrl imageUrls
+    downloadAndSaveImages (rootUrl pi) (pageUrl pi) imageUrls
 
     let localizedPageContents = localizePageContents imageUrls pageContents
 
-    savePage fileName localizedPageContents
+    savePage (fileName pi) localizedPageContents
 
     return imageUrls
 
