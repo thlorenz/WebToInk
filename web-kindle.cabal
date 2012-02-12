@@ -9,8 +9,8 @@ synopsis:          The greatest kindle generator ever
 stability:         Experimental
 cabal-version:     >= 1.8
 build-type:        Simple
-homepage:          http://github.com/thlorenz/HtmlToMobi
-bug-reports:       http://github.com/thlorenz/HtmlToMobi/issues
+homepage:          http://github.com/thlorenz/HtmlBookToMobi
+bug-reports:       http://github.com/thlorenz/HtmlBookToMobi/issues
 description:       Convert html books/blogs into .mobi files 
 
 flag developer
@@ -32,4 +32,4 @@ library
 
 source-repository head
   type:     git
-  location: http://github.com/thlorenz/HtmlToMobi
+  location: http://github.com/thlorenz/HtmlBookToMobi
