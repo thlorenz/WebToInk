@@ -11,7 +11,7 @@ import Converter.Constants
 
 import System.Directory(createDirectoryIfMissing, setCurrentDirectory)
 import Control.Monad(forM)
-import Data.String.Utils(replace)
+import Data.List.Utils(replace)
 import Data.Maybe(fromJust)
 import Data.List(isPrefixOf, nub)
 import System.Environment(getArgs)

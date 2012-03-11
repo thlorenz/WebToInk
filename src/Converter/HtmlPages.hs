@@ -13,7 +13,6 @@ import Converter.Download(downloadPage)
 import Text.HTML.TagSoup(parseTags, Tag(..), (~==))
 import System.FilePath(takeDirectory, takeFileName, takeExtension, takeBaseName)
 import Data.List(nub)
-import Data.String.Utils(split)
 
 import Test.HUnit
 
