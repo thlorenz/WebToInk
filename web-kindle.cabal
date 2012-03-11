@@ -21,7 +21,6 @@ library
   build-depends: 
     http-enumerator,
     http-conduit,
-    MissingH,
     tagsoup
 
   if flag(developer)
