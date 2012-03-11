@@ -14,7 +14,6 @@ import System.IO(hPutStr, withFile, IOMode(..))
 import System.FilePath(takeFileName, takeDirectory)
 import Data.List(isPrefixOf)
 
-import Network.HTTP.Conduit
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as B
 import qualified Data.ByteString.UTF8 as U

@@ -20,7 +20,6 @@ flag developer
 library
   build-depends: 
     http-enumerator,
-    http-conduit,
     tagsoup
 
   if flag(developer)
