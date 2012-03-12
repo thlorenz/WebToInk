@@ -30,13 +30,6 @@ main = do
         (argsLanguage args) 
         (fromJust $ argsTocUrl args) 
         (argsFolder args)
-    
-
-resolveAuthor :: Maybe String -> String
-resolveAuthor maybeAuthor = fromJust maybeAuthor 
-
-resolveTitle :: Maybe String -> String
-resolveTitle maybeTitle = fromJust maybeTitle 
 
 prepareKindleGeneration :: Maybe String -> Maybe String -> String -> Url -> FilePath -> IO ()
 prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
@@ -48,8 +41,8 @@ prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
         Nothing       -> putStrLn "Error could not download table of contents and processed no html pages!!!"
   where 
         prepare (GetHtmlPagesResult tocContent pagesDic) = do
-            let author = resolveAuthor maybeAuthor 
-            let title = resolveTitle maybeTitle 
+            let author = resolveAuthor maybeAuthor tocContent
+            let title = resolveTitle maybeTitle tocContent
 
             let topPagesDic = filter (isTopLink . fst) pagesDic
             let topPages = map fst topPagesDic

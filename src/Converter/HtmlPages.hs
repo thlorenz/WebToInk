@@ -5,17 +5,21 @@ module Converter.HtmlPages
     , isTopLink
     , containsBaseHref
     , getRootUrl
+    , resolveAuthor
+    , resolveTitle 
     ) where 
 
-import Converter.Types
-import Converter.Utils (openUrl)
-import Converter.Download (downloadPage)
+import Data.Maybe (fromJust)
 
 import Text.HTML.TagSoup (parseTags, Tag(..), (~==))
 import System.FilePath (takeDirectory, takeFileName, takeExtension, takeBaseName)
 import Data.List (nub)
 
 import Test.HUnit
+
+import Converter.Types
+import Converter.Utils (openUrl)
+import Converter.Download (downloadPage)
 
 data GetHtmlPagesResult = GetHtmlPagesResult 
     { ghpTocContent      :: String
@@ -48,6 +52,14 @@ getSameFolderHtmls = nub . filterLocalLinks . getLinks
         getLinks ::  [Tag String] -> [String]
         getLinks = map (snd . getUrl)
             where getUrl (TagOpen tag urls) = head urls
+
+-- | Returns author if one was given, otherwise tries to resolve it from tocContent
+resolveAuthor :: Maybe String -> String -> String
+resolveAuthor maybeAuthor tocContent = fromJust maybeAuthor 
+
+-- | Returns title if one was given, otherwise tries to resolve it from tocContent
+resolveTitle :: Maybe String -> String -> String
+resolveTitle maybeTitle tocContent = fromJust maybeTitle 
 
 
 filterHrefs ::  [Tag String] -> [Tag String]
