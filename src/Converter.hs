@@ -1,20 +1,20 @@
 module Converter where
 
-import Converter.HtmlPages(getHtmlPages, filterOutSections, isTopLink, containsBaseHref, getRootUrl)
-import Converter.Images(getImages)
-import Converter.Download(downloadPage, savePage, downloadAndSaveImages, getSrcFilePath)
-import Converter.OpfGeneration(generateOpf)
-import Converter.TocGeneration(generateToc)
-import Converter.CommandLineParser(Args(..), legend, parseArgs)
+import Converter.HtmlPages (getHtmlPages, filterOutSections, isTopLink, containsBaseHref, getRootUrl)
+import Converter.Images (getImages)
+import Converter.Download (downloadPage, savePage, downloadAndSaveImages, getSrcFilePath)
+import Converter.OpfGeneration (generateOpf)
+import Converter.TocGeneration (generateToc)
+import Converter.CommandLineParser (Args(..), legend, parseArgs)
 import Converter.Types
 import Converter.Constants
 
-import System.Directory(createDirectoryIfMissing, setCurrentDirectory)
-import Control.Monad(forM)
-import Data.List.Utils(replace)
-import Data.Maybe(fromJust)
-import Data.List(isPrefixOf, nub)
-import System.Environment(getArgs)
+import System.Directory (createDirectoryIfMissing, setCurrentDirectory)
+import Control.Monad (forM)
+import Data.List.Utils (replace)
+import Data.Maybe (fromJust)
+import Data.List (isPrefixOf, nub)
+import System.Environment (getArgs)
 
 import Test.HUnit
 
@@ -25,33 +25,39 @@ main = do
     let args = parseArgs argsList
 
     prepareKindleGeneration 
-        (fromJust $ title args)
-        (fromJust $ author args) 
-        (language args) 
-        (fromJust $ tocUrl args) 
-        (folder args)
+        (fromJust $ argsTitle args)     
+        (argsAuthor args)   
+        (argsLanguage args) 
+        (fromJust $ argsTocUrl args) 
+        (argsFolder args)
+    
 
-prepareKindleGeneration :: String -> String -> String -> Url -> FilePath -> IO ()
-prepareKindleGeneration title creator language tocUrl folder = do
+resolveAuthor :: Maybe String -> String
+resolveAuthor maybeAuthor = fromJust maybeAuthor 
+
+prepareKindleGeneration :: String -> Maybe String -> String -> Url -> FilePath -> IO ()
+prepareKindleGeneration title maybeAuthor language tocUrl folder = do
 
     maybePagesDic <- getHtmlPages tocUrl
 
     case maybePagesDic of
         Just pagesDic -> prepare pagesDic
-        Nothing       ->  putStrLn "Error could not download table of contents and processed no html pages!!!"
+        Nothing       -> putStrLn "Error could not download table of contents and processed no html pages!!!"
     where 
         prepare pagesDic = do
+            let author = resolveAuthor maybeAuthor 
+
             let topPagesDic = filter (isTopLink . fst) pagesDic
             let topPages = map fst topPagesDic
 
             putStrLn $ prettifyList topPagesDic
             
-            createKindleStructure topPagesDic topPages
+            createKindleStructure topPagesDic topPages author
 
             where
                 targetFolder = folder ++ "/" ++ title
 
-                createKindleStructure topPagesDic topPages = do
+                createKindleStructure topPagesDic topPages author = do
 
                     createDirectoryIfMissing False targetFolder  
                     setCurrentDirectory targetFolder
@@ -71,11 +77,11 @@ prepareKindleGeneration title creator language tocUrl folder = do
                     putStrLn $ (prettifyList failedFileNames) ++"\n"
 
                     putStrLn "Generating book.opf"
-                    let opfString = generateOpf goodTopPages (allImageUrls result) title language creator 
+                    let opfString = generateOpf goodTopPages (allImageUrls result) title language author 
                     writeFile "book.opf" opfString
 
                     putStrLn "Generating toc.ncx"
-                    let tocString = generateToc goodTopPages title language creator
+                    let tocString = generateToc goodTopPages title language author
                     writeFile "toc.ncx" tocString
 
                     setCurrentDirectory ".."

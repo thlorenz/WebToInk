@@ -1,10 +1,11 @@
 module Converter.OpfGeneration(generateOpf) where
 
 import Converter.Constants
-import Converter.Utils(getTabs)
+import Converter.Utils (getTabs)
 
-import System.FilePath(dropExtension)
+import System.FilePath (dropExtension)
 
+generateOpf :: [FilePath] -> [FilePath] -> String -> String -> String -> String
 generateOpf pages images title language creator = unlines $
     ["<?xml version=\"1.0\" encoding=\"utf-8\"?>"] ++
     ["<package xmlns=\"http://www.idpf.org/2007/opf\" version=\"2.0\">"] ++

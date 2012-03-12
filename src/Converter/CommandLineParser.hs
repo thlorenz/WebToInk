@@ -6,11 +6,11 @@ import System.Environment(getArgs)
 import Test.HUnit
 import Data.Maybe
 
-data Args  = Args   { title           :: Maybe String
-                    , language        :: String
-                    , author          :: Maybe String
-                    , tocUrl          :: Maybe Url
-                    , folder          :: FilePath
+data Args  = Args   { argsTitle           :: Maybe String
+                    , argsLanguage        :: String
+                    , argsAuthor          :: Maybe String
+                    , argsTocUrl          :: Maybe Url
+                    , argsFolder          :: FilePath
                     } deriving (Show, Eq)
 
 titleOpt    = "--title"
@@ -22,19 +22,19 @@ folderOpt   = "--folder"
 options = [ titleOpt, languageOpt, authorOpt, tocOpt ]
 
 legend = 
-     [ (titleOpt     ,  normalizeOption titleOpt    ,  "Book title (required)")
+     [ (titleOpt     ,  normalizeOption titleOpt    ,  "Book argsTitle (required)") 
      ,  (languageOpt ,  normalizeOption languageOpt ,  "Language (default en-US)")
      ,  (authorOpt   ,  normalizeOption authorOpt   ,  "Book author")
      ,  (tocOpt      ,  normalizeOption tocOpt      ,  "Url to the page that contains the table of contents of the book")
-     ,  (folderOpt   ,  normalizeOption folderOpt   ,  "Target folder in which to create book folder to store downloaded pages ,  images and generated mobi (default is '.')")
+     ,  (folderOpt   ,  normalizeOption folderOpt   ,  "Target argsFolder in which to create book argsFolder to store downloaded pages ,  images and generated mobi (default is '.')")
      ]
 
 parseArgs :: [String] -> Args
-parseArgs options = Args { title    = tryGetArg titleOpt
-                         , language = getArg languageOpt "en-us"
-                         , author   = tryGetArg authorOpt
-                         , tocUrl   = tryGetArg tocOpt
-                         , folder   = getArg folderOpt "."
+parseArgs options = Args { argsTitle    = tryGetArg titleOpt
+                         , argsLanguage = getArg languageOpt "en-us"
+                         , argsAuthor   = tryGetArg authorOpt       
+                         , argsTocUrl   = tryGetArg tocOpt
+                         , argsFolder   = getArg folderOpt "."  
                          }
     where 
         normOpts = normalizeOptions options
@@ -77,10 +77,10 @@ parseArgsTests =
     , assertEqual "title given"
         (Args (Just givenTitle) defLang  Nothing Nothing defFolder) $
         parseArgs ["--title", givenTitle]
-    , assertEqual "title and author given"
+    , assertEqual "title and argsAuthor given"
         (Args (Just givenTitle) defLang  (Just givenAuthor) Nothing defFolder) $
         parseArgs ["--title", givenTitle, "-a", givenAuthor]
-    , assertEqual "title, language and author given"
+    , assertEqual "title, argsLanguage and argsAuthor given"
         (Args (Just givenTitle) givenLanguage (Just givenAuthor) Nothing givenFolder) $
         parseArgs ["--title", givenTitle, "-a", givenAuthor, "-l", givenLanguage, "-f", givenFolder]
     ]
