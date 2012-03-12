@@ -1,6 +1,6 @@
 module Converter where
 
-import Converter.HtmlPages (getHtmlPages, filterOutSections, isTopLink, containsBaseHref, getRootUrl)
+import Converter.HtmlPages 
 import Converter.Images (getImages)
 import Converter.Download (downloadPage, savePage, downloadAndSaveImages, getSrcFilePath)
 import Converter.OpfGeneration (generateOpf)
@@ -41,13 +41,13 @@ resolveTitle maybeTitle = fromJust maybeTitle
 prepareKindleGeneration :: Maybe String -> Maybe String -> String -> Url -> FilePath -> IO ()
 prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
 
-    maybePagesDic <- getHtmlPages tocUrl
+    maybeGetHtmlPagesResult <- getHtmlPages tocUrl
 
-    case maybePagesDic of
-        Just pagesDic -> prepare pagesDic
+    case maybeGetHtmlPagesResult of
+        Just result   -> prepare result 
         Nothing       -> putStrLn "Error could not download table of contents and processed no html pages!!!"
   where 
-        prepare pagesDic = do
+        prepare (GetHtmlPagesResult tocContent pagesDic) = do
             let author = resolveAuthor maybeAuthor 
             let title = resolveTitle maybeTitle 
 

@@ -1,5 +1,6 @@
 module Converter.HtmlPages 
     ( getHtmlPages
+    , GetHtmlPagesResult(..)
     , filterOutSections
     , isTopLink
     , containsBaseHref
@@ -7,21 +8,26 @@ module Converter.HtmlPages
     ) where 
 
 import Converter.Types
-import Converter.Utils(openUrl)
-import Converter.Download(downloadPage)
+import Converter.Utils (openUrl)
+import Converter.Download (downloadPage)
 
-import Text.HTML.TagSoup(parseTags, Tag(..), (~==))
-import System.FilePath(takeDirectory, takeFileName, takeExtension, takeBaseName)
-import Data.List(nub)
+import Text.HTML.TagSoup (parseTags, Tag(..), (~==))
+import System.FilePath (takeDirectory, takeFileName, takeExtension, takeBaseName)
+import Data.List (nub)
 
 import Test.HUnit
 
-getHtmlPages ::  Url -> IO (Maybe [(FilePath, Url)])
+data GetHtmlPagesResult = GetHtmlPagesResult 
+    { ghpTocContent      :: String
+    , ghpReferencedPages :: [(FilePath, Url)] }
+
+getHtmlPages ::  Url -> IO (Maybe GetHtmlPagesResult)
 getHtmlPages tocUrl = do
     maybeToc <- downloadPage tocUrl
     case maybeToc of
         Just toc -> 
-            return $ Just $ ("toc.html", tocUrl) : getNameUrlMap (getFolderUrl tocUrl) toc
+            return $ Just $ GetHtmlPagesResult toc $
+                ("toc.html", tocUrl) : getNameUrlMap (getFolderUrl tocUrl) toc
         Nothing  -> return Nothing
 
 filterOutSections ::  [String] -> [String]
