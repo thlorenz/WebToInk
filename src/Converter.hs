@@ -25,7 +25,7 @@ main = do
     let args = parseArgs argsList
 
     prepareKindleGeneration 
-        (fromJust $ argsTitle args)     
+        (argsTitle args)     
         (argsAuthor args)   
         (argsLanguage args) 
         (fromJust $ argsTocUrl args) 
@@ -35,56 +35,60 @@ main = do
 resolveAuthor :: Maybe String -> String
 resolveAuthor maybeAuthor = fromJust maybeAuthor 
 
-prepareKindleGeneration :: String -> Maybe String -> String -> Url -> FilePath -> IO ()
-prepareKindleGeneration title maybeAuthor language tocUrl folder = do
+resolveTitle :: Maybe String -> String
+resolveTitle maybeTitle = fromJust maybeTitle 
+
+prepareKindleGeneration :: Maybe String -> Maybe String -> String -> Url -> FilePath -> IO ()
+prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
 
     maybePagesDic <- getHtmlPages tocUrl
 
     case maybePagesDic of
         Just pagesDic -> prepare pagesDic
         Nothing       -> putStrLn "Error could not download table of contents and processed no html pages!!!"
-    where 
+  where 
         prepare pagesDic = do
             let author = resolveAuthor maybeAuthor 
+            let title = resolveTitle maybeTitle 
 
             let topPagesDic = filter (isTopLink . fst) pagesDic
             let topPages = map fst topPagesDic
 
             putStrLn $ prettifyList topPagesDic
             
-            createKindleStructure topPagesDic topPages author
+            createKindleStructure title author topPagesDic topPages
 
-            where
-                targetFolder = folder ++ "/" ++ title
+          where 
+            createKindleStructure title author topPagesDic topPages = do
+                let targetFolder = folder ++ "/" ++ title
+                 
+                createDirectoryIfMissing False targetFolder  
+                setCurrentDirectory targetFolder
 
-                createKindleStructure topPagesDic topPages author = do
+                result <- downloadPages tocUrl topPagesDic    
+                
+                let failedFileNames = map fileName $ failedPages result
+                let goodTopPages = filter (`notElem` failedFileNames) topPages
 
-                    createDirectoryIfMissing False targetFolder  
-                    setCurrentDirectory targetFolder
+                putStrLn "\nDownload Summary"
+                putStrLn   "----------------\n"
 
-                    result <- downloadPages tocUrl topPagesDic    
+                putStr "Successfully downloaded:"
+                putStrLn $ (prettifyList goodTopPages) ++ "\n"
+
+                putStr "Failed to download:"
+                putStrLn $ (prettifyList failedFileNames) ++"\n"
+
+                putStrLn "Generating book.opf"
+                let opfString = generateOpf goodTopPages (allImageUrls result) title language author 
+                writeFile "book.opf" opfString
+
+                putStrLn "Generating toc.ncx"
+                let tocString = generateToc goodTopPages title language author
+                writeFile "toc.ncx" tocString
+
+                setCurrentDirectory ".."
                     
-                    let failedFileNames = map fileName $ failedPages result
-                    let goodTopPages = filter (`notElem` failedFileNames) topPages
-
-                    putStrLn "\nDownload Summary"
-                    putStrLn   "----------------\n"
-
-                    putStr "Successfully downloaded:"
-                    putStrLn $ (prettifyList goodTopPages) ++ "\n"
-
-                    putStr "Failed to download:"
-                    putStrLn $ (prettifyList failedFileNames) ++"\n"
-
-                    putStrLn "Generating book.opf"
-                    let opfString = generateOpf goodTopPages (allImageUrls result) title language author 
-                    writeFile "book.opf" opfString
-
-                    putStrLn "Generating toc.ncx"
-                    let tocString = generateToc goodTopPages title language author
-                    writeFile "toc.ncx" tocString
-
-                    setCurrentDirectory ".."
 
 downloadPages :: Url -> [(FilePath, Url)] -> IO DownloadPagesResult 
 downloadPages tocUrl topPagesDic = do
