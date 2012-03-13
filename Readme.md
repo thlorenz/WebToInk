@@ -23,7 +23,7 @@ Note: at this point the KindleGen tool will have to be run manually, in the
 future this will be part of the automated process.
 
     cd ../books/Real\ World\ Haskell/
-    kindlegen book.opf -o Real\ World\ Haskell/.mobi
+    kindlegen book.opf -o Real\ World\ Haskell/.mobi -f ../books
 
 ## How it works
 
