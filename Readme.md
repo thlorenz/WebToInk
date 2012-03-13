@@ -13,7 +13,10 @@ As a good example to see WebToKindle in action try converting the [Real World Ha
 
 After cloning this repo:
 
-    cd WebToKindle/src
+    cd WebToKindle
+    cabal install
+
+    cd src
     runghc Converter.hs -c http://book.realworldhaskell.org/read/
 
 Note: at this point the KindleGen tool will have to be run manually, in the
