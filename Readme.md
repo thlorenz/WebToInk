@@ -1,4 +1,4 @@
-# Html book to Mobi converter
+# Web to Mobi converter
 
 Given a url to an online book or a blog it will convert it into proper mobi format to be read on the kindle.
 
