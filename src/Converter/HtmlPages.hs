@@ -1,3 +1,5 @@
+{-# LANGUAGE NoMonomorphismRestriction #-}
+
 module Converter.HtmlPages 
     ( getHtmlPages
     , GetHtmlPagesResult(..)
@@ -11,7 +13,7 @@ module Converter.HtmlPages
 
 import Data.Maybe (fromJust)
 
-import Text.HTML.TagSoup (parseTags, Tag(..), (~==))
+import Text.HTML.TagSoup (parseTags, Tag(..), (~==), sections)
 import System.FilePath (takeDirectory, takeFileName, takeExtension, takeBaseName)
 import Data.List (nub)
 
@@ -55,11 +57,29 @@ getSameFolderHtmls = nub . filterLocalLinks . getLinks
 
 -- | Returns author if one was given, otherwise tries to resolve it from tocContent
 resolveAuthor :: Maybe String -> String -> String
-resolveAuthor maybeAuthor tocContent = fromJust maybeAuthor 
+resolveAuthor maybeAuthor tocContent =
+    case maybeAuthor of
+        Just author    -> author
+        Nothing        -> "Web author"
 
 -- | Returns title if one was given, otherwise tries to resolve it from tocContent
 resolveTitle :: Maybe String -> String -> String
-resolveTitle maybeTitle tocContent = fromJust maybeTitle 
+resolveTitle maybeTitle tocContent = 
+    case maybeTitle of
+        Just title    -> title
+        Nothing       -> resolveSection "<title>" tocContent "N/A"
+        
+resolveSection sectionName html alternative =
+    case tryExtractSection sectionName html of
+        Just (TagText text) -> text
+        Nothing             -> alternative
+
+tryExtractSection sectionName html = 
+    case (>2) . length $ section of 
+        True    -> Just $ section !! 1
+        False   -> Nothing
+  where section = let xs = (sections (~== sectionName) . parseTags) html 
+                  in if xs == [] then [] else head xs
 
 
 filterHrefs ::  [Tag String] -> [Tag String]
@@ -104,10 +124,26 @@ getRootUrlTests =
     , ("http://root.com/pages/chapter1/toc.htm", "http://root.com")
     ]
 
+resolveTitleTests = 
+    [ assertEqual "find title when contained and not given" "Ubuntu Server Guide" $
+        resolveTitle Nothing htmlContainingTitle 
+    ]
+
+--  where 
+htmlContainingTitle = 
+         "<html xmlns=\"http://www.w3.org/1999/xhtml\">" ++
+             "<head xmlns=\"http://www.w3.org/1999/xhtml\">" ++
+                 "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />" ++
+                 "<title xmlns=\"\">Ubuntu Server Guide</title>" ++
+                 "<link rel=\"stylesheet\" href=\"../../libs/ubuntu-book.css\" type=\"text/css\" />" ++
+             "</head>" ++
+         "</html>"
+
 tests = TestList $ map TestCase $
     containsBaseHrefTests ++
     getFolderUrlTests ++
-    getRootUrlTests
+    getRootUrlTests ++
+    resolveTitleTests 
     
 
 runTests = runTestTT tests
