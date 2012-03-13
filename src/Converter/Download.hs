@@ -17,7 +17,6 @@ import Data.List(isPrefixOf)
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as B
 import qualified Data.ByteString.UTF8 as U
-import Control.Exception as X
 
 import Test.HUnit
 

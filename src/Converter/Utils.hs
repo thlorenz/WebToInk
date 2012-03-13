@@ -7,7 +7,7 @@ import qualified Data.ByteString.Lazy.UTF8 as U
 
 import Control.Monad.IO.Class (MonadIO)
 
-import Control.Exception as X
+import Control.Exception (try)
 
 import Converter.Types
 

@@ -2,7 +2,7 @@ module Converter.CommandLineParser(Args(..), legend, parseArgs) where
 
 import Converter.Types
 
-import System.Environment(getArgs)
+import System.Environment (getArgs)
 import Test.HUnit
 import Data.Maybe
 
@@ -22,12 +22,11 @@ folderOpt   = "--folder"
 options = [ titleOpt, languageOpt, authorOpt, tocOpt ]
 
 legend = 
-     [  (titleOpt    ,  normalizeOption titleOpt    ,  "Book argsTitle (required)") 
-     ,  (languageOpt ,  normalizeOption languageOpt ,  "Language (default en-US)")
-     ,  (authorOpt   ,  normalizeOption authorOpt   ,  "Book author")
-     ,  (tocOpt      ,  normalizeOption tocOpt      ,  "Url to the page that contains the table of contents of the book")
-     ,  (folderOpt   ,  normalizeOption folderOpt   ,  "Target argsFolder in which to create book argsFolder to store downloaded pages ,  images and generated mobi (default is '.')")
-     ]
+     show (titleOpt    ,  "-t"  ,  "Book Title") ++ "\n" ++
+     show (languageOpt ,  "-l"  ,  "Language (default en-US)") ++ "\n" ++
+     show (authorOpt   ,  "-a"  ,  "Book author") ++ "\n" ++
+     show (tocOpt      ,  "-c"  ,  "Url to the page that contains the table of contents of the book") ++ "\n" ++
+     show (folderOpt   ,  "-f"  ,  "Target argsFolder in which to create book argsFolder to store downloaded pages,  images and generated mobi (default is '.')")
 
 parseArgs :: [String] -> Args
 parseArgs options = Args { argsTitle    = tryGetArg titleOpt

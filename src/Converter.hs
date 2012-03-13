@@ -24,12 +24,15 @@ main = do
     -- TODO: check args to be valid
     let args = parseArgs argsList
 
-    prepareKindleGeneration 
-        (argsTitle args)     
-        (argsAuthor args)   
-        (argsLanguage args) 
-        (fromJust $ argsTocUrl args) 
-        (argsFolder args)
+    case argsTocUrl args of
+        Just tocUrl -> prepareKindleGeneration 
+                            (argsTitle args)     
+                            (argsAuthor args)   
+                            (argsLanguage args) 
+                            (tocUrl) 
+                            (argsFolder args)
+        Nothing     -> putStrLn legend
+                          
 
 prepareKindleGeneration :: Maybe String -> Maybe String -> String -> Url -> FilePath -> IO ()
 prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
