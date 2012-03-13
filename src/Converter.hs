@@ -1,14 +1,5 @@
 module Converter where
 
-import Converter.HtmlPages 
-import Converter.Images (getImages)
-import Converter.Download (downloadPage, savePage, downloadAndSaveImages, getSrcFilePath)
-import Converter.OpfGeneration (generateOpf)
-import Converter.TocGeneration (generateToc)
-import Converter.CommandLineParser (Args(..), legend, parseArgs)
-import Converter.Types
-import Converter.Constants
-
 import System.Directory (createDirectoryIfMissing, setCurrentDirectory)
 import Control.Monad (forM)
 import Data.List.Utils (replace)
@@ -18,11 +9,18 @@ import System.Environment (getArgs)
 
 import Test.HUnit
 
-main = do   
-    argsList <- getArgs
+import Converter.HtmlPages 
+import Converter.Images (getImages)
+import Converter.Download (downloadPage, savePage, downloadAndSaveImages, getSrcFilePath)
+import Converter.OpfGeneration (generateOpf)
+import Converter.TocGeneration (generateToc)
+import Converter.CommandLineParser (Args(..), legend, parseArgs)
+import Converter.Types
+import Converter.Constants
 
-    -- TODO: check args to be valid
-    let args = parseArgs argsList
+main = do   
+
+    args <- (fmap parseArgs) getArgs 
 
     case argsTocUrl args of
         Just tocUrl -> prepareKindleGeneration 

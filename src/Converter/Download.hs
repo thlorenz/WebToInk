@@ -5,20 +5,18 @@ module Converter.Download
     , getSrcFilePath
     ) where
 
-import Converter.Types
-import Converter.Constants(pagesFolder, imagesFolder)
-import Converter.Utils (openUrl, downloadByteString)
-
-import System.Directory(createDirectoryIfMissing, setCurrentDirectory, doesFileExist)
-import System.IO(hPutStr, withFile, IOMode(..))
-import System.FilePath(takeFileName, takeDirectory)
-import Data.List(isPrefixOf)
+import System.Directory (createDirectoryIfMissing, setCurrentDirectory, doesFileExist)
+import System.IO (hPutStr, withFile, IOMode(..))
+import System.FilePath (takeFileName, takeDirectory)
+import Data.List (isPrefixOf)
 
 import qualified Data.ByteString.Lazy as L
-import qualified Data.ByteString as B
-import qualified Data.ByteString.UTF8 as U
 
 import Test.HUnit
+
+import Converter.Types
+import Converter.Constants (pagesFolder, imagesFolder)
+import Converter.Utils (openUrl, downloadByteString)
 
 downloadAndSaveImages ::  Url -> Url -> [Url] -> IO [()]
 downloadAndSaveImages rootUrl pageUrl imageUrls = do
@@ -38,16 +36,15 @@ downloadAndSaveImage targetFolder rootUrl pageUrl url = do
     let fullUrl = resolveUrl rootUrl pageUrl url
     let fullPath = getSrcFilePath targetFolder url
 
-    putStrLn $ "Downloading image at " ++ fullUrl
-
     imageWasDownloadedBefore <- doesFileExist fullPath 
     if imageWasDownloadedBefore 
-            then return undefined
-            else do 
-                byteString <- downloadByteString fullUrl
-                case byteString of 
-                    Nothing      -> return () 
-                    (Just bytes) -> L.writeFile fullPath bytes
+        then return undefined
+        else do 
+            putStr $ "Downloading image: " ++ fullUrl
+            byteString <- downloadByteString fullUrl
+            case byteString of 
+                Nothing      -> return () 
+                (Just bytes) -> L.writeFile fullPath bytes
 
 
 resolveUrl :: Url -> Url -> Url -> Url
@@ -55,7 +52,7 @@ resolveUrl rootUrl pageUrl url
         | "http://"  `isPrefixOf` url = cleanedUrl
         | "https://" `isPrefixOf` url = cleanedUrl
         | "/"        `isPrefixOf` url = rootUrl ++ cleanedUrl
-        | otherwise                  = pageFolder ++ "/" ++ cleanedUrl
+        | otherwise                   = pageFolder ++ "/" ++ cleanedUrl
         where pageFolder = takeDirectory pageUrl
               cleanedUrl = cleanUrl url
 
