@@ -22,7 +22,7 @@ folderOpt   = "--folder"
 options = [ titleOpt, languageOpt, authorOpt, tocOpt ]
 
 legend = 
-     [ (titleOpt     ,  normalizeOption titleOpt    ,  "Book argsTitle (required)") 
+     [  (titleOpt    ,  normalizeOption titleOpt    ,  "Book argsTitle (required)") 
      ,  (languageOpt ,  normalizeOption languageOpt ,  "Language (default en-US)")
      ,  (authorOpt   ,  normalizeOption authorOpt   ,  "Book author")
      ,  (tocOpt      ,  normalizeOption tocOpt      ,  "Url to the page that contains the table of contents of the book")
