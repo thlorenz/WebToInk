@@ -17,13 +17,13 @@ After cloning this repo:
     cabal install
 
     cd src
-    runghc Converter.hs -c http://book.realworldhaskell.org/read/
+    runghc Converter.hs -c http://book.realworldhaskell.org/read/ -f ../books
 
 Note: at this point the KindleGen tool will have to be run manually, in the
 future this will be part of the automated process.
 
     cd ../books/Real\ World\ Haskell/
-    kindlegen book.opf -o Real\ World\ Haskell/.mobi -f ../books
+    kindlegen book.opf -o Real\ World\ Haskell/.mobi
 
 ## How it works
 
