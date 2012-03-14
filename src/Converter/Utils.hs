@@ -1,4 +1,4 @@
-module Converter.Utils(openUrl, downloadByteString, getTabs) where
+module Converter.Utils(openUrl, downloadByteString, getTabs, cleanFolderName) where
 
 import Network.HTTP.Enumerator (simpleHttp, HttpException(StatusCodeException))
 
@@ -6,6 +6,7 @@ import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString.Lazy.UTF8 as U
 
 import Control.Monad.IO.Class (MonadIO)
+import Data.List.Utils (replace)
 
 import Control.Exception (try)
 
@@ -29,3 +30,6 @@ downloadByteString url = do
             >> return Nothing
 
 getTabs indent = replicate (indent * 2) ' '
+
+cleanFolderName :: String -> String 
+cleanFolderName = replace "/" "_"

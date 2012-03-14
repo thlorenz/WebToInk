@@ -20,7 +20,7 @@ import Data.List (nub)
 import Test.HUnit
 
 import Converter.Types
-import Converter.Utils (openUrl)
+import Converter.Utils (openUrl, cleanFolderName)
 import Converter.Download (downloadPage)
 
 data GetHtmlPagesResult = GetHtmlPagesResult 
@@ -67,7 +67,7 @@ resolveTitle :: Maybe String -> String -> String
 resolveTitle maybeTitle tocContent = 
     case maybeTitle of
         Just title    -> title
-        Nothing       -> resolveSection "<title>" tocContent "N/A"
+        Nothing       -> cleanFolderName $ resolveSection "<title>" tocContent "N/A"
         
 resolveSection sectionName html alternative =
     case tryExtractSection sectionName html of
