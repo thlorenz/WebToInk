@@ -40,7 +40,7 @@ downloadAndSaveImage targetFolder rootUrl pageUrl url = do
     if imageWasDownloadedBefore 
         then return undefined
         else do 
-            putStr $ "Downloading image: " ++ fullUrl
+            putStrLn $ "Downloading image: " ++ fullUrl
             byteString <- downloadByteString fullUrl
             case byteString of 
                 Nothing      -> return () 
