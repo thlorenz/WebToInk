@@ -7,23 +7,36 @@ import Blaze.ByteString.Builder (copyByteString)
 import qualified Data.ByteString.UTF8 as BU
 import Data.Monoid (mconcat)
 
+instance Show Request where
+    show r = "\nRequest:" ++
+             "\n  Method: " ++ show (requestMethod r) ++
+             "\n  HTTPVersion: " ++ show (httpVersion r) ++ 
+             "\n  PathInfo: " ++ show (pathInfo r) ++
+             "\n  QueryString: " ++ show (queryString r) ++
+             "\n  ServerName: " ++ show (serverName r) ++
+             "\n  ServerPort: " ++ show (serverPort r) ++
+             "\n  RequestHeaders: " ++ show (requestHeaders r) ++
+             "\n  IsSecure: " ++ show (isSecure r) ++
+             "\n  RemoteHost: " ++ show (remoteHost r)
 main = do
     let port = 3000
     putStrLn $ "Listening on port" ++ show port
     run port app
 
-app req = return $
+app ::  Monad m => Request -> m Response
+app req = do 
     case pathInfo req of
-        ["yay"] -> yay
-        x       -> index x
+        ["yay"] ->  return yay
+        x       ->  return (index x req)
+
 
 yay = ResponseBuilder status200 [ ("Content-Type", "text/plain") ] $ 
         mconcat $ map copyByteString ["yay"]
 
-index x = ResponseBuilder status200 [ ("Content-Type", "text/html") ] $ 
+index x req = ResponseBuilder status200 [ ("Content-Type", "text/plain") ] $ 
         mconcat $ map copyByteString
          [ "<p>Hello from ", BU.fromString $ show x, "!</p>"
-         , "<p><a href='/yay'>yay</a></p>\n" ]
+         , "<p>Request was: ", BU.fromString $ show req, "</p>" ]
             
 
 
