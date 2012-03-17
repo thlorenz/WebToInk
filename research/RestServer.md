@@ -246,6 +246,7 @@ serving](http://en.wikipedia.org/wiki/Byte_serving)
   heading in article
 
 Example:
+    
     foo://username:password@example.com:8042/over/there/index.dtb?type=animal&name=narwhal#nose and urn:example:animal:ferret:nose
 
 
@@ -259,6 +260,6 @@ Example:
 
 [Wiki HTTP](http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol)
 
-[URI schemes](http://en.wikipedia.org/wiki/URI_scheme)
+[Wiki URI schemes](http://en.wikipedia.org/wiki/URI_scheme)
 
-[List of TCP and UDP port numbers](http://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers)
+[Wiki List of TCP and UDP port numbers](http://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers)
