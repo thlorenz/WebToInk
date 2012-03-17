@@ -160,6 +160,95 @@ communication [HTTPS](http://en.wikipedia.org/wiki/HTTPS) through unencrypted
 - only intended for information retrieval (don't change server state - only
   harmless side effects like logging, caching, webcounter increment)
 
+#### Idempotent methods and Web Applications
+- multiple identical requests shoud have the same effect as single request
+  (e.g., all safe methods)
+- sometimes POST should also be idempotent
+- enforced by protocol or webserver
+
+#### Status Codes
+
+- first (status) line of HTTP response includes status code and message (e.g.,
+  404 "Not Found")
+
+#### HTTP Session State
+
+- server is not required to retain information or status about each user over
+  duration of multiple requests
+- state can be kept on client side via [HTTP
+  cookies](http://en.wikipedia.org/wiki/HTTP_cookie)
+- other options include server side sessions, hidden variables (on form) and
+  URL rewriting using URI-encode parameters (e.g., /index.html?session_id=guid)
+
+#### Request Message
+
+- request line e.g., GET /images/logo.png HTTP/1.1<CR><LF>
+- [headers](http://en.wikipedia.org/wiki/List_of_HTTP_headers) e.g.,
+  Accept-Language: en<CR><LF>
+- empty line e.g., <CR><LF>
+- optional message body
+
+#### Response Message
+
+- status line e.g., HTTP/1.1 200 OK<CR><LF>
+- [headers](http://en.wikipedia.org/wiki/List_of_HTTP_headers) e.g.,
+  Content-Type: text/html<CR><LF>
+- empty line e.g., <CR><LF>
+- optional message body
+
+#### Example Session
+
+Client Request:
+
+    GET /index.html HTTP/1.1<CR><LF>
+    Host: www.example.com<CR><LF>
+    <CR><LF>
+
+- Host header distinguishes between various
+  [DNS](http://en.wikipedia.org/wiki/Domain_Name_System) names sharing as
+single [IP address](http://en.wikipedia.org/wiki/IP_address) allowing
+name-based [virtual hosting](http://en.wikipedia.org/wiki/Virtual_hosting)
+(mandatory in HTTP/1.1)
+
+Server Response:
+
+    HTTP/1.1 200 OK
+    Date: Mon, 23 May 2005 22:38:34 GMT
+    Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
+    Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT
+    Etag: "3f80f-1b6-3e1cb03b"
+    Accept-Ranges: bytes
+    Content-Length: 438
+    Connection: close
+    Content-Type: text/html; charset=UTF-8
+
+- ETag (entity tag) header determines if cached version of requested resource
+  is identical to current version on the server
+- Accept-Ranges: bytes is usefull if client only needs certain portions of
+  resource sent by the server, called [byte
+serving](http://en.wikipedia.org/wiki/Byte_serving)
+- Connection: close means web server closes TCP connection immediately after
+  responding
+- Content-Length: optional, if missing it is determined
+
+## URI Scheme
+
+- generic syntax:
+
+        <scheme name> : <hierarchical part> [ ? <query> ] [ # <fragment> ]
+
+- query optional (key value pairs separated by semicolon or ampersand)
+
+        key1=value1;key2=value2;key3=value3
+        key1=value1&key2=value2&key3=value3
+
+- fragment optional, provides direction to secondary resource, e.g., section
+  heading in article
+
+Example:
+    foo://username:password@example.com:8042/over/there/index.dtb?type=animal&name=narwhal#nose and urn:example:animal:ferret:nose
+
+
 ## Resources
 
 [StackOverflow REST Question](http://stackoverflow.com/questions/544474/can-you-help-me-understand-this-common-rest-mistakes-sessions-are-irrelevant)
