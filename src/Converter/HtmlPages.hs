@@ -10,6 +10,8 @@ module Converter.HtmlPages
     , resolveAuthor
     , resolveTitle 
     , removeScripts
+    , removeBaseHref
+    , localizeSrcUrls 
     ) where 
 
 import Data.Maybe (fromJust)
@@ -18,6 +20,7 @@ import Text.HTML.TagSoup (parseTags, Tag(..), (~==), sections)
 import System.FilePath (takeDirectory, takeFileName, takeExtension, takeBaseName)
 import Data.List (nub)
 import Data.String.Utils (replace)
+import Converter.Download (getSrcFilePath)
 
 import Test.HUnit
 
@@ -93,24 +96,33 @@ containsBaseHref = (/=[]) . filter (~== "<base href>") . parseTags
 getFolderUrl :: Url -> Url
 getFolderUrl = takeDirectory
 
+-- | remove all script texts found inside html
 removeScripts ::  PageContents -> PageContents
 removeScripts htmlWithScripts = go htmlWithScripts scriptTexts
-   where scriptTexts    = filterScripts . parseTags $ htmlWithScripts
-         go html []     = html
-         go html (x:xs) = go (replace x "" html) xs
+  where scriptTexts    = filterScripts . parseTags $ htmlWithScripts
+        go html []     = html
+        go html (x:xs) = go (replace x "" html) xs
 
--- | filters all scripts found inside given tags
 filterScripts = go [] 
   where 
-    go scripts []                                                  = scripts
+    go scripts []                                                   = scripts
     go scripts ((TagOpen "script" attributes):(TagText script):xs)  = go (script:scripts) xs
-    go scripts (_:xs)                                              = go scripts xs
+    go scripts (_:xs)                                               = go scripts xs
 
 -- | drop "http://" then gobble everything up to first / and stick it onto "http://"
 getRootUrl :: Url -> Url
 getRootUrl url = http ++ (takeWhile (not . (=='/')) . drop (length http)) url
     where http ="http://"
 
+localizeSrcUrls :: FilePath -> [Url] -> PageContents  -> PageContents
+localizeSrcUrls targetFolder srcUrls pageContents =
+    foldr (\srcUrl contents -> 
+        replace ("src=\"" ++ srcUrl) ("src=\"" ++ getSrcFilePath targetFolder srcUrl) contents) 
+        pageContents srcUrls
+
+removeBaseHref :: PageContents -> PageContents
+removeBaseHref = unlines . filter (not . containsBaseHref) . lines
+    
 containsBaseHrefTests = 
     [ assertBool "containsBaseHref" $
          containsBaseHref lineContainingHref
@@ -170,14 +182,47 @@ htmlWithoutScripts =
         "<script type=\"text/javascript\"></script>" ++
     "</body>"
 
+localizeSrcUrlsTests =
+    [ assertEqual "localizing src urls"
+        (localizeSrcUrls filePath imageUrls pageContents) localizedPageContents 
+    ]
+    where
+        filePath = "../images"
+        pageContents = 
+            "<body>" ++
+                "<img src=\"/support/figs/rss.png\"/>" ++
+                "<span>some span</span>" ++
+                "<img src=\"/support/figs/ball.png\"/>" ++
+            "</body>"
+        imageUrls = [ "/support/figs/rss.png", "/support/figs/ball.png" ]
+        localizedPageContents =
+            "<body>" ++
+                "<img src=\"" ++ filePath ++ "/rss.png\"/>" ++
+                "<span>some span</span>" ++
+                "<img src=\"" ++ filePath ++ "/ball.png\"/>" ++
+            "</body>"
 
-
+removeBaseHrefTests = 
+    [ assertEqual "removing base href"
+        processedPageContents (removeBaseHref pageContents)
+    ]
+    where 
+        pageContents =
+            "<head>\n" ++
+                "<base href=\"http://learnyouahaskell.com/\">\n" ++ 
+            "</head>\n"
+        processedPageContents = 
+            "<head>\n" ++
+            "</head>\n"
+    
 tests = TestList $ map TestCase $
     containsBaseHrefTests ++
     getFolderUrlTests ++
     getRootUrlTests ++
     resolveTitleTests ++
-    removeScriptsTests 
+    removeScriptsTests ++
+    localizeSrcUrlsTests ++
+    removeBaseHrefTests 
     
 
 runTests = runTestTT tests
