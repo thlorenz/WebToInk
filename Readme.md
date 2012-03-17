@@ -25,6 +25,9 @@ future this will be part of the automated process.
     cd ../books/Real\ World\ Haskell/
     kindlegen book.opf -o Real\ World\ Haskell/.mobi
 
+Find some other online books to convert [here](BooksToConvert.md)
+
+
 ## How it works
 
 - pulls down all html pages, images and css files
@@ -33,3 +36,4 @@ future this will be part of the automated process.
 - sample folder structure and generated files can be found at the [Learn You a
   Haskell](https://github.com/igstan/learn-you-a-haskell-kindle) project, which
 accomplishes a similar goal, except not automatically and only for one book.
+

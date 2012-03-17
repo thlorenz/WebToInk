@@ -168,19 +168,19 @@ resolveTitleTests =
 removeScriptsTests = [ assertEqual "removing scripts from html" htmlWithoutScripts $ 
                         removeScripts htmlWithScripts 
                      ]
-  -- where
-htmlWithScripts = 
-    "<body>" ++
-        "<script type=\"text/javascript\">some JavaScript here</script>" ++
-        "<p>Some paragraph</p>" ++
-        "<script type=\"text/javascript\">some more JavaScript here</script>" ++
-    "</body>"
-htmlWithoutScripts =
-    "<body>" ++
-        "<script type=\"text/javascript\"></script>" ++
-        "<p>Some paragraph</p>" ++
-        "<script type=\"text/javascript\"></script>" ++
-    "</body>"
+  where
+    htmlWithScripts = 
+        "<body>" ++
+            "<script type=\"text/javascript\">some JavaScript here</script>" ++
+            "<p>Some paragraph</p>" ++
+            "<script type=\"text/javascript\">some more JavaScript here</script>" ++
+        "</body>"
+    htmlWithoutScripts =
+        "<body>" ++
+            "<script type=\"text/javascript\"></script>" ++
+            "<p>Some paragraph</p>" ++
+            "<script type=\"text/javascript\"></script>" ++
+        "</body>"
 
 localizeSrcUrlsTests =
     [ assertEqual "localizing src urls"
