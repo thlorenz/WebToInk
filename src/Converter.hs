@@ -112,15 +112,15 @@ processPage pi pageContents = do
 
     downloadAndSaveImages (rootUrl pi) (pageUrl pi) imageUrls
 
-    let localizedPageContents = localizePageContents imageUrls pageContents
+    let adaptedPageContents = localizePageContentsAndRemoveScripts imageUrls pageContents
 
-    savePage (fileName pi) localizedPageContents
+    savePage (fileName pi) adaptedPageContents
 
     return imageUrls
 
-localizePageContents :: [Url] -> PageContents -> PageContents
-localizePageContents imageUrls pageContents = 
-    removeBaseHref .  localizeSrcUrls ("../" ++ imagesFolder) imageUrls $ pageContents 
+localizePageContentsAndRemoveScripts :: [Url] -> PageContents -> PageContents
+localizePageContentsAndRemoveScripts imageUrls pageContents = 
+    removeScripts . removeBaseHref .  localizeSrcUrls ("../" ++ imagesFolder) imageUrls $ pageContents 
 
 localizeSrcUrls :: FilePath -> [Url] -> PageContents  -> PageContents
 localizeSrcUrls targetFolder srcUrls pageContents =

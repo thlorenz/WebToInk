@@ -9,6 +9,7 @@ module Converter.HtmlPages
     , getRootUrl
     , resolveAuthor
     , resolveTitle 
+    , removeScripts
     ) where 
 
 import Data.Maybe (fromJust)
@@ -16,6 +17,7 @@ import Data.Maybe (fromJust)
 import Text.HTML.TagSoup (parseTags, Tag(..), (~==), sections)
 import System.FilePath (takeDirectory, takeFileName, takeExtension, takeBaseName)
 import Data.List (nub)
+import Data.String.Utils (replace)
 
 import Test.HUnit
 
@@ -91,6 +93,19 @@ containsBaseHref = (/=[]) . filter (~== "<base href>") . parseTags
 getFolderUrl :: Url -> Url
 getFolderUrl = takeDirectory
 
+removeScripts ::  PageContents -> PageContents
+removeScripts htmlWithScripts = go htmlWithScripts scriptTexts
+   where scriptTexts    = filterScripts . parseTags $ htmlWithScripts
+         go html []     = html
+         go html (x:xs) = go (replace x "" html) xs
+
+-- | filters all scripts found inside given tags
+filterScripts = go [] 
+  where 
+    go scripts []                                                  = scripts
+    go scripts ((TagOpen "script" attributes):(TagText script):xs)  = go (script:scripts) xs
+    go scripts (_:xs)                                              = go scripts xs
+
 -- | drop "http://" then gobble everything up to first / and stick it onto "http://"
 getRootUrl :: Url -> Url
 getRootUrl url = http ++ (takeWhile (not . (=='/')) . drop (length http)) url
@@ -129,8 +144,7 @@ resolveTitleTests =
         resolveTitle Nothing htmlContainingTitle 
     ]
 
---  where 
-htmlContainingTitle = 
+  where htmlContainingTitle = 
          "<html xmlns=\"http://www.w3.org/1999/xhtml\">" ++
              "<head xmlns=\"http://www.w3.org/1999/xhtml\">" ++
                  "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />" ++
@@ -139,11 +153,31 @@ htmlContainingTitle =
              "</head>" ++
          "</html>"
 
+removeScriptsTests = [ assertEqual "removing scripts from html" htmlWithoutScripts $ 
+                        removeScripts htmlWithScripts 
+                     ]
+  -- where
+htmlWithScripts = 
+    "<body>" ++
+        "<script type=\"text/javascript\">some JavaScript here</script>" ++
+        "<p>Some paragraph</p>" ++
+        "<script type=\"text/javascript\">some more JavaScript here</script>" ++
+    "</body>"
+htmlWithoutScripts =
+    "<body>" ++
+        "<script type=\"text/javascript\"></script>" ++
+        "<p>Some paragraph</p>" ++
+        "<script type=\"text/javascript\"></script>" ++
+    "</body>"
+
+
+
 tests = TestList $ map TestCase $
     containsBaseHrefTests ++
     getFolderUrlTests ++
     getRootUrlTests ++
-    resolveTitleTests 
+    resolveTitleTests ++
+    removeScriptsTests 
     
 
 runTests = runTestTT tests
