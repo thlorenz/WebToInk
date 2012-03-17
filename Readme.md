@@ -25,7 +25,7 @@ future this will be part of the automated process.
     cd ../books/Real\ World\ Haskell/
     kindlegen book.opf -o Real\ World\ Haskell/.mobi
 
-Find some other online books to convert [here](/BooksToConvert.md)
+Find some other online books to convert [here](WebToKindle/blobs/BooksToConvert.md)
 
 
 ## How it works
