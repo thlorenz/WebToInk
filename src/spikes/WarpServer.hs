@@ -24,15 +24,15 @@ main = do
     run port app
 
 app ::  Monad m => Request -> m Response
-app req = do 
-    case pathInfo req of
-        ["yay"] ->  return yay
-        x       ->  return (index x req)
+app req = case pathInfo req of
+            ["yay"] ->  return yay
+            x       ->  return (index x req)
 
 
 yay = ResponseBuilder status200 [ ("Content-Type", "text/plain") ] $ 
         mconcat $ map copyByteString ["yay"]
 
+index ::  (Show a1, Show a) => a -> a1 -> Response
 index x req = ResponseBuilder status200 [ ("Content-Type", "text/plain") ] $ 
         mconcat $ map copyByteString
          [ "<p>Hello from ", BU.fromString $ show x, "!</p>"
