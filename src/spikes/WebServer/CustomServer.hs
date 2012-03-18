@@ -50,15 +50,15 @@ requestProcessor handle sessionId = do
             requestProcessor handle sessionId
 
   where 
-    status        =  "HTTP/1.1 200 OK"
-    server        =  "MyHaskellServer/0.0.1 (Darwin)"
-    lastModified  =  "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT"
-    etag          =  "Etag: \"3f80f-1b6-3e1cb03b\""
-    acceptRanges  =  "Accept-Ranges: bytes"
-    -- length of body + <CR><LF>
-    contentLength body =  "Content-Length: " ++ (show $ (length body + 2))
-    connection    =  "Connection: close"
-    contentType   =  "Content-Type: text/html; charset=UTF-8"
+    status                       =  "HTTP/1.1 200 OK"
+    server                       =  "MyHaskellServer/0.0.1 (Darwin)"
+    lastModified                 =  "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT"
+    etag                         =  "Etag: \"3f80f-1b6-3e1cb03b\""
+    acceptRanges                 =  "Accept-Ranges: bytes"
+    -- content length is length of body + <CR><LF>
+    contentLength body           =  "Content-Length: " ++ (show $ (length body + 2))
+    connection                   =  "Connection: close"
+    contentType                  =  "Content-Type: text/html; charset=UTF-8"
 
     header body = unlines $
         [ status
