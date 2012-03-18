@@ -28,6 +28,7 @@ downloadByteString url = do
             putStrLn ("An error occured while trying to download: " ++ url)
             >> print status
             >> return Nothing
+        Left _                                    -> print "Unknown Error" >> return Nothing
 
 getTabs indent = replicate (indent * 2) ' '
 
