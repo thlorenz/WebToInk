@@ -33,8 +33,9 @@ requestProcessor handle sessionId = do
     -- Empty line in request denotes that it is complete
     if (length reqString <= 1 )
         then do
+            body <- readFile "public/index.html"
             -- Response Header
-            hPutStrLn handle header
+            hPutStrLn handle (header body)
             hPutStrLn handle ""
 
             -- Response Body
@@ -55,18 +56,17 @@ requestProcessor handle sessionId = do
     etag          =  "Etag: \"3f80f-1b6-3e1cb03b\""
     acceptRanges  =  "Accept-Ranges: bytes"
     -- length of body + <CR><LF>
-    contentLength =  "Content-Length: " ++ (show $ (length body + 2))
+    contentLength body =  "Content-Length: " ++ (show $ (length body + 2))
     connection    =  "Connection: close"
     contentType   =  "Content-Type: text/html; charset=UTF-8"
 
-    body = "<body><h1>Hello World</h1></body>" 
-    header = unlines $
+    header body = unlines $
         [ status
         , server
         , lastModified
         , etag
         , acceptRanges
-        , contentLength
+        , contentLength body
         , connection
         , contentType
         ]
