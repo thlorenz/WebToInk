@@ -47,14 +47,14 @@ filterOutSections = filter isTopLink
 isTopLink = notElem '#' 
 
 getNameUrlMap ::  String -> String -> [(String, String)]
-getNameUrlMap rootUrl = map (\x -> (x, rootUrl ++ "/" ++ x)) . getHtmlNamesInRootFolder 
+getNameUrlMap rootUrl = map (\x -> (x, rootUrl ++ "/" ++ x)) . getHtmlNamesInRootFolder rootUrl
 
-getHtmlNamesInRootFolder = getSameFolderHtmls . filterHrefs . parseTags
+getHtmlNamesInRootFolder rootUrl = getSameFolderHtmls rootUrl . filterHrefs . parseTags
            
-getSameFolderHtmls = nub . filterLocalLinks . getLinks
+getSameFolderHtmls rootUrl = nub . filterLocalLinks . getLinks
     where
         filterLocalLinks = filter (notElem '/') 
-        -- filterLocalLinks = filter (not . ("http" `isPrefixOf`))
+        fixLocalStartingWithRoot = undefined
 
         getLinks ::  [Tag String] -> [String]
         getLinks = map (snd . getUrl)

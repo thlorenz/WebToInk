@@ -1,6 +1,6 @@
 module Converter.Utils(openUrl, downloadByteString, getTabs, cleanFolderName) where
 
-import Network.HTTP.Enumerator (simpleHttp, HttpException(StatusCodeException))
+import Network.HTTP.Enumerator (simpleHttp, HttpException(..))
 
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString.Lazy.UTF8 as U
@@ -28,7 +28,14 @@ downloadByteString url = do
             putStrLn ("An error occured while trying to download: " ++ url)
             >> print status
             >> return Nothing
-        Left _                                    -> print "Unknown Error" >> return Nothing
+        Left (InvalidUrlException status headers) -> 
+            putStrLn ("An error occured while trying to download: " ++ url)
+            >> print status
+            >> print headers
+            >> return Nothing
+        Left a                                    -> 
+            putStrLn ("An error occured while trying to download: " ++ url)
+            >> print a >> return Nothing
 
 getTabs indent = replicate (indent * 2) ' '
 
