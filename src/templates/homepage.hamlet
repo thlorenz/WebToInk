@@ -1,2 +1,32 @@
 <h1>_{MsgHello}
 <h2 ##{h2id}>You do not have Javascript enabled.
+
+<form>
+  <label for="url" id="url">Convert URL:
+  <input type="text" name="convertURL" id="url" required="required" placeholder="Enter URL" autofocus="autofocus">
+  <br>
+
+  <input type="submit" value="Go" id="button_go">
+  <br>
+
+  <label for="webPageTitle" id="title" >Title:
+  <input type="text" name="webtitle" id="title" placeholder="Enter Title">
+  <br>
+
+  <label for="author" id="author">Author:
+  <input type="text" name="author" id="author" placeholder="Enter Author Name">
+  <br>
+
+  <input type="submit" value="Convert" id="button_convert">
+  <br>
+
+  <label for="convertedFile" id="convertedFile">Converted File:
+  <input type="text" name="download_filename" id="convertedFile" required="required" placeholder="Converted File Name">
+
+  <input type="submit" value="Download" id="button_download">
+  <br>
+
+  <label for="email" id="email" >Send to Kindle:
+  <input type="email" name="user_email" id="email" required="required" placeholder="Enter valid e-mail address">
+  <input type="submit" value="Send" id="button_email">
+  <br>
