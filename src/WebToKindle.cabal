@@ -102,4 +102,5 @@ executable         WebToKindle
                  -- END Yesod framework dependencies --------------
 
                  , tagsoup
+                 , http-enumerator                >= 0.7       && < 0.8
 
