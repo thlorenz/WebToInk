@@ -9,7 +9,7 @@ import Control.Concurrent (threadDelay)
 
 main :: IO ()
 main = do
-    putStrLn "Starting devel application"
+    putStrLn "Starting WebToKindle in development mode ..."
     (port, app) <- getApplicationDev
     forkIO $ runSettings defaultSettings
         { settingsPort = port

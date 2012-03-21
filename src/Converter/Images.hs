@@ -1,5 +1,7 @@
 module Converter.Images(getImages) where
 
+import Import
+
 import Converter.Types
 
 import Text.HTML.TagSoup(parseTags, Tag(..), (~==))
@@ -19,8 +21,8 @@ getImages = nub . getUrls . filterImages . parseTags
                 findSrcPair = find (\(name, url) -> name == "src")
 
 filterImages ::  [Tag String] -> [Tag String]
-filterImages = filter (~== "<img src>") 
-
+filterImages = filter (~== imgSrc) 
+    where imgSrc = "<img src>" :: String
 
 -- ===================
 -- Tests

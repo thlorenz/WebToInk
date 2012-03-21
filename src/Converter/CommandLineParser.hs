@@ -1,5 +1,7 @@
 module Converter.CommandLineParser(Args(..), legend, parseArgs) where
 
+import Import 
+
 import Converter.Types
 
 import System.Environment (getArgs)

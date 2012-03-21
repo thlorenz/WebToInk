@@ -1,13 +1,12 @@
 module Converter where
 
-import System.Directory (createDirectoryIfMissing, setCurrentDirectory)
-import Control.Monad (forM)
-import Data.List.Utils (replace)
-import Data.Maybe (fromJust)
-import Data.List (isPrefixOf, nub)
-import System.Environment (getArgs)
+import Import hiding (fileName)
 
-import Test.HUnit
+import System.Directory (createDirectoryIfMissing, setCurrentDirectory)
+import System.Environment (getArgs)
+import System.IO (writeFile)
+import Data.List.Utils (replace)
+import Data.List (isPrefixOf, nub)
 
 import Converter.HtmlPages 
 import Converter.Images (getImages)
@@ -61,7 +60,7 @@ prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
 
                 result <- downloadPages tocUrl topPagesDic    
                 
-                let failedFileNames = map fileName $ failedPages result
+                let failedFileNames = map piFileName $ failedPages result
                 let goodTopPages = filter (`notElem` failedFileNames) topPages
 
                 putStrLn "\nDownload Summary"
@@ -98,7 +97,7 @@ downloadPages tocUrl topPagesDic = do
 
 tryProcessPage :: PageInfo -> IO (DownloadPagesResult)
 tryProcessPage pi = do
-    maybePageContents <- downloadPage (pageUrl pi)
+    maybePageContents <- downloadPage (piPageUrl pi)
 
     case maybePageContents of
         Just pageContents -> do
@@ -110,11 +109,11 @@ processPage :: PageInfo -> PageContents -> IO [String]
 processPage pi pageContents = do
     let imageUrls = (filter (not . ("https:" `isPrefixOf`)) . getImages) pageContents
 
-    downloadAndSaveImages (rootUrl pi) (pageUrl pi) imageUrls
+    downloadAndSaveImages (piRootUrl pi) (piPageUrl pi) imageUrls
 
     let adaptedPageContents = cleanAndLocalize imageUrls pageContents
 
-    savePage (fileName pi) adaptedPageContents
+    savePage (piFileName pi) adaptedPageContents
 
     return imageUrls
 

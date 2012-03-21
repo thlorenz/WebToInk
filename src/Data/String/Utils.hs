@@ -43,6 +43,8 @@ module Data.String.Utils
                         join, split, splitWs, replace, escapeRe
                        ) where
 
+import Import hiding (replace)
+
 import Data.List.Utils (startswith, endswith, join, split, replace)
 import Data.Char (isAlpha, isAscii, isDigit)
 import Text.Regex (mkRegex, splitRegex)

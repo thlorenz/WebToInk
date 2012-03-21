@@ -14,5 +14,5 @@ Staging:
   <<: *defaults
 
 Production:
-  approot: "http://www.example.com"
+  approot: "http://thlorenz.com/webtokindle"
   <<: *defaults

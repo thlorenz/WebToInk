@@ -1,6 +1,8 @@
 module Converter.Constants where
 
-imagesFolder = "images"
-pagesFolder = "pages"
-tocPage = "toc.html"
+import Import 
+
+imagesFolder = "images" :: FilePath
+pagesFolder = "pages"   :: FilePath
+tocPage = "toc.html"    :: String
 

@@ -1,5 +1,7 @@
 module Converter.OpfGeneration(generateOpf) where
 
+import Import
+
 import Converter.Constants
 import Converter.Utils (getTabs)
 

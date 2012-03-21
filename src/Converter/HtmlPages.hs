@@ -14,6 +14,9 @@ module Converter.HtmlPages
     , localizeSrcUrls 
     ) where 
 
+import Import hiding (replace)
+import Prelude (head) -- FIXME: find non-evil head replacement
+
 import Data.Maybe (fromJust)
 
 import Text.HTML.TagSoup (parseTags, Tag(..), (~==), sections)
@@ -74,6 +77,7 @@ resolveTitle maybeTitle tocContent =
         Just title    -> title
         Nothing       -> cleanFolderName $ resolveSection "<title>" tocContent "N/A"
         
+resolveSection :: String -> String -> String -> String
 resolveSection sectionName html alternative =
     case tryExtractSection sectionName html of
         Just (TagText text) -> text
@@ -88,10 +92,12 @@ tryExtractSection sectionName html =
 
 
 filterHrefs ::  [Tag String] -> [Tag String]
-filterHrefs = filter (~== "<a href>") 
+filterHrefs = filter (~== href) 
+    where href = "<a href>" :: String
 
 containsBaseHref :: Line -> Bool
-containsBaseHref = (/=[]) . filter (~== "<base href>") . parseTags
+containsBaseHref = (/=[]) . filter (~== baseHref) . parseTags 
+    where baseHref = "<base href>" :: String
 
 getFolderUrl :: Url -> Url
 getFolderUrl = takeDirectory
