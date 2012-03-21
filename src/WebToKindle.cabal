@@ -7,7 +7,7 @@ author:            Lorenz & Capistrano
 maintainer:        Lorenz & Capistrano
 synopsis:          The greatest kindle generator ever
 stability:         Experimental
-cabal-version:     >= 1.8
+cabal-version:     >= 1.6
 build-type:        Simple
 homepage:          http://github.com/thlorenz/HtmlBookToMobi
 bug-reports:       http://github.com/thlorenz/HtmlBookToMobi/issues
