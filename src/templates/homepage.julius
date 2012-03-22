@@ -1,14 +1,5 @@
-
 document.getElementById('#{h2id}').innerHTML = "";
 
-$(document).ready(function () {
-    console.log ("Ready");
-
-    var go = document.getElementById('button_go'); //  $('#button_go');
-    console.log(go);
-
-    go.onclick(function (event) {
-        console.log ("clicked");
-        $('.urlEntered').show();
-    });
+$('#button_go').click(function (event) {
+    $('.urlEntered').show();
 });

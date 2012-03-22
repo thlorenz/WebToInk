@@ -1,33 +1,33 @@
 \<!-- Leave this here in order to alert users to turn on javascript to use the site -->
 <h2 ##{h2id}>You do not have Javascript enabled.
 
-<form .urlEntry>
+<div #query>
   <label .urlEntry for="url" id="url">Convert URL:
   <input .urlEntry type="text" name="convertURL" id="url" required="required" placeholder="Enter URL" autofocus="autofocus">
   <br .urlEntry>
 
-  <input .urlEntry type="submit" value="Go" id="button_go">
+  <input .urlEntry type="button" value="Go" id="button_go">
   <br .urlEntry>
 
-<form .urlEntered>
-  <label .urlEntered for="webPageTitle" id="title" >Title:
-  <input .urlEntered type="text" name="webtitle" id="title" placeholder="Enter Title">
-  <br .urlEntered>
+  <form .urlEntered>
+    <label .urlEntered for="webPageTitle" id="title" >Title:
+    <input .urlEntered type="text" name="webtitle" id="title" placeholder="Enter Title">
+    <br .urlEntered>
 
-  <label .urlEntered for="author" id="author">Author:
-  <input .urlEntered type="text" name="author" id="author" placeholder="Enter Author Name">
-  <br .urlEntered>
+    <label .urlEntered for="author" id="author">Author:
+    <input .urlEntered type="text" name="author" id="author" placeholder="Enter Author Name">
+    <br .urlEntered>
 
-  <input .urlEntered type="submit" value="Convert" id="button_convert">
-  <br .urlEntered>
+    <input .urlEntered type="submit" value="Convert" id="button_convert">
+    <br .urlEntered>
 
-  <label .converted for="convertedFile" id="convertedFile">Converted File:
-  <input .converted type="text" name="download_filename" id="convertedFile" required="required" placeholder="Converted File Name">
+    <label .converted for="convertedFile" id="convertedFile">Converted File:
+    <input .converted type="text" name="download_filename" id="convertedFile" required="required" placeholder="Converted File Name">
 
-  <input .converted type="submit" value="Download" id="button_download">
-  <br .converted>
+    <input .converted type="submit" value="Download" id="button_download">
+    <br .converted>
 
-  <label .converted for="email" id="email" >Send to Kindle:
-  <input .converted type="email" name="user_email" id="email" required="required" placeholder="Enter valid e-mail address">
-  <input .converted type="submit" value="Send" id="button_email">
-  <br .converded>
+    <label .converted for="email" id="email" >Send to Kindle:
+    <input .converted type="email" name="user_email" id="email" required="required" placeholder="Enter valid e-mail address">
+    <input .converted type="submit" value="Send" id="button_email">
+    <br .converded>
