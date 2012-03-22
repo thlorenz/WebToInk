@@ -14,4 +14,5 @@ getRootR = do
     defaultLayout $ do
         h2id <- lift newIdent
         setTitle "WebToKindle homepage"
+        $(widgetFile "header")
         $(widgetFile "homepage")

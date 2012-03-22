@@ -21,6 +21,7 @@
 
         <script>
           document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/,'js');
+
     <body>
         <div id="container">
             <header>
@@ -29,6 +30,7 @@
             <footer>
                 #{extraCopyright $ appExtra $ settings master}
 
+        \<!-- Google Analytics -->
         $maybe analytics <- extraAnalytics $ appExtra $ settings master
             <script>
               if(!window.location.href.match(/localhost/)){
@@ -39,6 +41,8 @@
                 \  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
                 })();
               }
+
+        \<!-- Chrome Install -->
         \<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.  chromium.org/developers/how-tos/chrome-frame-getting-started -->
         \<!--[if lt IE 7 ]>
             <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js">
