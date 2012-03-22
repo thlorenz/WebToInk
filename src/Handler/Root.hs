@@ -14,5 +14,5 @@ getRootR = do
     defaultLayout $ do
         h2id <- lift newIdent
         setTitle "WebToKindle homepage"
-        $(widgetFile "header")
         $(widgetFile "homepage")
+        addScriptRemote "https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"

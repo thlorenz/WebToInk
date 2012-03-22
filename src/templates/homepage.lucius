@@ -11,10 +11,10 @@ h2##{h2id} {
 form {
 	font: bold 16px calibri;
 	color: #636162;
-	position: absolute;
+	position: relative;
 	width: 830px;
-	height: 700px;
-	top: 180px;
+  min-height: 200px;
+  margin-top: 140px;
 	margin-left: 60px;
 	border-radius: 8px 8px;
 	border: 1px #3E3E3E solid;
