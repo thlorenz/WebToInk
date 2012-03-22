@@ -1,0 +1,72 @@
+
+/*----------------------------------------------------------------
+ HEADER
+----------------------------------------------------------------*/
+
+header {
+	position: absolute;
+	width: 850px;
+	height: 150px;
+	margin-top: 5px;
+	margin-left: 60px;
+	}
+	
+div#headerLogo {
+	background: transparent url(../images/Logo_WtK_angledicon.png) no-repeat;
+	background-size: 100%;
+	width: 200px;
+	height: 200px;
+	top: 50px;
+	left: 20px;
+	}
+
+section#welcome p {
+	position: absolute;
+	top: 10px;
+	left: 300px;
+	width: 500px;
+	font: bold 16px calibri;
+	color: #58ACFA;
+	}
+
+/*----------------------------------------------------------------
+ LINKS
+----------------------------------------------------------------*/
+
+a:link {color: #58ACFA;}
+a:visited { color: #58ACFA; }
+a:hover {color: #6BFA77;}
+a:active { color: #C191D9; }
+
+a {text-decoration: none;}
+	
+#wrapperMainNavigation {
+	position: absolute;
+	top: 50px;
+	right: 5px;
+	width: 310px;
+	height: 100px;
+	background: transparent url(../images/buttons_mainNavigation.png) no-repeat;
+	background-size: 80%;
+	}
+
+#mainNavigation a {
+	font: bold 14px calibri;
+	position: absolute;
+	top: 22px;
+	width: 50px;
+	text-align: center;
+	}
+	
+#mainNavigation a.home {
+	top: 26px;
+	right: 252px;
+	}	
+
+#mainNavigation a.aboutUs {
+	right: 161px;
+	}
+	
+#mainNavigation a.contactUs {
+	right: 72px;
+	}
