@@ -1,8 +1,7 @@
 Default: &defaults
   host: "localhost"
   port: 3000
-  copyright: 
-  # WebToKindle (Lorenz & Capistrano) 
+  copyright: # WebToKindle (Lorenz & Capistrano) 
   # analytics: UA-YOURCODE
 
 Development:

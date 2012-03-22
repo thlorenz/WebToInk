@@ -100,3 +100,12 @@ input#button_go, #button_convert, #button_download, #button_email {
 	width: 80px;
 	}
 
+/* Controls to become visible only once url has been entered */
+.urlEntered {
+  display: none;
+}
+
+/* Controls to become visible only once page has been converted */
+.converted {
+  display: none;
+}
