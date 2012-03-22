@@ -31,7 +31,7 @@ label {
 	display: inline;
 	vertical-align: top;
     text-indent: -15px;
-	}
+}
 
 input {
 	position: absolute;
@@ -39,7 +39,7 @@ input {
 	width: 250px;
 	vertical-align: bottom;
 	padding: 2px 0px 2px 2px;
-	}
+}
 
 
 /* CONVERT URL */
@@ -55,7 +55,7 @@ input#button_go {
 input#button_convert {
 	left: 150px;
 	top: 120px; 
-	}
+}
 
 	
 /* TITLE */
@@ -81,7 +81,7 @@ input#convertedFile {top: 160px;}
 input#button_download {
 	left: 420px;
 	top: 160px; 
-	}
+}
 
 	
 /* SEND EMAIL */
@@ -93,20 +93,20 @@ input#email {top: 195px;}
 input#button_email {
 	left: 420px;
 	top: 195px;
-	}	
+}	
 
 	
 /* BUTTONS */
 input#button_go, #button_convert, #button_download, #button_email {
 	width: 80px;
-	}
+}
 
 /* Controls to become visible only once url has been entered */
 .urlEntered {
-  display: none;
+    display: none;
 }
 
 /* Controls to become visible only once page has been converted */
 .converted {
-  display: none;
+    display: none;
 }

@@ -1,5 +1,7 @@
 document.getElementById('#{h2id}').innerHTML = "";
 
 $('#button_go').click(function (event) {
-    $('.urlEntered').show(200);
+    // TODO: Validate 
+
+    $('.urlEntered').fadeIn(500);
 });
