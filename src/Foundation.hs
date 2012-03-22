@@ -118,10 +118,14 @@ instance Yesod WebToKindle where
     -- and names them based on a hash of their content. This allows
     -- expiration dates to be set far in the future without worry of
     -- users receiving stale content.
-    addStaticContent = addStaticContentExternal minifym base64md5 Settings.staticDir (StaticR . flip StaticRoute [])
+    addStaticContent = addStaticContentExternal minifyOrNotm base64md5 Settings.staticDir (StaticR . flip StaticRoute [])
 
     -- Place Javascript at bottom of the body tag so the rest of the page loads first
     jsLoader _ = BottomOfBody
+
+-- TODO: use minifym when not in development mode
+minifyOrNotm ::  b -> Either a b
+minifyOrNotm = Right    
 
 -- How to run database actions.
 instance YesodPersist WebToKindle where
