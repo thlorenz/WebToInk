@@ -14,12 +14,12 @@ div#query {
     color: #636162;
     position: relative;
     width: 830px;
-    min-height: 100px;
     margin-top: 140px;
     margin-left: 60px;
     border-radius: 8px 8px;
     border: 1px #3E3E3E solid;
     padding-top: 20px;
+    padding-bottom: 20px;
     padding-left: 20px;
 }
 
@@ -29,83 +29,96 @@ label {
     position: relative;
     margin-left: 10px;
     display: inline;
-    vertical-align: top;
-    text-indent: -15px;
+    vertical-align: center;
 }
 
 input {
     position: relative;
-    margin-top: 140px;
-    margin-left: 150px;
+    margin-left: 30px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     width: 250px;
-    vertical-align: bottom;
-    padding: 2px 0px 2px 2px;
+    vertical-align: center;
 }
 
 
 /* CONVERT URL */
 
 label#url {
-    margin-top: 20px;
+
 }
 
 input#url { 
-    margin-top: 15px;
-    margin-left: 700px;
     width: 550px;
 }
     
 input#button_go {
-    margin-top: 15px;
 }
-    
-input#button_convert {
-    left: 150px;
-    top: 120px; 
-}
-
     
 /* TITLE */
 
-label#title {top: 55px;}
+label#title {
 
-input#title { top: 50px; }
+}
+
+input#title {
+    margin-left: 90px;
+}
 
 
 /* AUTHOR */
 
-label#author {top: 90px;}
+label#author {
     
-input#author {top: 85px;}
+}
+    
+input#author {
+    margin-left: 73px;
+}
+
+    
+input#button_convert {
+    margin-left: 10px;
+}
 
     
 /* CONVERTED FILE */
 
-label#convertedFile {top: 165px;}
+label#convertedFile {
     
-input#convertedFile {top: 160px;}
+}
+    
+input#convertedFile {
+    margin-left: 20px;
+    
+}
 
 input#button_download {
-    left: 420px;
-    top: 160px; 
+  
 }
 
     
 /* SEND EMAIL */
 
-label#email {top: 200px;}
+label#email {
     
-input#email {top: 195px;}
+}
+    
+input#email {
+    margin-left: 20px;
+}
 
 input#button_email {
-    left: 420px;
-    top: 195px;
 }   
 
     
 /* BUTTONS */
 input#button_go, #button_convert, #button_download, #button_email {
     width: 80px;
+}
+
+input#button_convert {
+    margin-left: 330px;
 }
 
 /* Controls to become visible only once url has been entered */

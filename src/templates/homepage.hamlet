@@ -1,20 +1,16 @@
 <div #query>
   <label .urlEntry for="url" id="url">Convert URL:
   <input .urlEntry type="text" name="convertURL" id="url" required="required" placeholder="Enter URL" autofocus="autofocus">
-  <br .urlEntry>
-
   <input .urlEntry type="button" value="Go" id="button_go">
   <br .urlEntry>
 
   <form .urlEntered>
-    <label .urlEntered for="webPageTitle" id="title" >Title:
+    <label .urlEntered for="webTitle" id="title" >Title:
     <input .urlEntered type="text" name="webtitle" id="title" placeholder="Enter Title">
     <br .urlEntered>
 
     <label .urlEntered for="author" id="author">Author:
     <input .urlEntered type="text" name="author" id="author" placeholder="Enter Author Name">
-    <br .urlEntered>
-
     <input .urlEntered type="submit" value="Convert" id="button_convert">
     <br .urlEntered>
 

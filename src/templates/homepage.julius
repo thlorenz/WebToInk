@@ -4,4 +4,10 @@ $('#button_go').click(function (event) {
     // TODO: Validate 
 
     $('.urlEntered').fadeIn(500);
+    $('#button_go').hide();
+});
+
+$('#button_convert').click(function (event) {
+    $('.converted').fadeIn(500);
+    $('#button_convert').hide();
 });
