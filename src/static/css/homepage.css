@@ -4,101 +4,108 @@ h2##{h2id} {
     color: #990;
     font-size: 10px;
 }
-	
+    
 /*----------------------------------------------------------------
  FORM
 ----------------------------------------------------------------*/
 
 div#query {
-	font: bold 16px calibri;
-	color: #636162;
-	position: relative;
-	width: 830px;
-    min-height: 200px;
+    font: bold 16px calibri;
+    color: #636162;
+    position: relative;
+    width: 830px;
+    min-height: 100px;
     margin-top: 140px;
-	margin-left: 60px;
-	border-radius: 8px 8px;
-	border: 1px #3E3E3E solid;
-	padding-top: 20px;
-	padding-left: 20px;
+    margin-left: 60px;
+    border-radius: 8px 8px;
+    border: 1px #3E3E3E solid;
+    padding-top: 20px;
+    padding-left: 20px;
 }
 
 /* General LABELS & INPUTS */
 
 label {
-	position: absolute;
-	left: 40px;
-	display: inline;
-	vertical-align: top;
+    position: relative;
+    margin-left: 10px;
+    display: inline;
+    vertical-align: top;
     text-indent: -15px;
 }
 
 input {
-	position: absolute;
-	left: 150px;
-	width: 250px;
-	vertical-align: bottom;
-	padding: 2px 0px 2px 2px;
+    position: relative;
+    margin-top: 140px;
+    margin-left: 150px;
+    width: 250px;
+    vertical-align: bottom;
+    padding: 2px 0px 2px 2px;
 }
 
 
 /* CONVERT URL */
-input#url {top: 15px;}
 
-label#url {top: 20px;}
-	
-input#button_go {
-	left: 420px;
-	top: 15px; 
-	}
-	
-input#button_convert {
-	left: 150px;
-	top: 120px; 
+label#url {
+    margin-top: 20px;
 }
 
-	
+input#url { 
+    margin-top: 15px;
+    margin-left: 700px;
+    width: 550px;
+}
+    
+input#button_go {
+    margin-top: 15px;
+}
+    
+input#button_convert {
+    left: 150px;
+    top: 120px; 
+}
+
+    
 /* TITLE */
 
 label#title {top: 55px;}
 
-input#title {top: 50px;}
+input#title { top: 50px; }
 
 
 /* AUTHOR */
 
 label#author {top: 90px;}
-	
+    
 input#author {top: 85px;}
 
-	
+    
 /* CONVERTED FILE */
 
 label#convertedFile {top: 165px;}
-	
+    
 input#convertedFile {top: 160px;}
 
 input#button_download {
-	left: 420px;
-	top: 160px; 
+    left: 420px;
+    top: 160px; 
 }
 
-	
+    
 /* SEND EMAIL */
 
 label#email {top: 200px;}
-	
+    
 input#email {top: 195px;}
 
 input#button_email {
-	left: 420px;
-	top: 195px;
-}	
+    left: 420px;
+    top: 195px;
+}   
 
-	
+    
 /* BUTTONS */
 input#button_go, #button_convert, #button_download, #button_email {
-	width: 80px;
+    width: 80px;
 }
 
 /* Controls to become visible only once url has been entered */

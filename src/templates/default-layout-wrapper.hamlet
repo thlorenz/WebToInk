@@ -22,6 +22,7 @@
         <script>
           document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/,'js');
 
+        <link rel=stylesheet href="static/css/homepage.css">
     <body>
         <div id="container">
             <header>
