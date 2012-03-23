@@ -88,15 +88,10 @@ label#convertedFile {
     
 }
     
-input#convertedFile {
+a#convertedFile {
     margin-left: 20px;
     
 }
-
-input#button_download {
-  
-}
-
     
 /* SEND EMAIL */
 
