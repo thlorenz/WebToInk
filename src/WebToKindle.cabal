@@ -35,8 +35,10 @@ library
                      Settings.StaticFiles
 
                      -- Handlers
+                     Handler.Utils
                      Handler.Root
                      Handler.InitUrl
+            
 
                      -- END Yesod specific
 
