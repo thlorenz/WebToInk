@@ -61,7 +61,7 @@ label#title {
 
 }
 
-input#title {
+input#titleText {
     margin-left: 90px;
 }
 
@@ -117,7 +117,7 @@ input#convertButton {
 }
 
 /* Controls to become visible only once url has been entered */
-.urlEntered {
+form#detailsEntry {
     display: none;
 }
 
@@ -127,6 +127,8 @@ input#convertButton {
 }
 
 progress#loadingTitle {
+  margin-left: 5px;
+  margin-right: 5px;
   display: none;
 }
 

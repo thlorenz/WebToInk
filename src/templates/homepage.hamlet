@@ -1,19 +1,23 @@
 <div #query>
 
-  <form .urlEntry #urlEntryForm action=@{InitUrlR}>
-    <label .urlEntry for="url" id="url">Convert URL:
-    <input .urlEntry type="text" id="urlText" name="urlText" required="required" placeholder="Enter URL" autofocus="autofocus">
-    <input .urlEntry type="submit" value="Go" id="goButton">
-    <br .urlEntry>
+  <form #urlEntry action=@{InitUrlR}>
+    <label for="url" id="url">Convert URL:
+    <input type="url" id="urlText" name="urlText" required="required" placeholder="Enter URL" autofocus="autofocus">
+    <input type="submit" value="Go" id="goButton">
+    <br>
 
-  <label .urlEntered for="webTitle" id="title" >Title:
-  <input .urlEntered type="text" name="webtitle" id="title" placeholder="Enter Title">
-  <br .urlEntered>
+  <form #detailsEntry action=@{ConvertR}>
+    <label for="url" id="url">Convert URL:
+    <input type="text" id="readOnlyUrlText" name="readOnlyUrlText" readonly="readonly">
+    <br>
+    <label for="webTitle" id="title" >Title:
+    <input type="text" name="titleText" id="titleText" placeholder="Enter Title">
+    <br>
 
-  <label .urlEntered for="author" id="author">Author:
-  <input .urlEntered type="text" name="author" id="author" placeholder="Enter Author Name">
-  <input .urlEntered type="button" value="Convert" id="convertButton">
-  <br .urlEntered>
+    <label for="author" id="author">Author:
+    <input type="text" name="author" id="author" placeholder="Enter Author Name">
+    <input type="submit" value="Convert" id="convertButton">
+    <br>
 
   <label .converted for="convertedFile" id="convertedFile">Converted File:
   <a .converted href="downloadFilename" id="convertedFile">Same as Title.mobi
@@ -24,7 +28,7 @@
   <input .converted type="button" value="Send" id="emailButton">
   <br .converted>
 
-  <progress #loadingTitle max="100">
+<progress #loadingTitle max="100">
 
 \<!-- Leave this here in order to alert users to turn on javascript to use the site -->
 <h2 ##{h2id}>You do not have Javascript enabled.

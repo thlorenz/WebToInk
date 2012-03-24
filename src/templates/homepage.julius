@@ -1,15 +1,51 @@
 document.getElementById('#{h2id}').innerHTML = "";
 
-var $urlEntryForm = $('#urlEntryForm');
+var $urlEntryForm = $('form#urlEntry');
+var $goButton = $('input#goButton');
+
+var $detailsEntryForm = $('form#detailsEntry');
+var $readOnlyUrlText = $('input#readOnlyUrlText');
+var $titleText = $('input#titleText');
+
+
 var $loadingTitleProgress = $('progress#loadingTitle');
 
 $urlEntryForm.submit(function () {
-    $urlEntryForm.hide();
     $.ajax({
         type: 'GET',
         dataType: 'json',
         url: $urlEntryForm.attr('action'),
         data: $urlEntryForm.serialize(),
+        beforeSend: function () {
+            $goButton.hide();
+            $loadingTitleProgress.fadeIn(10);
+        },
+        success: function (data) {
+            console.log (data);
+            $readOnlyUrlText.attr('value', data.url);
+            $titleText.attr('value', data.title);
+            $urlEntryForm.hide();
+            $detailsEntryForm.fadeIn(50);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            // TODO: alert user that an error occurred
+            console.log (jqXHR);
+            console.log (textStatus);
+            console.log (errorThrown);
+        },
+        complete: function () {
+            $loadingTitleProgress.fadeOut(10);
+        },
+    });
+    return false;
+});
+
+$detailsEntryForm.submit(function () {
+    $.ajax({
+        type: 'GET',
+        dataType: 'json',
+        url: $detailsEntryForm.attr('action'),
+        data: $detailsEntryForm.serialize(),
         beforeSend: function () {
             $loadingTitleProgress.show();
         },

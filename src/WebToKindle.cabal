@@ -38,6 +38,7 @@ library
                      Handler.Utils
                      Handler.Root
                      Handler.InitUrl
+                     Handler.Convert
             
 
                      -- END Yesod specific
