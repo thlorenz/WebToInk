@@ -1,13 +1,43 @@
 document.getElementById('#{h2id}').innerHTML = "";
 
+var $urlEntryForm = $('#urlEntryForm');
+var $loadingTitleProgress = $('progress#loadingTitle');
+
+
+/*
+$urlEntryForm.submit(function () {
+    $urlEntryForm.hide();
+    $.ajax({
+        type: 'GET',
+        url: '/title',
+        data: $urlEntryForm.serialize(),
+
+        beforeSend: function () {
+            $loadingTitleProgress.show();
+        },
+        success: function (data) {
+            console.log (data);
+        },
+        complete: function () {
+            $loadingTitleProgress.hide();
+        }
+    });
+});
+
 $('#button_go').click(function (event) {
     // TODO: Validate 
 
-    $('.urlEntered').fadeIn(500);
-    $('#button_go').hide();
+    $.get('title', " { 'urlInput': 'the url'} ",
+        function (data) { 
+            console.log ("success"); 
+        });
+    
+//        $('.urlEntered').fadeIn(500);
+//        $('#button_go').hide();
 });
 
 $('#button_convert').click(function (event) {
     $('.converted').fadeIn(500);
     $('#button_convert').hide();
 });
+*/

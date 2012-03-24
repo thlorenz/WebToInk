@@ -52,7 +52,7 @@ input#url {
     width: 550px;
 }
     
-input#button_go {
+input#goButton {
 }
     
 /* TITLE */
@@ -77,7 +77,7 @@ input#author {
 }
 
     
-input#button_convert {
+input#convertButton {
     margin-left: 10px;
 }
 
@@ -103,16 +103,16 @@ input#email {
     margin-left: 20px;
 }
 
-input#button_email {
+input#emailButton {
 }   
 
     
 /* BUTTONS */
-input#button_go, #button_convert, #button_download, #button_email {
+input#goButton, #convertButton, #emailButton {
     width: 80px;
 }
 
-input#button_convert {
+input#convertButton {
     margin-left: 330px;
 }
 
@@ -125,3 +125,8 @@ input#button_convert {
 .converted {
     display: none;
 }
+
+progress#loadingTitle {
+  display: none;
+}
+

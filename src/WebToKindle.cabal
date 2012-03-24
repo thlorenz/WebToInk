@@ -33,7 +33,10 @@ library
                      Model
                      Settings
                      Settings.StaticFiles
+
+                     -- Handlers
                      Handler.Root
+                     Handler.InitUrl
 
                      -- END Yesod specific
 

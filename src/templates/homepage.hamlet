@@ -1,9 +1,10 @@
 <div #query>
 
-  <label .urlEntry for="url" id="url">Convert URL:
-  <input .urlEntry type="text" name="convertURL" id="url" required="required" placeholder="Enter URL" autofocus="autofocus">
-  <input .urlEntry type="button" value="Go" id="button_go">
-  <br .urlEntry>
+  <form .urlEntry #urlEntryForm action=@{InitUrlR}>
+      <label .urlEntry for="url" id="url">Convert URL:
+      <input .urlEntry type="text" id="urlText" name="urlText" required="required" placeholder="Enter URL" autofocus="autofocus">
+      <input .urlEntry type="submit" value="Go" id="goButton">
+      <br .urlEntry>
 
   <label .urlEntered for="webTitle" id="title" >Title:
   <input .urlEntered type="text" name="webtitle" id="title" placeholder="Enter Title">
@@ -11,17 +12,19 @@
 
   <label .urlEntered for="author" id="author">Author:
   <input .urlEntered type="text" name="author" id="author" placeholder="Enter Author Name">
-  <input .urlEntered type="button" value="Convert" id="button_convert">
+  <input .urlEntered type="button" value="Convert" id="convertButton">
   <br .urlEntered>
 
   <label .converted for="convertedFile" id="convertedFile">Converted File:
-  <a .converted href="download_filename" id="convertedFile">Same as Title.mobi
+  <a .converted href="downloadFilename" id="convertedFile">Same as Title.mobi
   <br .converted>
 
   <label .converted for="email" id="email" >Send to Kindle:
   <input .converted type="email" name="user_email" id="email" placeholder="Enter valid e-mail address">
-  <input .converted type="button" value="Send" id="button_email">
+  <input .converted type="button" value="Send" id="emailButton">
   <br .converted>
+
+  <progress #loadingTitle max="100">
 
 \<!-- Leave this here in order to alert users to turn on javascript to use the site -->
 <h2 ##{h2id}>You do not have Javascript enabled.
