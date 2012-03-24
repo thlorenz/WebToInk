@@ -3,27 +3,34 @@ document.getElementById('#{h2id}').innerHTML = "";
 var $urlEntryForm = $('#urlEntryForm');
 var $loadingTitleProgress = $('progress#loadingTitle');
 
-
-/*
 $urlEntryForm.submit(function () {
     $urlEntryForm.hide();
     $.ajax({
         type: 'GET',
-        url: '/title',
+        dataType: 'json',
+        url: $urlEntryForm.attr('action'),
         data: $urlEntryForm.serialize(),
-
         beforeSend: function () {
             $loadingTitleProgress.show();
         },
         success: function (data) {
             console.log (data);
         },
+        error: function (jqXHR, textStatus, errorThrown) {
+            // TODO: alert user that an error occurred
+            console.log (jqXHR);
+            console.log (textStatus);
+            console.log (errorThrown);
+        },
         complete: function () {
             $loadingTitleProgress.hide();
-        }
+        },
     });
+    return false;
 });
 
+
+/*
 $('#button_go').click(function (event) {
     // TODO: Validate 
 

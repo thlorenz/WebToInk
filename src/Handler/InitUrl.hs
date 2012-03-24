@@ -1,12 +1,13 @@
 module Handler.InitUrl where
 
+import Data.Text (pack)
 import Import
 
-getInitUrlR :: Handler RepHtml
+getInitUrlR :: Handler RepJson
 getInitUrlR = do
     url <- runInputGet $ ireq textField "urlText"
-    liftIO . print $ " -------- Serving title request ----- for: " ++ (show url)
-    defaultLayout [whamlet|<p>Yay|]
-    {- 
-    return . RepPlain $ "{ 'title': 'some title' }"
-    -}
+    jsonToRepJson . object . toTextPairs $ [("title", "the title")] 
+
+toTextPairs :: [(String, String)] -> [(Text, Text)]
+toTextPairs = map toTextPair
+  where toTextPair (a, b) = (pack a, pack b)

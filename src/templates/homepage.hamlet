@@ -1,10 +1,10 @@
 <div #query>
 
   <form .urlEntry #urlEntryForm action=@{InitUrlR}>
-      <label .urlEntry for="url" id="url">Convert URL:
-      <input .urlEntry type="text" id="urlText" name="urlText" required="required" placeholder="Enter URL" autofocus="autofocus">
-      <input .urlEntry type="submit" value="Go" id="goButton">
-      <br .urlEntry>
+    <label .urlEntry for="url" id="url">Convert URL:
+    <input .urlEntry type="text" id="urlText" name="urlText" required="required" placeholder="Enter URL" autofocus="autofocus">
+    <input .urlEntry type="submit" value="Go" id="goButton">
+    <br .urlEntry>
 
   <label .urlEntered for="webTitle" id="title" >Title:
   <input .urlEntered type="text" name="webtitle" id="title" placeholder="Enter Title">
