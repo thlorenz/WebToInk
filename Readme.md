@@ -9,11 +9,11 @@ Given a url to an online book or a blog it will convert it into proper mobi form
 
 ## Getting started
 
-As a good example to see WebToKindle in action try converting the [Real World Haskell book](http://book.realworldhaskell.org/read/).
+As a good example to see WebToInk in action try converting the [Real World Haskell book](http://book.realworldhaskell.org/read/).
 
 After cloning this repo:
 
-    cd WebToKindle
+    cd WebToInk
     cabal install
 
     cd src

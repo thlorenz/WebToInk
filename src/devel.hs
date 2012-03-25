@@ -1,5 +1,5 @@
 {-# LANGUAGE PackageImports #-}
-import "WebToKindle" Application (getApplicationDev)
+import "WebToInk" Application (getApplicationDev)
 import Network.Wai.Handler.Warp
     (runSettings, defaultSettings, settingsPort)
 import Control.Concurrent (forkIO)
@@ -9,7 +9,7 @@ import Control.Concurrent (threadDelay)
 
 main :: IO ()
 main = do
-    putStrLn "Starting WebToKindle in development mode ..."
+    putStrLn "Starting WebToInk in development mode ..."
     (port, app) <- getApplicationDev
     forkIO $ runSettings defaultSettings
         { settingsPort = port

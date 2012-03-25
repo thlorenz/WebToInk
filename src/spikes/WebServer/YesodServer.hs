@@ -7,14 +7,14 @@ import Text.Html (URL)
 import Control.Applicative ((<$>), (<*>))
 
 
-data WebToKindleServer = WebToKindleServer 
+data WebToInkServer = WebToInkServer 
 
-instance Yesod WebToKindleServer 
+instance Yesod WebToInkServer 
 
-instance RenderMessage WebToKindleServer FormMessage where
+instance RenderMessage WebToInkServer FormMessage where
     renderMessage _ _ = defaultFormMessage
 
-mkYesod "WebToKindleServer" [parseRoutes|
+mkYesod "WebToInkServer" [parseRoutes|
     /                           RootR GET
     /stylesheets/#String        StyleR GET 
     /title                      TitleR GET 
@@ -32,7 +32,7 @@ getTitle url = do
 getRootR = defaultLayout $ do
     [whamlet|
         <div>
-            <h2>WebToKindle
+            <h2>WebToInk
             <div id="main">
             <input id="urlInput" type=url placeholder="Enter Url">
     |]
@@ -71,4 +71,4 @@ getStyleR fileName = do
     content <- liftIO $ readFile $ "public/stylesheets/" ++ fileName
     return $ RepPlain $ toContent content
 
-main = warpDebug 3000 WebToKindleServer 
+main = warpDebug 3000 WebToInkServer 

@@ -1,8 +1,8 @@
 module Foundation
-    ( WebToKindle (..)
+    ( WebToInk (..)
     , Route (..)
-    , WebToKindleMessage (..)
-    , resourcesWebToKindle
+    , WebToInkMessage (..)
+    , resourcesWebToInk
     , Handler
     , Widget
     , Form
@@ -44,7 +44,7 @@ import Network.Mail.Mime (sendmail)
 -- keep settings and values requiring initialization before your application
 -- starts running, such as database connections. Every handler will have
 -- access to the data present here.
-data WebToKindle = WebToKindle
+data WebToInk = WebToInk
     { settings :: AppConfig DefaultEnv Extra
     , getLogger :: Logger
     , getStatic :: Static -- ^ Settings for static file serving.
@@ -54,7 +54,7 @@ data WebToKindle = WebToKindle
     }
 
 -- Set up i18n messages. See the message folder.
-mkMessage "WebToKindle" "messages" "en"
+mkMessage "WebToInk" "messages" "en"
 
 -- This is where we define all of the routes in our application. For a full
 -- explanation of the syntax, please see:
@@ -62,26 +62,26 @@ mkMessage "WebToKindle" "messages" "en"
 --
 -- This function does three things:
 --
--- * Creates the route datatype WebToKindleRoute. Every valid URL in your
+-- * Creates the route datatype WebToInkRoute. Every valid URL in your
 --   application can be represented as a value of this type.
 -- * Creates the associated type:
---       type instance Route WebToKindle = WebToKindleRoute
--- * Creates the value resourcesWebToKindle which contains information on the
+--       type instance Route WebToInk = WebToInkRoute
+-- * Creates the value resourcesWebToInk which contains information on the
 --   resources declared below. This is used in Handler.hs by the call to
 --   mkYesodDispatch
 --
 -- What this function does *not* do is create a YesodSite instance for
--- WebToKindle. Creating that instance requires all of the handler functions
+-- WebToInk. Creating that instance requires all of the handler functions
 -- for our application to be in scope. However, the handler functions
--- usually require access to the WebToKindleRoute datatype. Therefore, we
+-- usually require access to the WebToInkRoute datatype. Therefore, we
 -- split these actions into two functions and place them in separate files.
-mkYesodData "WebToKindle" $(parseRoutesFile "config/routes")
+mkYesodData "WebToInk" $(parseRoutesFile "config/routes")
 
-type Form x = Html -> MForm WebToKindle WebToKindle (FormResult x, Widget)
+type Form x = Html -> MForm WebToInk WebToInk (FormResult x, Widget)
 
 -- Please see the documentation for the Yesod typeclass. There are a number
 -- of settings which can be configured by overriding methods here.
-instance Yesod WebToKindle where
+instance Yesod WebToInk where
     approot = ApprootMaster $ appRoot . settings
 
     -- Place the session key file in the config folder
@@ -128,8 +128,8 @@ minifyOrNotm ::  b -> Either a b
 minifyOrNotm = Right    
 
 -- How to run database actions.
-instance YesodPersist WebToKindle where
-    type YesodPersistBackend WebToKindle = SqlPersist
+instance YesodPersist WebToInk where
+    type YesodPersistBackend WebToInk = SqlPersist
     runDB f = do
         master <- getYesod
         Database.Persist.Store.runPool
@@ -137,8 +137,8 @@ instance YesodPersist WebToKindle where
             f
             (connPool master)
 
-instance YesodAuth WebToKindle where
-    type AuthId WebToKindle = UserId
+instance YesodAuth WebToInk where
+    type AuthId WebToInk = UserId
 
     -- Where to send a user after successful login
     loginDest _ = RootR
@@ -158,7 +158,7 @@ instance YesodAuth WebToKindle where
     authHttpManager = httpManager
 
 -- Sends off your mail. Requires sendmail in production!
-deliver :: WebToKindle -> L.ByteString -> IO ()
+deliver :: WebToInk -> L.ByteString -> IO ()
 #ifdef DEVELOPMENT
 deliver y = logLazyText (getLogger y) . Data.Text.Lazy.Encoding.decodeUtf8
 #else
@@ -167,5 +167,5 @@ deliver _ = sendmail
 
 -- This instance is required to use forms. You can modify renderMessage to
 -- achieve customized and internationalized form validation messages.
-instance RenderMessage WebToKindle FormMessage where
+instance RenderMessage WebToInk FormMessage where
     renderMessage _ _ = defaultFormMessage

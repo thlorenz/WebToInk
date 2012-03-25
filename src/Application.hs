@@ -29,7 +29,7 @@ import Handler.Convert
 -- This line actually creates our YesodSite instance. It is the second half
 -- of the call to mkYesodData which occurs in Foundation.hs. Please see
 -- the comments there for more details.
-mkYesodDispatch "WebToKindle" resourcesWebToKindle
+mkYesodDispatch "WebToInk" resourcesWebToInk
 
 -- This function allocates resources (such as a database connection pool),
 -- performs initialization and creates a WAI application. This is also the
@@ -44,7 +44,7 @@ getApplication conf logger = do
               Database.Persist.Store.applyEnv
     p <- Database.Persist.Store.createPoolConfig (dbconf :: Settings.PersistConfig)
     Database.Persist.Store.runPool dbconf (runMigration migrateAll) p
-    let foundation = WebToKindle conf setLogger s p manager dbconf
+    let foundation = WebToInk conf setLogger s p manager dbconf
     app <- toWaiAppPlain foundation
     return $ logWare app
   where
