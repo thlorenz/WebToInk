@@ -27,7 +27,8 @@ main = do
                             (argsAuthor args)   
                             (argsLanguage args) 
                             (tocUrl) 
-                            (argsFolder args)
+                            -- (argsFolder args)
+                            "../books"
                        >> return ()
         Nothing     -> putStrLn legend
                           
