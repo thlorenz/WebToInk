@@ -3,6 +3,7 @@ module WebToInk.Converter (main, prepareKindleGeneration) where
 import System.Directory (createDirectoryIfMissing, setCurrentDirectory)
 import System.Environment (getArgs)
 import System.IO (writeFile)
+import System.FilePath (makeValid)
 
 import Data.List.Utils (replace)
 import Data.List (isPrefixOf, nub)
@@ -56,7 +57,7 @@ prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
 
           where 
             createKindleStructure title author topPagesDic topPages = do
-                let targetFolder = folder ++ "/" ++ title
+                let targetFolder = makeValid $ folder ++ "/" ++ title
                  
                 createDirectoryIfMissing False targetFolder  
                 setCurrentDirectory targetFolder
@@ -124,7 +125,7 @@ processPage pi pageContents = do
 
 cleanAndLocalize :: [Url] -> PageContents -> PageContents
 cleanAndLocalize imageUrls pageContents = 
-    removeScripts . removeBaseHref .  localizeSrcUrls ("../" ++ imagesFolder) imageUrls $ pageContents 
+    {- removeScripts . -} removeBaseHref .  localizeSrcUrls ("../" ++ imagesFolder) imageUrls $ pageContents 
 
 prettifyList :: Show a => [a] -> String
 prettifyList = foldr ((++) . (++) "\n" . show) ""
