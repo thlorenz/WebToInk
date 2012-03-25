@@ -35,3 +35,9 @@ getMobi url title author targetFolder = do
     setCurrentDirectory currentDir 
     return path
     
+main = getMobi url title author targetFolder
+  where 
+    url = "http://thorstenlorenz.wordpress.com/2012/03/02/lion-logging-to-growl-messages-from-haskell-using-hslogger-an-growlnotify/"
+    title = "Logging to Growl from Haskell running on Lion « Thorsten Lorenz"
+    author = "Thorsten Lorenz"
+    targetFolder = "../books"

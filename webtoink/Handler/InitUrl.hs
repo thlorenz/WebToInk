@@ -2,8 +2,6 @@ module Handler.InitUrl where
 
 import Import
 
-import Data.Text (unpack)
-
 import Handler.Utils (getStringFromField, toTextPairs)
 import WebToInk.Converter.ConverterService (getTitle)
 

@@ -107,4 +107,5 @@ executable         WebToInk
                  -- END Yesod framework dependencies --------------
 
                  , webtoink-converter
+                 , filepath                      >= 1.2      && < 1.3
 
