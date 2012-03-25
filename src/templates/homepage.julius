@@ -4,7 +4,7 @@ var $urlEntryForm = $('form#urlEntry');
 var $goButton = $('input#goButton');
 
 var $detailsEntryForm = $('form#detailsEntry');
-var $readOnlyUrlText = $('input#readOnlyUrlText');
+var $urlText = $('input#urlText');
 var $titleText = $('input#titleText');
 
 
@@ -22,9 +22,9 @@ $urlEntryForm.submit(function () {
         },
         success: function (data) {
             console.log (data);
-            $readOnlyUrlText.attr('value', data.url);
+            $urlText.attr('value', data.url);
+            $urlText.attr('readonly', "readonly");
             $titleText.attr('value', data.title);
-            $urlEntryForm.hide();
             $detailsEntryForm.fadeIn(50);
         },
         error: function (jqXHR, textStatus, errorThrown) {

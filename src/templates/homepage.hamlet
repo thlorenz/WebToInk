@@ -7,9 +7,6 @@
     <br>
 
   <form #detailsEntry action=@{ConvertR}>
-    <label for="url" id="url">Convert URL:
-    <input type="text" id="readOnlyUrlText" name="readOnlyUrlText" readonly="readonly">
-    <br>
     <label for="webTitle" id="title" >Title:
     <input type="text" name="titleText" id="titleText" placeholder="Enter Title">
     <br>
