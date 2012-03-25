@@ -4,7 +4,7 @@ import Import
 
 import Data.Text (unpack)
 
-import Converter.ConverterService (getTitle)
+import WebToInk.Converter.ConverterService (getTitle)
 
 getInitUrlR :: Handler RepJson
 getInitUrlR = do

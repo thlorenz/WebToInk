@@ -4,7 +4,7 @@ import Import
 
 import Data.Text (unpack)
 
-import Converter.ConverterService
+import WebToInk.Converter.ConverterService
 
 getConvertR :: Handler RepJson
 getConvertR = do
