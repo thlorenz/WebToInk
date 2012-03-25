@@ -1,0 +1,1 @@
+Application.hs Foundation.hs Handler Import.hs LICENSE Model Model.hs Settings Settings.hs WebToInk.cabal WebToInk.sqlite3 config deploy devel.hs dist install.sh main.hs messages spikes static templates
