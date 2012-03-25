@@ -1,20 +1,20 @@
 Default: &defaults
-  database: WebToKindle.sqlite3
+  database: WebToInk.sqlite3
   poolsize: 10
 
 Development:
   <<: *defaults
 
 Test:
-  database: WebToKindle_test.sqlite3
+  database: WebToInk_test.sqlite3
   <<: *defaults
 
 Staging:
-  database: WebToKindle_staging.sqlite3
+  database: WebToInk_staging.sqlite3
   poolsize: 100
   <<: *defaults
 
 Production:
-  database: WebToKindle_production.sqlite3
+  database: WebToInk_production.sqlite3
   poolsize: 100
   <<: *defaults

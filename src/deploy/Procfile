@@ -11,7 +11,7 @@
 #     mv deploy/Procfile ./
 #
 # * Create an empty package.json
-#     echo '{ "name": "WebToKindle", "version": "0.0.1", "dependencies": {} }' >> package.json
+#     echo '{ "name": "WebToInk", "version": "0.0.1", "dependencies": {} }' >> package.json
 # 
 # Postgresql Yesod setup:
 #
@@ -80,13 +80,13 @@
 # * make your Yesod project the git repository for that application
 # * create a deploy branch
 #
-#     git checkout -b deploy
+ink     git checkout -b deploy
 #
 # Repeat these steps to deploy:
 # * add your web executable binary (referenced below) to the git repository
 #
 #     git checkout deploy
-#     git add ./dist/build/WebToKindle/WebToKindle
+#     git add ./dist/build/WebToInk/WebToInk
 #     git commit -m deploy
 #
 # * push to Heroku
@@ -95,4 +95,4 @@
 
 
 # Heroku configuration that runs your app
-web: ./dist/build/WebToKindle/WebToKindle production -p $PORT
+web: ./dist/build/WebToInk/WebToInk production -p $PORT

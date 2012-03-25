@@ -1,7 +1,7 @@
 Default: &defaults
   host: "localhost"
   port: 3000
-  copyright: # WebToKindle (Lorenz & Capistrano) 
+  copyright: # WebToInk (Lorenz & Capistrano) 
   # analytics: UA-YOURCODE
 
 Development:
@@ -14,5 +14,5 @@ Staging:
   <<: *defaults
 
 Production:
-  approot: "http://thlorenz.com/webtokindle"
+  approot: "http://thlorenz.com/webtoink"
   <<: *defaults
