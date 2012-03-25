@@ -18,14 +18,13 @@ $urlEntryForm.submit(function () {
         data: $urlEntryForm.serialize(),
         beforeSend: function () {
             $goButton.hide();
-            $loadingTitleProgress.fadeIn(10);
+            $loadingTitleProgress.fadeIn(100);
         },
         success: function (data) {
-            console.log (data);
-            $urlText.attr('value', data.url);
             $urlText.attr('readonly', "readonly");
+            $urlText.attr('value', data.url);
             $titleText.attr('value', data.title);
-            $detailsEntryForm.fadeIn(50);
+            $detailsEntryForm.fadeIn(500);
         },
         error: function (jqXHR, textStatus, errorThrown) {
             // TODO: alert user that an error occurred
@@ -34,18 +33,21 @@ $urlEntryForm.submit(function () {
             console.log (errorThrown);
         },
         complete: function () {
-            $loadingTitleProgress.fadeOut(10);
+            $loadingTitleProgress.fadeOut(100);
         },
     });
     return false;
 });
 
 $detailsEntryForm.submit(function () {
+
+    combinedSerialize = $detailsEntryForm.serialize() + "&" + $urlEntryForm.serialize();
+
     $.ajax({
         type: 'GET',
         dataType: 'json',
         url: $detailsEntryForm.attr('action'),
-        data: $detailsEntryForm.serialize(),
+        data: combinedSerialize, 
         beforeSend: function () {
             $loadingTitleProgress.show();
         },
@@ -64,23 +66,3 @@ $detailsEntryForm.submit(function () {
     });
     return false;
 });
-
-
-/*
-$('#button_go').click(function (event) {
-    // TODO: Validate 
-
-    $.get('title', " { 'urlInput': 'the url'} ",
-        function (data) { 
-            console.log ("success"); 
-        });
-    
-//        $('.urlEntered').fadeIn(500);
-//        $('#button_go').hide();
-});
-
-$('#button_convert').click(function (event) {
-    $('.converted').fadeIn(500);
-    $('#button_convert').hide();
-});
-*/

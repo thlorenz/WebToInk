@@ -4,5 +4,6 @@ import Import
 
 getConvertR :: Handler RepJson
 getConvertR = do
-    url <- runInputGet $ ireq textField "readOnlyUrlText"
+    url <- runInputGet $ ireq textField "urlText"
+    liftIO . print $ "Converting"
     jsonToRepJson . object . toTextPairs $ [("converted", "the converted")] 
