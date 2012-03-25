@@ -1,8 +1,8 @@
-module Converter.Images(getImages) where
+module WebToInk.Converter.Images(getImages) where
 
 import Import
 
-import Converter.Types
+import WebToInk.Converter.Types
 
 import Text.HTML.TagSoup(parseTags, Tag(..), (~==))
 import System.FilePath(takeExtension)

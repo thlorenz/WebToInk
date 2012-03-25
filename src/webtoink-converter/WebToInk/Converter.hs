@@ -1,6 +1,4 @@
-module Converter.Converter (main, prepareKindleGeneration) where
-
-import Import hiding (fileName)
+module WebToInk.Converter (main, prepareKindleGeneration) where
 
 import System.Directory (createDirectoryIfMissing, setCurrentDirectory)
 import System.Environment (getArgs)
@@ -8,14 +6,14 @@ import System.IO (writeFile)
 import Data.List.Utils (replace)
 import Data.List (isPrefixOf, nub)
 
-import Converter.HtmlPages 
-import Converter.Images (getImages)
-import Converter.Download (downloadPage, savePage, downloadAndSaveImages, getSrcFilePath)
-import Converter.OpfGeneration (generateOpf)
-import Converter.TocGeneration (generateToc)
-import Converter.CommandLineParser (Args(..), legend, parseArgs)
-import Converter.Types
-import Converter.Constants
+import WebToInk.Converter.HtmlPages 
+import WebToInk.Converter.Images (getImages)
+import WebToInk.Converter.Download (downloadPage, savePage, downloadAndSaveImages, getSrcFilePath)
+import WebToInk.Converter.OpfGeneration (generateOpf)
+import WebToInk.Converter.TocGeneration (generateToc)
+import WebToInk.Converter.CommandLineParser (Args(..), legend, parseArgs)
+import WebToInk.Converter.Types
+import WebToInk.Converter.Constants
 
 main :: IO ()
 main = do   

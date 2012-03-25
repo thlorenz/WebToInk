@@ -1,9 +1,9 @@
-module Converter.TocGeneration(generateToc) where
+module WebToInk.Converter.TocGeneration(generateToc) where
 
 import Import
 
-import Converter.Constants
-import Converter.Utils(getTabs)
+import WebToInk.Converter.Constants
+import WebToInk.Converter.Utils(getTabs)
 
 import System.FilePath(dropExtension)
 import Data.Char(toUpper)

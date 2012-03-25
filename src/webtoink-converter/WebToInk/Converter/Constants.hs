@@ -1,6 +1,4 @@
-module Converter.Constants where
-
-import Import 
+module WebToInk.Converter.Constants where
 
 imagesFolder = "images" :: FilePath
 pagesFolder = "pages"   :: FilePath

@@ -1,4 +1,4 @@
-module Converter.Download
+module WebToInk.Converter.Download
     ( downloadAndSaveImages
     , downloadPage
     , savePage
@@ -16,9 +16,9 @@ import qualified Data.ByteString.Lazy as L
 
 import Test.HUnit
 
-import Converter.Types
-import Converter.Constants (pagesFolder, imagesFolder)
-import Converter.Utils (openUrl, downloadByteString)
+import WebToInk.Converter.Types
+import WebToInk.Converter.Constants (pagesFolder, imagesFolder)
+import WebToInk.Converter.Utils (openUrl, downloadByteString)
 
 downloadAndSaveImages ::  Url -> Url -> [Url] -> IO [()]
 downloadAndSaveImages rootUrl pageUrl imageUrls = do

@@ -1,4 +1,4 @@
-module Converter.Types where
+module WebToInk.Converter.Types where
 
 import Import
 

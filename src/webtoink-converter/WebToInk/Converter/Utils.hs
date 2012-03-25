@@ -1,4 +1,4 @@
-module Converter.Utils(openUrl, downloadByteString, getTabs, cleanFolderName) where
+module WebToInk.Converter.Utils(openUrl, downloadByteString, getTabs, cleanFolderName) where
 
 import Import hiding (replace)
 
@@ -12,7 +12,7 @@ import Data.List.Utils (replace)
 
 import Control.Exception (try)
 
-import Converter.Types
+import WebToInk.Converter.Types
 
 openUrl :: String -> IO (Maybe String)
 openUrl url = do

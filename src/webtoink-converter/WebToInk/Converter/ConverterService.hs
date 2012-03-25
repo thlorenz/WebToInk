@@ -1,4 +1,4 @@
-module Converter.ConverterService where
+module WebToInk.Converter.ConverterService where
 
 import Import
 
@@ -6,10 +6,10 @@ import System.Cmd (rawSystem)
 import System.Directory (setCurrentDirectory, getCurrentDirectory)
 import System.FilePath((<.>))
 
-import Converter.Types
-import Converter.Download (downloadPage)
-import Converter.HtmlPages (resolveTitle)
-import Converter.Converter (prepareKindleGeneration)
+import WebToInk.Converter.Types
+import WebToInk.Converter.Download (downloadPage)
+import WebToInk.Converter.HtmlPages (resolveTitle)
+import WebToInk.Converter.Converter (prepareKindleGeneration)
 
 -- | Tries to download page at given url and resolve title.
 -- If anything goes wrong an empty string is returned.

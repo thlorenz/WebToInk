@@ -1,9 +1,9 @@
-module Converter.OpfGeneration(generateOpf) where
+module WebToInk.Converter.OpfGeneration(generateOpf) where
 
 import Import
 
-import Converter.Constants
-import Converter.Utils (getTabs)
+import WebToInk.Converter.Constants
+import WebToInk.Converter.Utils (getTabs)
 
 import System.FilePath (dropExtension)
 

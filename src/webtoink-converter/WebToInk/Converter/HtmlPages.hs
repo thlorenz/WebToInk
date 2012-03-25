@@ -1,6 +1,6 @@
 {-# LANGUAGE NoMonomorphismRestriction #-}
 
-module Converter.HtmlPages 
+module WebToInk.Converter.HtmlPages 
     ( getHtmlPages
     , GetHtmlPagesResult(..)
     , filterOutSections
@@ -23,13 +23,13 @@ import Text.HTML.TagSoup (parseTags, Tag(..), (~==), sections)
 import System.FilePath (takeDirectory, takeFileName, takeExtension, takeBaseName)
 import Data.List (nub)
 import Data.String.Utils (replace)
-import Converter.Download (getSrcFilePath)
+import WebToInk.Converter.Download (getSrcFilePath)
 
 import Test.HUnit
 
-import Converter.Types
-import Converter.Utils (openUrl, cleanFolderName)
-import Converter.Download (downloadPage)
+import WebToInk.Converter.Types
+import WebToInk.Converter.Utils (openUrl, cleanFolderName)
+import WebToInk.Converter.Download (downloadPage)
 
 data GetHtmlPagesResult = GetHtmlPagesResult 
     { ghpTocContent      :: String
