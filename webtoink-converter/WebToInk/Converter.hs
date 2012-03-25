@@ -59,10 +59,15 @@ prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
 
           where 
             createKindleStructure title author topPagesDic topPages = do
-                targetFolder <- createTempDirectory folder (head . words $ title)
+                putStrLn $ "creating temp folder in " ++ (show folder)
+
+                targetFolder <- createTempDirectory folder "webtoink" 
+
+                putStrLn $ "created temp folder" ++ (show targetFolder)
                  
-                createDirectoryIfMissing False targetFolder  
                 setCurrentDirectory targetFolder
+
+                putStrLn "Starting to download pages"
 
                 result <- downloadPages tocUrl topPagesDic    
                 
