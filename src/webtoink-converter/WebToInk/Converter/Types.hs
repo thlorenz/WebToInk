@@ -1,6 +1,6 @@
 module WebToInk.Converter.Types where
 
-import Import
+
 
 type Line         = String
 type PageContents = String

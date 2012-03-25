@@ -1,7 +1,5 @@
 module WebToInk.Converter.TocGeneration(generateToc) where
 
-import Import
-
 import WebToInk.Converter.Constants
 import WebToInk.Converter.Utils(getTabs)
 

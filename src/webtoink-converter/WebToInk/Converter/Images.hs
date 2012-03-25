@@ -1,7 +1,5 @@
 module WebToInk.Converter.Images(getImages) where
 
-import Import
-
 import WebToInk.Converter.Types
 
 import Text.HTML.TagSoup(parseTags, Tag(..), (~==))

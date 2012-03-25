@@ -5,8 +5,6 @@ module WebToInk.Converter.Download
     , getSrcFilePath
     ) where
 
-import Import
-
 import System.Directory (createDirectoryIfMissing, setCurrentDirectory, doesFileExist)
 import System.IO (hPutStr, withFile, IOMode(..), writeFile)
 import System.FilePath (takeFileName, takeDirectory)

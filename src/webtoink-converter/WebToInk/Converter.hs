@@ -3,6 +3,7 @@ module WebToInk.Converter (main, prepareKindleGeneration) where
 import System.Directory (createDirectoryIfMissing, setCurrentDirectory)
 import System.Environment (getArgs)
 import System.IO (writeFile)
+
 import Data.List.Utils (replace)
 import Data.List (isPrefixOf, nub)
 

@@ -14,9 +14,6 @@ module WebToInk.Converter.HtmlPages
     , localizeSrcUrls 
     ) where 
 
-import Import hiding (replace)
-import Prelude (head) -- FIXME: find non-evil head replacement
-
 import Data.Maybe (fromJust)
 
 import Text.HTML.TagSoup (parseTags, Tag(..), (~==), sections)

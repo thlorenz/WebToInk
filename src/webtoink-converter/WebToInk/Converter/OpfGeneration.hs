@@ -1,7 +1,5 @@
 module WebToInk.Converter.OpfGeneration(generateOpf) where
 
-import Import
-
 import WebToInk.Converter.Constants
 import WebToInk.Converter.Utils (getTabs)
 

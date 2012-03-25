@@ -1,7 +1,5 @@
 module WebToInk.Converter.Utils(openUrl, downloadByteString, getTabs, cleanFolderName) where
 
-import Import hiding (replace)
-
 import Network.HTTP.Enumerator (simpleHttp, HttpException(..))
 
 import qualified Data.ByteString.Lazy as L

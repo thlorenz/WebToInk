@@ -1,7 +1,5 @@
 module WebToInk.Converter.CommandLineParser(Args(..), legend, parseArgs) where
 
-import Import 
-
 import WebToInk.Converter.Types
 
 import System.Environment (getArgs)
