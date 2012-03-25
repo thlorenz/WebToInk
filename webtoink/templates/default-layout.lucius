@@ -12,7 +12,7 @@ header {
 	}
 	
 div#headerLogo {
-	background: transparent url(../images/Logo_WtK_angledicon.png) no-repeat;
+	background: transparent url(../images/Logo_WebToInk.png) no-repeat;
 	background-size: 100%;
 	width: 200px;
 	height: 200px;
