@@ -12,7 +12,7 @@
     <br>
 
     <label for="author" id="author">Author:
-    <input type="text" name="author" id="author" placeholder="Enter Author Name">
+    <input type="text" name="authorText" id="authorText" placeholder="Enter Author Name">
     <input type="submit" value="Convert" id="convertButton">
     <br>
 

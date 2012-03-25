@@ -43,7 +43,8 @@ library
 
                      -- END Yesod specific
 
-                     Converter
+                     Converter.Converter
+                     Converter.ConverterService
                      Converter.CommandLineParser
                      Converter.Constants
                      Converter.Download
@@ -131,4 +132,5 @@ executable         WebToKindle
                  , utf8-string                    >= 0.3       && < 0.4
                  , mtl                            >= 2.0       && < 2.2
                  , regex-compat                   >= 0.9       && < 1.0
+                 , process                        >= 1.0       && < 1.1
 

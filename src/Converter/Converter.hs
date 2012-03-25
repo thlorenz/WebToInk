@@ -1,4 +1,4 @@
-module Converter where
+module Converter.Converter (main, prepareKindleGeneration) where
 
 import Import hiding (fileName)
 
@@ -17,6 +17,7 @@ import Converter.CommandLineParser (Args(..), legend, parseArgs)
 import Converter.Types
 import Converter.Constants
 
+main :: IO ()
 main = do   
 
     args <- (fmap parseArgs) getArgs 
@@ -28,10 +29,11 @@ main = do
                             (argsLanguage args) 
                             (tocUrl) 
                             (argsFolder args)
+                       >> return ()
         Nothing     -> putStrLn legend
                           
 
-prepareKindleGeneration :: Maybe String -> Maybe String -> String -> Url -> FilePath -> IO ()
+prepareKindleGeneration :: Maybe String -> Maybe String -> String -> Url -> FilePath -> IO FilePath 
 prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
 
     maybeGetHtmlPagesResult <- getHtmlPages tocUrl
@@ -39,6 +41,7 @@ prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
     case maybeGetHtmlPagesResult of
         Just result   -> prepare result 
         Nothing       -> putStrLn "Error could not download table of contents and processed no html pages!!!"
+                         >> return ""
   where 
         prepare (GetHtmlPagesResult tocContent pagesDic) = do
             let author = resolveAuthor maybeAuthor tocContent
@@ -81,6 +84,8 @@ prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
                 writeFile "toc.ncx" tocString
 
                 setCurrentDirectory ".."
+                
+                return targetFolder
                     
 
 downloadPages :: Url -> [(FilePath, Url)] -> IO DownloadPagesResult 
