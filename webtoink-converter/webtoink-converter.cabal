@@ -1,0 +1,45 @@
+Name:                webtoink-converter
+Version:             0.0.0
+Synopsis:            Exposes utilities to convert web pages into different ebook formats.
+Description:         Convert html books/blogs into .mobi, .epub, .pdf files 
+Homepage:            https://github.com/thlorenz/WebToInk
+License:             BSD3
+License-file:        LICENSE
+Author:              Lorenz & Capistrano
+Category:            Web
+Build-type:          Simple
+Cabal-version:       >=1.6
+
+Library
+  Exposed-modules:    WebToInk.Converter
+                    , WebToInk.Converter.ConverterService
+
+  Build-depends:      base                          >= 4        && < 5 
+                    , tagsoup
+                    , http-enumerator               >= 0.7      && < 0.8
+                    , HUnit                         >= 1.2      && < 1.3
+                    , directory                     >= 1.1      && < 1.2
+                    , filepath                      >= 1.2      && < 1.3
+                    , transformers                  >= 0.2      && < 0.3
+                    , utf8-string                   >= 0.3      && < 0.4
+                    , mtl                           >= 2.0      && < 2.2
+                    , regex-compat                  >= 0.9      && < 1.0
+                    , process                       >= 1.0      && < 1.1
+                    , bytestring                    >= 0.9      && < 1.0
+                                                    
+
+  Other-modules:      Data.List.Utils
+                    , Data.String.Utils
+                    , WebToInk.Converter.CommandLineParser
+                    , WebToInk.Converter.Constants
+                    , WebToInk.Converter.Download
+                    , WebToInk.Converter.HtmlPages
+                    , WebToInk.Converter.Images
+                    , WebToInk.Converter.OpfGeneration
+                    , WebToInk.Converter.TocGeneration
+                    , WebToInk.Converter.Types
+                    , WebToInk.Converter.Utils
+  
+source-repository head
+  type:     git
+  location: https://github.com/thlorenz/webtoink
