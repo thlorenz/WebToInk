@@ -22,13 +22,13 @@ getTitle url = do
 -- Downloads all the pages and their images.
 -- Then generated a .mobi file from it using the kindlegen tool
 -- Finally it returns the path to the generated mobi file from which it can be downloaded.
-getMobi :: Url -> String -> String -> IO FilePath
-getMobi url title author = do
+getMobi :: Url -> String -> String -> FilePath -> IO FilePath
+getMobi url title author targetFolder = do
     -- TODO: wrap all this inside try catch
     currentDir <- getCurrentDirectory
 
     putStrLn $ "Preparing " ++ title ++ " by " ++ author
-    path <- prepareKindleGeneration (Just title) (Just author) "en-us" url "../books"
+    path <- prepareKindleGeneration (Just title) (Just author) "en-us" url targetFolder
     setCurrentDirectory path
     rawSystem "kindlegen" [ "-o", title<.>"mobi", "book.opf" ]
 
