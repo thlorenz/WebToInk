@@ -59,8 +59,6 @@ module Data.List.Utils(-- * Merging
                      -- sub,
                     ) where
 
-import Import hiding (get, replace)
-
 import Data.List(intersperse, concat, isPrefixOf, isSuffixOf, elemIndices,
                 elemIndex, elemIndices, tails, find, findIndex, isInfixOf)
 import Control.Monad.State(State, get, put)
