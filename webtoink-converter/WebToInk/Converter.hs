@@ -3,11 +3,12 @@ module WebToInk.Converter (main, prepareKindleGeneration) where
 import System.Directory (createDirectoryIfMissing, setCurrentDirectory)
 import System.Environment (getArgs)
 import System.IO (writeFile)
+import System.IO.Temp (createTempDirectory)
+
 import System.FilePath (makeValid)
 
 import Data.List.Utils (replace)
 import Data.List (isPrefixOf, nub)
-import Distribution.Compat.TempFile (createTempDirectory)
 
 import WebToInk.Converter.HtmlPages 
 import WebToInk.Converter.Images (getImages)
