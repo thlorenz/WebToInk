@@ -1,0 +1,24 @@
+src
+    WebConverter
+        Converter files
+        LICENSE
+        WebConverter.cabal
+        Data
+            List
+            String
+        scripts
+            make-.. scripts
+    WebToInk
+        LICENSE
+        yesod site
+        WebToInk.cabal
+    spikes
+        spikes files and subfolders
+
+research
+    rearch mds
+books
+    generated books
+Readme.md
+Libs.md
+BooksToConvert.md
