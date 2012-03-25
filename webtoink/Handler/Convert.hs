@@ -4,13 +4,14 @@ import Import
 
 import Data.Text (unpack)
 
+import Handler.Utils (getStringFromField, toTextPairs)
 import WebToInk.Converter.ConverterService
 
 getConvertR :: Handler RepJson
 getConvertR = do
-    url <- fmap unpack . runInputGet $ ireq textField "urlText"
-    title <- fmap unpack . runInputGet $ ireq textField "titleText"
-    author <- fmap unpack . runInputGet $ ireq textField "authorText"
+    url     <- getStringFromField "urlText"
+    title   <- getStringFromField "titleText"
+    author  <- getStringFromField "authorText"
     liftIO . print $ "Converting"
     path <- liftIO $ getMobi url title author
     jsonToRepJson . object . toTextPairs $ [("converted", "the converted")] 

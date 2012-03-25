@@ -4,11 +4,12 @@ import Import
 
 import Data.Text (unpack)
 
+import Handler.Utils (getStringFromField, toTextPairs)
 import WebToInk.Converter.ConverterService (getTitle)
 
 getInitUrlR :: Handler RepJson
 getInitUrlR = do
-    url <- fmap unpack . runInputGet $ ireq textField "urlText"
+    url <- getStringFromField "urlText"
     title <- liftIO . getTitle $ url
     jsonToRepJson . object . toTextPairs $ 
         [ ("title"  , title)

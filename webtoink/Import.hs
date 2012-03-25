@@ -3,7 +3,6 @@ module Import
     , module Yesod
     , module Foundation
     , module Settings.StaticFiles
-    , module Handler.Utils
     , module Data.Monoid
     , module Control.Applicative
     , Text
@@ -19,7 +18,6 @@ import Data.Monoid (Monoid (mappend, mempty, mconcat))
 import Control.Applicative ((<$>), (<*>), pure)
 import Data.Text (Text)
 import Settings.StaticFiles
-import Handler.Utils
 
 #if __GLASGOW_HASKELL__ < 740
 infixr 5 <>
