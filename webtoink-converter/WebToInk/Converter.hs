@@ -7,6 +7,7 @@ import System.FilePath (makeValid)
 
 import Data.List.Utils (replace)
 import Data.List (isPrefixOf, nub)
+import Distribution.Compat.TempFile (createTempDirectory)
 
 import WebToInk.Converter.HtmlPages 
 import WebToInk.Converter.Images (getImages)
@@ -57,7 +58,7 @@ prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
 
           where 
             createKindleStructure title author topPagesDic topPages = do
-                let targetFolder = makeValid $ folder ++ "/" ++ title
+                targetFolder <- createTempDirectory folder (head . words $ title)
                  
                 createDirectoryIfMissing False targetFolder  
                 setCurrentDirectory targetFolder

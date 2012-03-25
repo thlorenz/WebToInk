@@ -26,6 +26,8 @@ Library
                     , regex-compat                  >= 0.9      && < 1.0
                     , process                       >= 1.0      && < 1.1
                     , bytestring                    >= 0.9      && < 1.0
+                    , unix                          >= 2.4      && < 2.5
+
                                                     
 
   Other-modules:      Data.List.Utils
