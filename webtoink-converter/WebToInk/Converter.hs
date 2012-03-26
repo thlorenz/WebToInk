@@ -1,11 +1,11 @@
 module WebToInk.Converter (main, prepareKindleGeneration) where
 
-import System.Directory (createDirectoryIfMissing, setCurrentDirectory)
+import System.Directory (createDirectoryIfMissing)
 import System.Environment (getArgs)
 import System.IO (writeFile)
 import System.IO.Temp (createTempDirectory)
 
-import System.FilePath (makeValid)
+import System.FilePath (combine)
 
 import Data.List.Utils (replace)
 import Data.List (isPrefixOf, nub)
@@ -39,94 +39,90 @@ main = do
 prepareKindleGeneration :: Maybe String -> Maybe String -> String -> Url -> FilePath -> IO FilePath 
 prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
 
+    targetFolder <- createTempDirectory folder "webtoink"
     maybeGetHtmlPagesResult <- getHtmlPages tocUrl
 
     case maybeGetHtmlPagesResult of
-        Just result   -> prepare result 
+        Just result   -> prepare result targetFolder
         Nothing       -> putStrLn "Error could not download table of contents and processed no html pages!!!"
                          >> return ""
   where 
-        prepare (GetHtmlPagesResult tocContent pagesDic) = do
-            let author = resolveAuthor maybeAuthor tocContent
-            let title = resolveTitle maybeTitle tocContent
+    prepare (GetHtmlPagesResult tocContent pagesDic) targetFolder = do
+        let author = resolveAuthor maybeAuthor tocContent
+        let title = resolveTitle maybeTitle tocContent
 
-            let topPagesDic = filter (isTopLink . fst) pagesDic
-            let topPages = map fst topPagesDic
+        let topPagesDic = filter (isTopLink . fst) pagesDic
+        let topPages = map fst topPagesDic
 
-            putStrLn $ prettifyList topPagesDic
+        putStrLn $ prettifyList topPagesDic
+        
+        createKindleStructure title author topPagesDic topPages targetFolder
+
+      where 
+        correctFolder targetFolder (filePath, url) = (combine targetFolder filePath, url)
+        createKindleStructure title author topPagesDic topPages targetFolder = do
+            putStrLn $ "creating temp folder in " ++ (show folder)
+
+            putStrLn $ "created temp folder" ++ (show targetFolder)
+             
+            putStrLn "Starting to download pages"
+
+            result <- downloadPages tocUrl topPagesDic targetFolder
             
-            createKindleStructure title author topPagesDic topPages
+            let failedFileNames = map piFileName $ failedPages result
+            let goodTopPages = filter (`notElem` failedFileNames) topPages
 
-          where 
-            createKindleStructure title author topPagesDic topPages = do
-                putStrLn $ "creating temp folder in " ++ (show folder)
+            putStrLn "\nDownload Summary"
+            putStrLn   "----------------\n"
 
-                targetFolder <- createTempDirectory folder "webtoink" 
+            putStr "Successfully downloaded:"
+            putStrLn $ (prettifyList goodTopPages) ++ "\n"
 
-                putStrLn $ "created temp folder" ++ (show targetFolder)
-                 
-                setCurrentDirectory targetFolder
+            putStr "Failed to download:"
+            putStrLn $ (prettifyList failedFileNames) ++"\n"
 
-                putStrLn "Starting to download pages"
+            putStrLn "Generating book.opf"
+            let opfString = generateOpf goodTopPages (allImageUrls result) title language author 
+            writeFile (combine targetFolder "book.opf") opfString
 
-                result <- downloadPages tocUrl topPagesDic    
+            putStrLn "Generating toc.ncx"
+            let tocString = generateToc goodTopPages title language author
+            writeFile (combine targetFolder "toc.ncx") tocString
+
+            return targetFolder
                 
-                let failedFileNames = map piFileName $ failedPages result
-                let goodTopPages = filter (`notElem` failedFileNames) topPages
 
-                putStrLn "\nDownload Summary"
-                putStrLn   "----------------\n"
-
-                putStr "Successfully downloaded:"
-                putStrLn $ (prettifyList goodTopPages) ++ "\n"
-
-                putStr "Failed to download:"
-                putStrLn $ (prettifyList failedFileNames) ++"\n"
-
-                putStrLn "Generating book.opf"
-                let opfString = generateOpf goodTopPages (allImageUrls result) title language author 
-                writeFile "book.opf" opfString
-
-                putStrLn "Generating toc.ncx"
-                let tocString = generateToc goodTopPages title language author
-                writeFile "toc.ncx" tocString
-
-                setCurrentDirectory ".."
-                
-                return targetFolder
-                    
-
-downloadPages :: Url -> [(FilePath, Url)] -> IO DownloadPagesResult 
-downloadPages tocUrl topPagesDic = do
+downloadPages :: Url -> [(FilePath, Url)] -> FilePath -> IO DownloadPagesResult 
+downloadPages tocUrl topPagesDic targetFolder = do
     let rootUrl = getRootUrl tocUrl
 
     downloadResults <- mapM (\(fileName, pageUrl) ->
-        tryProcessPage $ PageInfo rootUrl pageUrl fileName) topPagesDic 
+        tryProcessPage (PageInfo rootUrl pageUrl fileName) targetFolder) topPagesDic 
     
     let uniqueImageUrls = 
             map (getSrcFilePath "") . nub . concat . map allImageUrls $ downloadResults 
     let allFailedPages = concat . map failedPages $ downloadResults
     return $ DownloadPagesResult uniqueImageUrls allFailedPages
 
-tryProcessPage :: PageInfo -> IO (DownloadPagesResult)
-tryProcessPage pi = do
+tryProcessPage :: PageInfo -> FilePath -> IO (DownloadPagesResult)
+tryProcessPage pi targetFolder = do
     maybePageContents <- downloadPage (piPageUrl pi)
 
     case maybePageContents of
         Just pageContents -> do
-            imageUrls <- processPage pi pageContents 
+            imageUrls <- processPage pi pageContents targetFolder
             return $ DownloadPagesResult imageUrls []
         Nothing           -> return $ DownloadPagesResult [] [pi]
         
-processPage :: PageInfo -> PageContents -> IO [String]
-processPage pi pageContents = do
+processPage :: PageInfo -> PageContents -> FilePath -> IO [String]
+processPage pi pageContents targetFolder = do
     let imageUrls = (filter (not . ("https:" `isPrefixOf`)) . getImages) pageContents
 
-    downloadAndSaveImages (piRootUrl pi) (piPageUrl pi) imageUrls
+    downloadAndSaveImages targetFolder (piRootUrl pi) (piPageUrl pi) imageUrls
 
     let adaptedPageContents = cleanAndLocalize imageUrls pageContents
 
-    savePage (piFileName pi) adaptedPageContents
+    savePage targetFolder (piFileName pi) adaptedPageContents
 
     return imageUrls
 

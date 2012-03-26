@@ -7,7 +7,7 @@ module WebToInk.Converter.Download
 
 import System.Directory (createDirectoryIfMissing, setCurrentDirectory, doesFileExist)
 import System.IO (hPutStr, withFile, IOMode(..), writeFile)
-import System.FilePath (takeFileName, takeDirectory)
+import System.FilePath (takeFileName, takeDirectory, combine)
 import Data.List (isPrefixOf)
 
 import qualified Data.ByteString.Lazy as L
@@ -18,18 +18,20 @@ import WebToInk.Converter.Types
 import WebToInk.Converter.Constants (pagesFolder, imagesFolder)
 import WebToInk.Converter.Utils (openUrl, downloadByteString)
 
-downloadAndSaveImages ::  Url -> Url -> [Url] -> IO [()]
-downloadAndSaveImages rootUrl pageUrl imageUrls = do
-    createDirectoryIfMissing False imagesFolder
-    mapM (downloadAndSaveImage imagesFolder rootUrl pageUrl) imageUrls
+downloadAndSaveImages :: FilePath ->  Url -> Url -> [Url] -> IO [()]
+downloadAndSaveImages targetFolder rootUrl pageUrl imageUrls = do
+    createDirectoryIfMissing False fullPathImagesFolder
+    mapM (downloadAndSaveImage fullPathImagesFolder rootUrl pageUrl) imageUrls
+  where fullPathImagesFolder = combine targetFolder imagesFolder
 
 downloadPage ::  Url -> IO (Maybe String)
 downloadPage = openUrl . cleanUrl
 
-savePage ::  FilePath -> String -> IO ()
-savePage fileName pageContents = do
-    createDirectoryIfMissing False pagesFolder
-    writeFile (pagesFolder ++ "/" ++ fileName) pageContents 
+savePage :: FilePath ->  FilePath -> String -> IO ()
+savePage targetFolder fileName pageContents = do
+    createDirectoryIfMissing False fullPagesFolder
+    writeFile (combine fullPagesFolder fileName) pageContents 
+  where fullPagesFolder = combine targetFolder pagesFolder
 
 downloadAndSaveImage :: FilePath -> Url -> Url -> Url -> IO ()
 downloadAndSaveImage targetFolder rootUrl pageUrl url = do
@@ -59,7 +61,7 @@ resolveUrl rootUrl pageUrl url
 cleanUrl = takeWhile (\x -> x /= '?' && x /= '#')
 
 getSrcFilePath :: FilePath -> Url -> FilePath
-getSrcFilePath targetFolder url = targetFolder ++ "/" ++ takeFileName url
+getSrcFilePath targetFolder url = (combine targetFolder $ takeFileName url)
 
 -----------------------
 -- ----  Tests  ---- --
