@@ -6,7 +6,7 @@
     <input type="submit" value="Go" id="goButton">
     <br>
 
-  <form #detailsEntry action=@{ConvertR}>
+  <form #detailsEntry .urlEntered action=@{ConvertR}>
     <label for="webTitle" id="title" >Title:
     <input type="text" name="titleText" id="titleText" placeholder="Enter Title">
     <br>
@@ -16,14 +16,16 @@
     <input type="submit" value="Convert" id="convertButton">
     <br>
 
-  <label .converted for="convertedFile" id="convertedFile">Converted File:
-  <a .converted href="downloadFilename" id="convertedFile">Same as Title.mobi
-  <br .converted>
+  <div #convertedFile .converted>
+    <label for="convertedFile" id="convertedFile">Converted File:
 
-  <label .converted for="email" id="email" >Send to Kindle:
-  <input .converted type="email" name="user_email" id="email" placeholder="Enter valid e-mail address">
-  <input .converted type="button" value="Send" id="emailButton">
-  <br .converted>
+  <br>
+
+  <div #sendToKindle .converted>
+    <label for="email" id="sendToKindle" >Send to Kindle:
+    <input type="email" name="user_email" id="sendToKindleText" placeholder="Enter valid e-mail address">
+    <input type="button" value="Send" id="sendToKindleButton">
+    <br>
 
 <progress #loadingTitle max="100">
 

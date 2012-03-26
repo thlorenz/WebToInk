@@ -2,7 +2,7 @@ module WebToInk.Converter.ConverterService where
 
 import System.Cmd (rawSystem)
 import System.Directory (setCurrentDirectory, getCurrentDirectory)
-import System.FilePath((<.>))
+import System.FilePath(combine, (<.>))
 
 import WebToInk.Converter.Types
 import WebToInk.Converter.Download (downloadPage)
@@ -29,11 +29,15 @@ getMobi url title author targetFolder = do
 
     putStrLn $ "Preparing " ++ title ++ " by " ++ author
     path <- prepareKindleGeneration (Just title) (Just author) "en-us" url targetFolder
+
     setCurrentDirectory path
-    rawSystem "kindlegen" [ "-o", title<.>"mobi", "book.opf" ]
+
+    rawSystem "kindlegen" [ "-o", targetFile, "book.opf" ]
 
     setCurrentDirectory currentDir 
-    return path
+    return $ combine path targetFile
+
+  where targetFile = title<.>"mobi"
     
 main = getMobi url title author targetFolder
   where 

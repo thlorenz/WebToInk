@@ -88,27 +88,23 @@ label#convertedFile {
     
 }
     
-a#convertedFile {
+a#convertedFileLink {
     margin-left: 20px;
-    
 }
     
 /* SEND EMAIL */
 
-label#email {
+label#sendToKindle {
     
 }
     
-input#email {
+input#sendToKindleText {
     margin-left: 20px;
 }
 
-input#emailButton {
-}   
 
-    
 /* BUTTONS */
-input#goButton, #convertButton, #emailButton {
+input#goButton, input#convertButton, input#sendToKindleButton {
     width: 80px;
 }
 
@@ -116,13 +112,7 @@ input#convertButton {
     margin-left: 330px;
 }
 
-/* Controls to become visible only once url has been entered */
-form#detailsEntry {
-    display: none;
-}
-
-/* Controls to become visible only once page has been converted */
-.converted {
+.urlEntered, .converted {
     display: none;
 }
 

@@ -14,6 +14,6 @@ getConvertR = do
     url     <- getStringFromField "urlText"
     title   <- getStringFromField "titleText"
     author  <- getStringFromField "authorText"
-    liftIO . print $ "Converting"
+    liftIO . putStrLn $ "Converting"
     path <- liftIO $ getMobi url title author (combine staticDir "books")
-    jsonToRepJson . object . toTextPairs $ [(title, path)] 
+    jsonToRepJson . object . toTextPairs $ [("fileType", "mobi"), ("path", path)] 

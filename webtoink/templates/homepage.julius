@@ -7,6 +7,7 @@ var $detailsEntryForm = $('form#detailsEntry');
 var $urlText = $('input#urlText');
 var $titleText = $('input#titleText');
 
+var $convertedFileDiv = $('div#convertedFile');
 
 var $loadingTitleProgress = $('progress#loadingTitle');
 
@@ -53,6 +54,9 @@ $detailsEntryForm.submit(function () {
         },
         success: function (data) {
             console.log (data);
+            $convertedFileDiv
+                .append(getLink('mobi', 'convertedFile', data.path, data.fileType))
+                .show(500);
         },
         error: function (jqXHR, textStatus, errorThrown) {
             // TODO: alert user that an error occurred
@@ -66,3 +70,8 @@ $detailsEntryForm.submit(function () {
     });
     return false;
 });
+
+
+getLink = function (id, clazz, href, name) {
+    return '<a id="' + id + '" class="' + clazz + '" href="' + href + '">'+ name + '</a>'
+};
