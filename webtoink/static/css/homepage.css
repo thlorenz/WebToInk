@@ -85,10 +85,9 @@ input#convertButton {
 /* CONVERTED FILE */
 
 label#convertedFile {
-    
 }
     
-a#convertedFileLink {
+a.convertedFile {
     margin-left: 20px;
 }
     
