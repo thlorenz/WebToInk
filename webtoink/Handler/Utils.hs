@@ -1,8 +1,6 @@
 module Handler.Utils where
 
-import Data.Text (Text, pack, unpack)
-import Data.List (map)
-import Data.Char (String)
+import Data.Text (pack, unpack)
 
 import Import
 

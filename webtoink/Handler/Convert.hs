@@ -2,12 +2,9 @@ module Handler.Convert where
 
 import Import
 
-import System.FilePath (combine)
 import WebToInk.Converter.ConverterService
-
 import Handler.Utils (getStringFromField, toTextPairs)
 import Settings (booksDir)
-
 
 getConvertR :: Handler RepJson
 getConvertR = do

@@ -1,10 +1,11 @@
-/static             StaticR Static getStatic
-/auth               AuthR   Auth   getAuth
+/static                             StaticR Static getStatic
+/auth                               AuthR   Auth   getAuth
 
-/favicon.ico        FaviconR    GET
-/robots.txt         RobotsR     GET
+/favicon.ico                        FaviconR    GET
+/robots.txt                         RobotsR     GET
 
-/                   RootR       GET
-/initUrl            InitUrlR    GET
-/convert            ConvertR    GET
+/                                   RootR       GET
+/initUrl                            InitUrlR    GET
+/convert                            ConvertR    GET
+/public/books/#FilePath/#FilePath   BookR       GET
 
