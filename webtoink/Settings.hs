@@ -8,6 +8,8 @@ module Settings
     , PersistConfig
     , staticRoot
     , staticDir
+    , publicDir
+    , booksDir
     , Extra (..)
     , parseExtra
     ) where
@@ -21,6 +23,7 @@ import qualified Yesod.Default.Util
 import Data.Text (Text)
 import Data.Yaml
 import Control.Applicative
+import System.FilePath (combine)
 
 -- | Which Persistent backend this site is using.
 type PersistConfig = SqliteConf
@@ -31,6 +34,12 @@ type PersistConfig = SqliteConf
 -- path. The default value works properly with your scaffolded site.
 staticDir :: FilePath
 staticDir = "static"
+
+publicDir :: FilePath
+publicDir = "public"
+
+booksDir :: FilePath
+booksDir = combine publicDir "books"
 
 -- | The base URL for your static files. As you can see by the default
 -- value, this can simply be "static" appended to your application root.

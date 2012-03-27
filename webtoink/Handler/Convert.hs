@@ -6,7 +6,7 @@ import System.FilePath (combine)
 import WebToInk.Converter.ConverterService
 
 import Handler.Utils (getStringFromField, toTextPairs)
-import Settings (staticDir)
+import Settings (booksDir)
 
 
 getConvertR :: Handler RepJson
@@ -15,5 +15,5 @@ getConvertR = do
     title   <- getStringFromField "titleText"
     author  <- getStringFromField "authorText"
     liftIO . putStrLn $ "Converting"
-    path <- liftIO $ getMobi url title author (combine staticDir "books")
+    path <- liftIO $ getMobi url title author booksDir
     jsonToRepJson . object . toTextPairs $ [("fileType", "mobi"), ("path", path)] 
