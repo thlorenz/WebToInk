@@ -25,7 +25,6 @@ import Network.HTTP.Conduit (newManager, def)
 import Handler.Root
 import Handler.InitUrl
 import Handler.Convert
-import Handler.Book
 
 -- This line actually creates our YesodSite instance. It is the second half
 -- of the call to mkYesodData which occurs in Foundation.hs. Please see

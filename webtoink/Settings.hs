@@ -8,7 +8,6 @@ module Settings
     , PersistConfig
     , staticRoot
     , staticDir
-    , publicDir
     , booksDir
     , Extra (..)
     , parseExtra
@@ -35,11 +34,8 @@ type PersistConfig = SqliteConf
 staticDir :: FilePath
 staticDir = "static"
 
-publicDir :: FilePath
-publicDir = "public"
-
 booksDir :: FilePath
-booksDir = combine publicDir "books"
+booksDir = combine staticDir "books"
 
 -- | The base URL for your static files. As you can see by the default
 -- value, this can simply be "static" appended to your application root.

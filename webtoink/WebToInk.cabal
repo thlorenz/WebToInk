@@ -39,7 +39,6 @@ library
                      Handler.Root
                      Handler.InitUrl
                      Handler.Convert
-                     Handler.Book
 
     ghc-options:   -Wall -threaded -O0
     cpp-options:   -DDEVELOPMENT

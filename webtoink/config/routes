@@ -7,5 +7,3 @@
 /                                   RootR       GET
 /initUrl                            InitUrlR    GET
 /convert                            ConvertR    GET
-/public/books/#FilePath/#FilePath   BookR       GET
-
