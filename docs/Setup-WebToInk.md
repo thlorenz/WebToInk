@@ -18,6 +18,10 @@
 
 If this fails most times (should be fixed, cause I changed required http-enumerator version in webtoink-converter), 
 we need to do:
+    ghc-pkg unregister zlib
 
     cabal install zlib-conduit zlib-bindings --reinstall
 
+Eclipse 
+
+Visual Studio
