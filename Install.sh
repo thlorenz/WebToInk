@@ -1,52 +1,54 @@
 cabal install webtoink/WebToInk.cabal webtoink-converter/webtoink-converter.cabal \ 
 
-   GLUT-2.1.2.1\ 
-   HTTP-4000.1.1\ 
-   HUnit-1.2.2.3\ 
-   OpenGL-2.2.3.0\ 
-   QuickCheck-2.4.1.1\ 
-   array-0.3.0.2\ 
-   base-4.3.1.0\ 
-   bin-package-db-0.0.0.0\ 
-   bytestring-0.9.1.10\ 
-   cgi-3001.1.7.4\ 
-   containers-0.4.0.0\ 
-   deepseq-1.1.0.2\ 
-   directory-1.1.0.0\ 
-   extensible-exceptions-0.1.1.2\ 
-   fgl-5.4.2.3\ 
-   filepath-1.2.0.0\ 
-   ghc-7.0.3\ 
-   ghc-binary-0.5.0.2\ 
-   ghc-prim-0.2.0.0\ 
-   haskell-src-1.0.1.4\ 
-   haskell2010-1.0.0.0\ 
-   haskell98-1.1.0.1\ 
-   hpc-0.5.0.6\ 
-   html-1.0.1.2\ 
-   integer-gmp-0.2.0.3\ 
-   mtl-2.0.1.0\ 
-   network-2.3.0.2\ 
-   old-locale-1.0.0.2\ 
-   old-time-1.0.0.6\ 
-   parallel-3.1.0.1\ 
-   parsec-3.1.1\ 
-   pretty-1.0.1.2\ 
-   process-1.0.1.5\ 
-   random-1.0.0.3\ 
-   regex-base-0.93.2\ 
-   regex-compat-0.93.1\ 
-   regex-posix-0.94.4\ 
-   rts-1.0\ 
-   stm-2.2.0.1\ 
-   syb-0.3\ 
-   template-haskell-2.5.0.0\ 
-   text-0.11.0.6\ 
-   time-1.2.0.3\ 
-   transformers-0.2.2.0\ 
-   unix-2.4.2.0\ 
-   xhtml-3000.2.0.1\ 
-   zlib-0.5.3.1\ 
+   GLUT-2.1.2.1 \
+   HTTP-4000.1.1 \
+   HUnit-1.2.2.3 \
+   OpenGL-2.2.3.0 \
+   QuickCheck-2.4.1.1 \
+   array-0.3.0.2 \
+   base-4.3.1.0 \
+   bin-package-db-0.0.0.0 \
+   bytestring-0.9.1.10 \
+   cgi-3001.1.7.4 \
+   containers-0.4.0.0 \
+   deepseq-1.1.0.2 \
+   directory-1.1.0.0 \
+   extensible-exceptions-0.1.1.2 \
+   fgl-5.4.2.3 \
+   filepath-1.2.0.0 \
+   ghc-7.0.3 \
+   ghc-binary-0.5.0.2 \
+   ghc-prim-0.2.0.0 \
+   haskell-src-1.0.1.4 \
+   haskell2010-1.0.0.0 \
+   haskell98-1.1.0.1 \
+   hpc-0.5.0.6 \
+   html-1.0.1.2 \
+   integer-gmp-0.2.0.3 \
+   mtl-2.0.1.0 \
+   network-2.3.0.2 \
+   old-locale-1.0.0.2 \
+   old-time-1.0.0.6 \
+   parallel-3.1.0.1 \
+   parsec-3.1.1 \
+   pretty-1.0.1.2 \
+   process-1.0.1.5 \
+   random-1.0.0.3 \
+   regex-base-0.93.2 \
+   regex-compat-0.93.1 \
+   regex-posix-0.94.4 \
+   rts-1.0 \
+   stm-2.2.0.1 \
+   syb-0.3 \
+   template-haskell-2.5.0.0 \
+   text-0.11.0.6 \
+   time-1.2.0.3 \
+   transformers-0.2.2.0 \
+   unix-2.4.2.0 \
+   xhtml-3000.2.0.1 \
+   zlib-0.5.3.1 \
+
+
 cprng-aes-0.2.3 \
 crypto-api-0.9 \
 crypto-conduit-0.1.3.1 \
