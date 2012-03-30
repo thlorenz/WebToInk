@@ -106,6 +106,9 @@ executable         WebToInk
                 
                  -- END Yesod framework dependencies --------------
 
+                 -- Fix zlib-enum versioning issue
+                 , zlib-enum                                      <= 0.2.1
+
                  , webtoink-converter
                  , filepath                      >= 1.2      && < 1.3
 
