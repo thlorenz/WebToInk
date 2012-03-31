@@ -11,17 +11,7 @@
     cd webtoink-converter
     cabal install
 
-## Install WebToInk
+## Install WebToInk and WebToInk-Converter
     
-    cd ../webtoink
-    cabal install
-
-If this fails most times (should be fixed, cause I changed required http-enumerator version in webtoink-converter), 
-we need to do:
-    ghc-pkg unregister zlib
-
-    cabal install zlib-conduit zlib-bindings --reinstall
-
-Eclipse 
-
-Visual Studio
+    cd ../webtoink/WebToInk
+    sudo install sh

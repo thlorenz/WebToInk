@@ -19,6 +19,12 @@ to edit default configs slighly.
 
 These configs are located at `/etc/nginx/nginx.conf`
 
+#### Edits made (defaults of current nginx version match suggested settings mostly)
+
+    worker_connections 1024; 
+    keepalive_timeout 5;
+    
+
 ### Yesod specific
 
 Follow [these](http://www.fatvat.co.uk/2011/06/deploying-yesod-application-on-linode.html) instructions or the ones
