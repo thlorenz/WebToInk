@@ -10,7 +10,7 @@ Follow steps given [here](http://articles.slicehost.com/2010/10/18/ubuntu-maveri
     scp ~/.ssh/id_rsa.pub user@target:
 
 ## Remote Machine
-
+    
     sudo mkdir ~user/.ssh
     sudo mv ~user/id_rsa.pub ~user/.ssh/authorized_keys
 
@@ -36,7 +36,7 @@ Download template and adjust port to match ssh port
     
     sudo wget http://articles.slicehost.com/assets/2007/9/4/iptables.txt
 
-    sudo mv ipatbles.txt /etc/iptables.up.rules
+    sudo mv iptables.txt /etc/iptables.up.rules
 
 Tell system to load iptables on startup
 

@@ -2,7 +2,7 @@
 
 ## Installation
 
-    sudo apt-get haskell-platform
+    sudo apt-get install haskell-platform
 
 This installs all tools including cabal.
 
