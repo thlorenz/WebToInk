@@ -1,7 +1,7 @@
 module WebToInk.Converter.ConverterService where
 
 import System.Cmd (rawSystem)
-import System.Directory (setCurrentDirectory, getCurrentDirectory)
+import System.Posix.Files (setFileMode, unionFileModes, ownerModes, otherExecuteMode)
 import System.FilePath(combine, (<.>))
 
 import WebToInk.Converter.Types
@@ -20,21 +20,22 @@ getTitle url = do
 
 -- | Resolves page at url and all direct children.
 -- Downloads all the pages and their images.
--- Then generated a .mobi file from it using the kindlegen tool
+-- Then generates a .mobi file from it using the kindlegen tool
 -- Finally it returns the path to the generated mobi file from which it can be downloaded.
 getMobi :: Url -> String -> String -> FilePath -> IO FilePath
 getMobi url title author targetFolder = do
+    
     -- TODO: wrap all this inside try catch
-    currentDir <- getCurrentDirectory
 
     putStrLn $ "Preparing " ++ title ++ " by " ++ author
     path <- prepareKindleGeneration (Just title) (Just author) "en-us" url targetFolder
 
-    setCurrentDirectory path
+    -- Allow all users to enter path and read from it since we want to make this available
+    -- TODO: handle the case where current user is not permitted to change permissions
+    setFileMode path $ unionFileModes ownerModes otherExecuteMode
 
-    rawSystem "kindlegen" [ "-o", targetFile, "book.opf" ]
+    rawSystem "kindlegen" [ "-o", targetFile, combine path "book.opf" ]
 
-    setCurrentDirectory currentDir 
     return $ combine path targetFile
 
   where targetFile = title<.>"mobi"

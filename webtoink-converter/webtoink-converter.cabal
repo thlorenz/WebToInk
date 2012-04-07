@@ -27,6 +27,7 @@ Library
                     , process                       >= 1.0      && < 1.1
                     , bytestring                    >= 0.9      && < 1.0
                     , temporary                     >= 1.1      && < 1.2 
+                    , unix                          >= 2.4      && < 2.5
                                                     
 
   Other-modules:      Data.List.Utils
