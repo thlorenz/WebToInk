@@ -1,9 +1,12 @@
 /static                             StaticR Static getStatic
 /auth                               AuthR   Auth   getAuth
 
-/favicon.ico                        FaviconR    GET
-/robots.txt                         RobotsR     GET
+/favicon.ico                        FaviconR      GET
+/robots.txt                         RobotsR       GET
 
-/                                   RootR       GET
-/initUrl                            InitUrlR    GET
-/convert                            ConvertR    GET
+/                                   RootR         GET
+/aboutUs                            AboutUsR      GET
+/reportIssue                        ReportIssueR  GET
+
+/initUrl                            InitUrlR      GET
+/convert                            ConvertR      GET

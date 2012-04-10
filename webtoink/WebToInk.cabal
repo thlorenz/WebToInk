@@ -37,6 +37,8 @@ library
                      -- Handlers
                      Handler.Utils
                      Handler.Root
+                     Handler.AboutUs
+                     Handler.ReportIssue
                      Handler.InitUrl
                      Handler.Convert
 

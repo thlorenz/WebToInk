@@ -23,6 +23,8 @@ import Network.HTTP.Conduit (newManager, def)
 
 -- Import all relevant handler modules here.
 import Handler.Root
+import Handler.AboutUs
+import Handler.ReportIssue
 import Handler.InitUrl
 import Handler.Convert
 

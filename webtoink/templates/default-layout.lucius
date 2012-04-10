@@ -70,3 +70,9 @@ a {text-decoration: none;}
 #mainNavigation a.contactUs {
 	right: 72px;
 	}
+
+/*-- The Main widget which is selected via the navigation bar --*/
+#mainWidget {
+  margin-top: 140px;
+  margin-left: 60px;
+}

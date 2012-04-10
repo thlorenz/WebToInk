@@ -4,12 +4,13 @@
   <div id="wrapperMainNavigation">
 
     <div id="mainNavigation">
-      <a class="home" href="#" target="_blank">Home
-      <a class="aboutUs" href="#" target="_blank">About Us
-      <a class="contactUs" href="/contact_page.html"target="_blank" >Contact Us
+      <a class="home" href="@{RootR}">Home
+      <a class="aboutUs" href="@{AboutUsR}">About Us
+      <a class="contactUs" href="@{ReportIssueR}">Report Issue
 
 <section id="welcome">
-  <p>Convert web pages to xxx and blah..blah...blah
+  <p>Convert web pages to different reader formats to read them anywhere
   <br>
 
-^{widget}
+<div id="mainWidget">^{widget}
+

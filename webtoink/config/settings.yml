@@ -5,7 +5,7 @@ Default: &defaults
   # analytics: UA-YOURCODE
 
 Development:
-  approot: "http://webtoink.thlorenz.com"
+  -- approot: "http://webtoink.thlorenz.com"
   <<: *defaults
 
 Testing:

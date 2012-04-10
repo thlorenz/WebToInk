@@ -10,8 +10,7 @@ import Import
 -- functions. You can spread them across multiple files if you are so
 -- inclined, or create a single monolithic file.
 getRootR :: Handler RepHtml
-getRootR = do
-    defaultLayout $ do
+getRootR = defaultLayout $ do
         h2id <- lift newIdent
         setTitle "WebToInk homepage"
         $(widgetFile "homepage")
