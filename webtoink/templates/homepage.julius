@@ -92,9 +92,8 @@ var spinnerOpts = {
 var spinner = new Spinner(spinnerOpts);
 
 showSpinner = function () {
-    var target = $queryDiv;
-    spinner.spin();
-    target.appendChild(spinner.el);
+    var target = $queryDiv.get(0);
+    spinner.spin(target);
 }
 
 hideSpinner = function () {
