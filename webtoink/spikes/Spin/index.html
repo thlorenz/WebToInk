@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Spinner Spike</title>
+  </head>
+  <body>
+    <div id="buttons">
+      <input type="button" value="show" id="show"/>
+      <input type="button" value="hide" id="hide" />
+    </div>
+    <div id="spin"></div>
+  </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+  <script src="spin.js"></script>
+  <script type="text/javascript">
+    var showButton = $('input#show');
+    var hideButton = $('input#hide');
+    var spinDiv = $('div#spin');
+    var buttonDiv = $('div#buttons');
+    var spinner = new Spinner();
+
+    showButton.click(function () { 
+        console.log ("showing");
+        var target = buttonDiv.get(0);
+        spinner.spin(target);
+    });
+    hideButton.click(function () { 
+        console.log ("hiding");
+        spinner.stop();
+    });
+  </script>
+</html>

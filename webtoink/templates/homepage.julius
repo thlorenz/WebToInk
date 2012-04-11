@@ -1,5 +1,6 @@
 document.getElementById('#{h2id}').innerHTML = "";
 
+var $queryDiv = $('div#query');
 var $urlEntryForm = $('form#urlEntry');
 var $goButton = $('input#goButton');
 
@@ -19,7 +20,7 @@ $urlEntryForm.submit(function () {
         data: $urlEntryForm.serialize(),
         beforeSend: function () {
             $goButton.hide();
-            $loadingTitleProgress.fadeIn(100);
+            showSpinner();
         },
         success: function (data) {
             $urlText.attr('readonly', "readonly");
@@ -34,7 +35,7 @@ $urlEntryForm.submit(function () {
             console.log (errorThrown);
         },
         complete: function () {
-            $loadingTitleProgress.fadeOut(100);
+            hideSpinner();
         },
     });
     return false;
@@ -50,7 +51,7 @@ $detailsEntryForm.submit(function () {
         url: $detailsEntryForm.attr('action'),
         data: combinedSerialize, 
         beforeSend: function () {
-            $loadingTitleProgress.show();
+            showSpinner();
         },
         success: function (data) {
             console.log (data);
@@ -65,12 +66,40 @@ $detailsEntryForm.submit(function () {
             console.log (errorThrown);
         },
         complete: function () {
-            $loadingTitleProgress.hide();
+            hideSpinner(); 
         },
     });
     return false;
 });
 
+var spinnerOpts = {
+    lines: 13, // The number of lines to draw
+    length: 19, // The length of each line
+    width: 5, // The line thickness
+    radius: 19, // The radius of the inner circle
+    rotate: 7, // The rotation offset
+    color: '#000', // #rgb or #rrggbb
+    speed: 1, // Rounds per second
+    trail: 37, // Afterglow percentage
+    shadow: false, // Whether to render a shadow
+    hwaccel: false, // Whether to use hardware acceleration
+    className: 'spinner', // The CSS class to assign to the spinner
+    zIndex: 2e9, // The z-index (defaults to 2000000000)
+    top: 'auto', // Top position relative to parent in px
+    left: 'auto' // Left position relative to parent in px
+};
+
+var spinner = new Spinner(spinnerOpts);
+
+showSpinner = function () {
+    var target = $queryDiv;
+    spinner.spin();
+    target.appendChild(spinner.el);
+}
+
+hideSpinner = function () {
+    spinner.stop();    
+}
 
 getLink = function (id, clazz, href, name) {
     return '<a id="' + id + '" class="' + clazz + '" href="' + href + '">'+ name + '</a>'

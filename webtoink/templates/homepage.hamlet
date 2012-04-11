@@ -27,8 +27,6 @@
     <input type="button" value="Send" id="sendToKindleButton">
     <br>
 
-<progress #loadingTitle max="100">
-
 \<!-- Leave this here in order to alert users to turn on javascript to use the site -->
 <h2 ##{h2id}>You do not have Javascript enabled.
 
