@@ -27,6 +27,7 @@ var $queryDiv = $('div#query');
 var $spinnerSurfaceDiv = $('div#spinnerSurface');
 var $urlEntryForm = $('form#urlEntry');
 var $goButton = $('input#goButton');
+var $convertButton = $('input#convertButton');
 
 var $detailsEntryForm = $('form#detailsEntry');
 var $urlText = $('input#urlText');
@@ -35,6 +36,8 @@ var $titleText = $('input#titleText');
 var $convertedFileDiv = $('div#convertedFile');
 
 var $loadingTitleProgress = $('progress#loadingTitle');
+
+var $convertedElems = $('.converted');
 
 $urlEntryForm.submit(function () {
     $.ajax({
@@ -77,12 +80,12 @@ $detailsEntryForm.submit(function () {
         data: combinedSerialize, 
         beforeSend: function () {
             showSpinner();
+            $convertButton.hide();
         },
         success: function (data) {
             console.log (data);
-            $convertedFileDiv
-                .append(getLink(data.fileType, 'convertedFile', data.path, data.fileType))
-                .show(500);
+            $convertedFileDiv.append(getLink(data.fileType, 'convertedFile', data.path, data.fileType));
+            $convertedElems.show(500);
         },
         error: function (jqXHR, textStatus, errorThrown) {
             // TODO: alert user that an error occurred

@@ -23,11 +23,14 @@
 
   <br>
 
-  <div #sendToKindle .converted>
+  <div #sendToKindle .convertedKindle>
     <label for="email" id="sendToKindle" >Send to Kindle:
     <input type="email" name="user_email" id="sendToKindleText" placeholder="Enter valid e-mail address">
     <input type="button" value="Send" id="sendToKindleButton">
     <br>
+
+  <div #resetForm .converted>
+    <a href=@{RootR}>Reset
 
 \<!-- Leave this here in order to alert users to turn on javascript to use the site -->
 <h2 ##{h2id}>You do not have Javascript enabled.

@@ -123,7 +123,7 @@ input#convertButton {
     margin-left: 330px;
 }
 
-.urlEntered, .converted {
+.urlEntered, .converted, .convertedKindle {
     display: none;
 }
 
