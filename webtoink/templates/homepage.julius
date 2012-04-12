@@ -1,6 +1,30 @@
 document.getElementById('#{h2id}').innerHTML = "";
 
+// Spinner
+
+var spinnerOpts = {
+    lines: 13, // The number of lines to draw
+    length: 15, // The length of each line
+    width: 5, // The line thickness
+    radius: 15, // The radius of the inner circle
+    rotate: 7, // The rotation offset
+    color: '#fff', // #rgb or #rrggbb
+    speed: 1, // Rounds per second
+    trail: 37, // Afterglow percentage
+    shadow: true, // Whether to render a shadow
+    hwaccel: false, // Whether to use hardware acceleration
+    className: 'spinner', // The CSS class to assign to the spinner
+    zIndex: 2e9, // The z-index (defaults to 2000000000)
+    top: 'auto', // Top position relative to parent in px
+    left: 'auto' // Left position relative to parent in px
+};
+
+var spinner = new Spinner(spinnerOpts);
+
+// Elements
+
 var $queryDiv = $('div#query');
+var $spinnerSurfaceDiv = $('div#spinnerSurface');
 var $urlEntryForm = $('form#urlEntry');
 var $goButton = $('input#goButton');
 
@@ -19,6 +43,7 @@ $urlEntryForm.submit(function () {
         url: $urlEntryForm.attr('action'),
         data: $urlEntryForm.serialize(),
         beforeSend: function () {
+            console.log ($queryDiv);
             $goButton.hide();
             showSpinner();
         },
@@ -35,7 +60,7 @@ $urlEntryForm.submit(function () {
             console.log (errorThrown);
         },
         complete: function () {
-            hideSpinner();
+            hideSpinner(true);
         },
     });
     return false;
@@ -66,37 +91,33 @@ $detailsEntryForm.submit(function () {
             console.log (errorThrown);
         },
         complete: function () {
-            hideSpinner(); 
+            hideSpinner(false); 
         },
     });
     return false;
 });
 
-var spinnerOpts = {
-    lines: 13, // The number of lines to draw
-    length: 19, // The length of each line
-    width: 5, // The line thickness
-    radius: 19, // The radius of the inner circle
-    rotate: 7, // The rotation offset
-    color: '#000', // #rgb or #rrggbb
-    speed: 1, // Rounds per second
-    trail: 37, // Afterglow percentage
-    shadow: false, // Whether to render a shadow
-    hwaccel: false, // Whether to use hardware acceleration
-    className: 'spinner', // The CSS class to assign to the spinner
-    zIndex: 2e9, // The z-index (defaults to 2000000000)
-    top: 'auto', // Top position relative to parent in px
-    left: 'auto' // Left position relative to parent in px
-};
-
-var spinner = new Spinner(spinnerOpts);
+// Helpers
 
 showSpinner = function () {
-    var target = $queryDiv.get(0);
+    $spinnerSurfaceDiv.stop(true, true, false);
+    $spinnerSurfaceDiv.height($queryDiv.outerHeight() - 15);
+    $spinnerSurfaceDiv.width($queryDiv.outerWidth() - 15);
+    $spinnerSurfaceDiv.fadeIn(500);
+
+    var target = $spinnerSurfaceDiv.get(0);
     spinner.spin(target);
 }
 
-hideSpinner = function () {
+hideSpinner = function (fast) {
+    $spinnerSurfaceDiv.stop(true, true, false);
+
+    if (fast) { 
+      $spinnerSurfaceDiv.hide();
+    } else {
+      $spinnerSurfaceDiv.fadeOut(500);
+    }
+
     spinner.stop();    
 }
 
