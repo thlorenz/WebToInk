@@ -1,6 +1,8 @@
 <div #query>
 
   <div #spinnerSurface>
+  <div #spinnerInfo>
+    <p #spinnerInfoMessage>
 
   <form #urlEntry action=@{InitUrlR}>
     <label for="url" id="url">Convert URL:
