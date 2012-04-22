@@ -51,12 +51,16 @@ $urlEntryForm.submit(function () {
         data: $urlEntryForm.serialize(),
         beforeSend: function () {
             console.log ($queryDiv);
-            $goButton.hide();
+             
+            $goButton.attr("disabled", "disabled").hide();
+
             showSpinner("Looking up page, this should be quick ...");
         },
         success: function (data) {
-            $urlText.attr('readonly', "readonly");
-            $urlText.attr('value', data.url);
+            $urlText
+              .attr("disabled", "disabled")
+              .attr('value', data.url);
+
             $titleText.attr('value', data.title);
             $detailsEntryForm.fadeIn(500);
         },
@@ -75,6 +79,7 @@ $urlEntryForm.submit(function () {
 
 $detailsEntryForm.submit(function () {
 
+    $urlText.removeAttr("disabled");
     combinedSerialize = $detailsEntryForm.serialize() + "&" + $urlEntryForm.serialize();
 
     $.ajax({
@@ -84,12 +89,15 @@ $detailsEntryForm.submit(function () {
         data: combinedSerialize, 
         beforeSend: function () {
             showSpinner("Converting page. Depending on size this could take up to a few minutes ...");
-            $convertButton.hide();
+            $convertButton.attr("disabled", "disabled").hide();
+            
         },
         success: function (data) {
             console.log (data);
-            $convertedFileDiv.append(getLink(data.fileType, 'convertedFile', data.path, data.fileType));
+            $convertedFileDiv.append(getLink(data.fileType, 'convertedFile', data.path, data.fileName));
             $convertedElems.show(500);
+            $urlText.attr("disabled", "disabled");
+            console.log (data);
         },
         error: function (jqXHR, textStatus, errorThrown) {
             // TODO: alert user that an error occurred
