@@ -14,6 +14,7 @@ import System.Cmd (rawSystem)
 import System.Posix.Files (setFileMode, unionFileModes, ownerModes, otherExecuteMode)
 import System.FilePath(combine, (<.>))
 
+import Data.Char (isAscii)
 import Data.List.Utils (replace)
 import Data.List (isPrefixOf, nub)
 
@@ -54,7 +55,7 @@ getMobi url title author targetFolder = do
 
     return $ combine path targetFile
 
-  where targetFile = title<.>"mobi"
+  where targetFile = (filter isAscii title)<.>"mobi"
     
 prepareKindleGeneration :: Maybe String -> Maybe String -> String -> Url -> FilePath -> IO FilePath 
 prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
@@ -153,7 +154,10 @@ cleanAndLocalize imageUrls pageContents =
 prettifyList :: Show a => [a] -> String
 prettifyList = foldr ((++) . (++) "\n" . show) ""
 
-main = getMobi url title author targetFolder
+main = do  -- getMobi url title author targetFolder
+    
+   let cleanedTitle =  title 
+   putStrLn cleanedTitle 
   where 
     url = "http://thorstenlorenz.wordpress.com/2012/03/02/lion-logging-to-growl-messages-from-haskell-using-hslogger-an-growlnotify/"
     title = "Logging to Growl from Haskell running on Lion « Thorsten Lorenz"
