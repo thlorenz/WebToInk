@@ -21,5 +21,5 @@ convertMobi url title author = do
     result <- getMobi url title author booksDir
     return $ case result of
         Right path  -> [("fileName", takeFileName path), ("fileType", "mobi"), ("path", path)] 
-        Left  err ->   [("error", err)]
+        Left  err   -> [("error", err)]
 

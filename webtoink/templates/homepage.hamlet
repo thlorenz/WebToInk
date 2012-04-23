@@ -1,14 +1,19 @@
 <div #query>
 
+  \<!-- Overlays to show errors, spinner, etc., -->
   <div #formOverlay>
 
+    \<!-- Any elements wanting to appear on top of the overlay are inside it. Spinner itself is added to it on demand. -->
+    <div #errorInfo>
+        <p #errorInfoMessage>
+        <a #errorClose href=@{RootR}>Close
+
+  \<!-- Spinner Info appears below Overlay -->
   <div #spinnerInfo>
     <p #spinnerInfoMessage>
 
-  <div #errorInfo>
-    <p #errorInfoMessage>
-    <a href=@{RootR}>Close
 
+  \<!-- Entry Forms -->
   <form #urlEntry action=@{InitUrlR}>
     <label for="url" id="url">Convert URL:
     <input type="url" id="urlText" name="urlText" required="required" placeholder="Enter URL of a page, blog or table of content" autofocus="autofocus">

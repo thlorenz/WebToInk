@@ -32,6 +32,9 @@ document.getElementById('#{h2id}').innerHTML = "";
     var $spinnerInfoDiv          =  $('div#spinnerInfo');
     var $spinnerInfoMessageBlock =  $('p#spinnerInfoMessage');
 
+    var $errorInfoDiv            =  $('div#errorInfo');
+    var $errorInfoMessageBlock   =  $('p#errorInfoMessage');
+
     var $urlEntryForm            =  $('form#urlEntry');
     var $goButton                =  $('input#goButton');
     var $convertButton           =  $('input#convertButton');
@@ -68,8 +71,8 @@ document.getElementById('#{h2id}').innerHTML = "";
             },
             success: function (data) {
                 $urlText
-                .attr("disabled", "disabled")
-                .attr('value', data.url);
+                    .attr("disabled", "disabled")
+                    .attr('value', data.url);
 
                 $titleText.attr('value', data.title);
                 $detailsEntryForm.fadeIn(500);
@@ -90,6 +93,7 @@ document.getElementById('#{h2id}').innerHTML = "";
     $detailsEntryForm.submit(function () {
 
         var combinedSerialize = $detailsEntryForm.serialize() + "&" + serializedUrlEntryForm; 
+        var error = null;
 
         $.ajax({
             type: 'GET',
@@ -103,8 +107,7 @@ document.getElementById('#{h2id}').innerHTML = "";
             success: function (data) {
                 console.log (data);
                 if (data.error) {
-                    console.log ("An error occurred", data.error);
-                    showErrorInfo (data.error);
+                    error = data.error;
                 } else {
                     $convertedFileDiv.append(getLink(data.fileType, 'convertedFile', data.path, data.fileName));
                     $convertedElems.show(500);
@@ -112,13 +115,18 @@ document.getElementById('#{h2id}').innerHTML = "";
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                // TODO: alert user that an error occurred
                 console.log (jqXHR);
                 console.log (textStatus);
                 console.log (errorThrown);
+                error = errorThrown;
             },
             complete: function () {
                 hideSpinner(false); 
+
+                if (error) {
+                    console.log ("An error occurred", error);
+                    showErrorInfo (error);
+                }
             },
         });
         return false;
@@ -127,6 +135,7 @@ document.getElementById('#{h2id}').innerHTML = "";
     // Helpers
 
     showErrorInfo = function (error) {
+        showInfo($errorInfoDiv, $errorInfoMessageBlock, error);
     }
 
     showSpinner = function (msg) {
@@ -135,7 +144,6 @@ document.getElementById('#{h2id}').innerHTML = "";
         var target = $formOverlayDiv.get(0);
         spinner.spin(target);
     }
-
 
     hideSpinner = function (fast) {
         hideInfo($spinnerInfoDiv, $spinnerInfoMessageBlock, fast);
