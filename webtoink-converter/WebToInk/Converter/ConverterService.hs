@@ -32,12 +32,16 @@ import WebToInk.Converter.Exceptions
 
 -- | Tries to download page at given url and resolve title.
 -- If anything goes wrong an empty string is returned.
-getTitle :: Url -> IO String
+getTitle :: Url -> IO (Either a String)
 getTitle url = do 
-  maybeToc <- downloadPage url
-  return $ case maybeToc of
-      Just toc -> resolveTitle Nothing toc
-      Nothing  -> ""
+    -- result <- try go :: (Exception a) => IO (Either a String)
+    return $ Right ""    
+  where
+    go = do
+        maybeToc <- downloadPage url
+        return $ case maybeToc of
+            Just toc -> resolveTitle Nothing toc
+            Nothing  -> ""
 
 -- | Resolves page at url and all direct children.
 -- Downloads all the pages and their images.
@@ -51,18 +55,10 @@ getMobi url title author targetFolder = do
     result <- try go :: (Exception a) => IO (Either a FilePath)
     case result of
         Right fullFilePath                                  -> return $ Right fullFilePath 
-
-        Left TableOfContentsCouldNotBeDownloadedException   -> 
-            putStrLn "TableOfContentsCouldNotBeDownloadedException."
-            >> (return $ Left "Could not download page. Please check the url and/or make sure that the server is available.")
-
-        Left ex@(KindlegenException code)                   ->
-            print ex
-            >> (return $ Left "The kindlegen tool was unable to convert the page. Please try another format.")
-
-        Left ex                                             -> 
-            putStrLn ("Unknown Exception: " ++ (show ex)) 
-            >> (return $ Left "An unexcpected error occured. Please try again later.")
+        Left  exception                                     -> do 
+            putStrLn (fst exceptionInfo) 
+            return $ Left (snd exceptionInfo)
+          where exceptionInfo = getExceptionInfo exception
 
   where 
     go = do
@@ -81,6 +77,14 @@ getMobi url title author targetFolder = do
             -- TODO: For javascript related failures, remove javascripts and try again
             ExitFailure code            -> throwIO $ KindlegenException code
 
+getExceptionInfo exception = 
+    case exception of
+        TableOfContentsCouldNotBeDownloadedException   -> ( "TableOfContentsCouldNotBeDownloadedException."
+                                                          , "Could not download page. Please check the url and/or make sure that the server is available.")
+        ex@(KindlegenException code)                   -> ( show ex
+                                                          , "The kindlegen tool was unable to convert the page. Please try another format.")
+        ex                                             -> ( "Unknown Exception: " ++ (show ex)
+                                                          , "An unexcpected error occured. Please try again later.")
 
 main = do
     result <- getMobi url title author targetFolder
