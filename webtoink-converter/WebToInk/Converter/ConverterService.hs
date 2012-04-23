@@ -75,20 +75,6 @@ getMobi url title author targetFolder = do
             -- TODO: For javascript related failures, remove javascripts and try again
             ExitFailure code            -> throwIO $ KindlegenException code
 
-handleException exception = do
-    let exceptionInfo = getExceptionInfo exception
-    putStrLn (fst exceptionInfo) 
-    return $ Left (snd exceptionInfo)
-  where
-    getExceptionInfo exception = 
-        case exception of
-            TableOfContentsCouldNotBeDownloadedException   -> ( "TableOfContentsCouldNotBeDownloadedException."
-                                                              , "Could not download page. Please check the url and/or make sure that the server is available.")
-            ex@(KindlegenException code)                   -> ( show ex
-                                                              , "The kindlegen tool was unable to convert the page. Please try another format.")
-            ex                                             -> ( "Unknown Exception: " ++ (show ex)
-                                                              , "An unexcpected error occured. Please try again later.")
-
 main = do
     result <- getMobi url title author targetFolder
     case result of
@@ -194,4 +180,19 @@ cleanAndLocalize imageUrls pageContents =
 
 prettifyList :: Show a => [a] -> String
 prettifyList = foldr ((++) . (++) "\n" . show) ""
+
+handleException exception = do
+    let exceptionInfo = getExceptionInfo exception
+    putStrLn (fst exceptionInfo) 
+    return $ Left (snd exceptionInfo)
+  where
+    getExceptionInfo exception = 
+        case exception of
+            TableOfContentsCouldNotBeDownloadedException   -> ( "TableOfContentsCouldNotBeDownloadedException."
+                                                              , "Could not download page. Please check the url and/or make sure that the server is available.")
+            ex@(KindlegenException code)                   -> ( show ex
+                                                              , "The kindlegen tool was unable to convert the page. Please try another format.")
+            ex                                             -> ( "Unknown Exception: " ++ (show ex)
+                                                              , "An unexcpected error occured. Please try again later.")
+
 
