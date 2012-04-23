@@ -43,18 +43,25 @@ var $loadingTitleProgress =  $('progress#loadingTitle');
 
 var $convertedElems       =  $('.converted');
 
+// Fields
+
+var serializedUrlEntryForm = "";
+
 $urlEntryForm.submit(function () {
+
+    serializedUrlEntryForm = $urlEntryForm.serialize();
+
     $.ajax({
         type: 'GET',
         dataType: 'json',
         url: $urlEntryForm.attr('action'),
-        data: $urlEntryForm.serialize(),
+        data: serializedUrlEntryForm,
         beforeSend: function () {
             console.log ($queryDiv);
              
             $goButton.attr("disabled", "disabled").hide();
 
-            showSpinner("Looking up page, this should be quick ...");
+            showSpinner("Looking up page title, this should be quick ...");
         },
         success: function (data) {
             $urlText
@@ -79,8 +86,7 @@ $urlEntryForm.submit(function () {
 
 $detailsEntryForm.submit(function () {
 
-    $urlText.removeAttr("disabled");
-    combinedSerialize = $detailsEntryForm.serialize() + "&" + $urlEntryForm.serialize();
+    var combinedSerialize = $detailsEntryForm.serialize() + "&" + serializedUrlEntryForm; 
 
     $.ajax({
         type: 'GET',
@@ -90,7 +96,6 @@ $detailsEntryForm.submit(function () {
         beforeSend: function () {
             showSpinner("Converting page. Depending on size this could take up to a few minutes ...");
             $convertButton.attr("disabled", "disabled").hide();
-            
         },
         success: function (data) {
             console.log (data);
@@ -99,7 +104,6 @@ $detailsEntryForm.submit(function () {
             } else {
                 $convertedFileDiv.append(getLink(data.fileType, 'convertedFile', data.path, data.fileName));
                 $convertedElems.show(500);
-                $urlText.attr("disabled", "disabled");
                 console.log (data);
             }
         },
