@@ -13,7 +13,7 @@ getConvertR = do
     url     <- getStringFromField "urlText"
     title   <- getStringFromField "titleText"
     author  <- getStringFromField "authorText"
-    liftIO . putStrLn $ "Converting"
+
     response <- liftIO (convertMobi url title author)
     jsonToRepJson . object . toTextPairs $ response
 

@@ -8,8 +8,14 @@ import WebToInk.Converter.ConverterService (getTitle)
 getInitUrlR :: Handler RepJson
 getInitUrlR = do
     url <- getStringFromField "urlText"
-    title <- liftIO . getTitle $ url
-    jsonToRepJson . object . toTextPairs $ 
-        [ ("title"  , title)
-        , ("url"    , url)
-        ] 
+
+    -- TODO: Although error handling is in place here, the converter service fails to propagate certain errors that could occurr.
+    -- E.g., Status: 500 errors are ignored.
+    response <- liftIO (tryGetTitle url)
+    jsonToRepJson . object . toTextPairs $ response 
+
+tryGetTitle url = do
+    result <- getTitle $ url
+    return $ case result of
+        Right title -> [("title", title), ("url", url)] 
+        Left  err   -> [("error", err)]
