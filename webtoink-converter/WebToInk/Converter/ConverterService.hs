@@ -34,11 +34,10 @@ import WebToInk.Converter.Exceptions
 -- If anything goes wrong an empty string is returned.
 getTitle :: Url -> IO (Either String String)
 getTitle url = do 
---    result <- try go :: (Exception a) => IO (Either a String)
---    case result of
---        Right title     -> return $ Right title
---        Left exception  -> return $ Left ""
-    return $ Right ""
+    result <- try go :: (Exception a) => IO (Either a String)
+    case result of
+        Right title     -> return $ Right title
+        Left exception  -> handleException exception
   where
     go = do
         maybeToc <- downloadPage url
@@ -59,7 +58,6 @@ getMobi url title author targetFolder = do
     case result of
         Right fullFilePath  -> return $ Right fullFilePath 
         Left  exception     -> handleException exception
-
   where 
     go = do
         path <- prepareKindleGeneration (Just title) (Just author) "en-us" url targetFolder 
