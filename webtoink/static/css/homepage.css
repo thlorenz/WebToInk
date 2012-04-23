@@ -31,6 +31,7 @@ div#formOverlay {
     display          : none;
     margin-left      : -15px;
     margin-top       : -15px;
+    text-align       : center;
 
     border-top-left-radius     : 8px;
     border-top-right-radius    : 8px;
@@ -38,41 +39,39 @@ div#formOverlay {
     border-bottom-left-radius  : 0px;
 }
 
-/* Error */
-
-div#errorInfo {
-    display : none;
-    text-align: center;
-}
-
-p#errorInfoMessage {
-    color: yellow;
-    background: black;
-    font-size: 16px;
-}
-
-a#errorClose {
-    font-size: 30px;
-    
-}
-
-/* Spinner */
-
-div#spinnerInfo {
+div#info {
     background-color : #111;
     position         : absolute;
     border-radius    : 0px 8px;
     opacity          : 0.85;
-    display          : none;
     height           : 40px;
     margin-left      : -15px;
     margin-top       : 0px;
+    text-align       : center;
 
     border-top-left-radius     : 0px;
     border-top-right-radius    : 0px;
     border-bottom-right-radius : 8px;
     border-bottom-left-radius  : 8px;
 }
+
+.info {
+    display          : none;
+}
+
+/* Error */
+
+p#errorInfoMessage {
+    color: yellow;
+    margin:15px ;
+    font-size: 16px;
+}
+
+a#errorClose {
+    font-size: 30px;
+}
+
+/* Spinner */
 
 p#spinnerInfoMessage {
     color : #fff;

@@ -4,14 +4,12 @@
   <div #formOverlay>
 
     \<!-- Any elements wanting to appear on top of the overlay are inside it. Spinner itself is added to it on demand. -->
-    <div #errorInfo>
-        <p #errorInfoMessage>
-        <a #errorClose href=@{RootR}>Close
+    <a #errorClose .info .errorInfo href=@{RootR}>Close
 
   \<!-- Spinner Info appears below Overlay -->
-  <div #spinnerInfo>
-    <p #spinnerInfoMessage>
-
+  <div #info .info .spinnerInfo .errorInfo>
+    <p #spinnerInfoMessage .info .spinnerInfo>
+    <p #errorInfoMessage .info .errorInfo>
 
   \<!-- Entry Forms -->
   <form #urlEntry action=@{InitUrlR}>
