@@ -5,45 +5,46 @@ document.getElementById('#{h2id}').innerHTML = "";
     // Spinner
 
     var spinnerOpts = {
-        lines     : 13, // The number of lines to draw
-        length    : 15, // The length of each line
-        width     : 5, // The line thickness
-        radius    : 15, // The radius of the inner circle
-        rotate    : 7, // The rotation offset
-        color     : '#fff', // #rgb or #rrggbb
-        speed     : 1, // Rounds per second
-        trail     : 37, // Afterglow percentage
-        shadow    : true, // Whether to render a shadow
-        hwaccel   : false, // Whether to use hardware acceleration
+        lines     : 13,        // The number of lines to draw
+        length    : 15,        // The length of each line
+        width     : 5,         // The line thickness
+        radius    : 15,        // The radius of the inner circle
+        rotate    : 7,         // The rotation offset
+        color     : '#fff',    // #rgb or #rrggbb
+        speed     : 1,         // Rounds per second
+        trail     : 37,        // Afterglow percentage
+        shadow    : true,      // Whether to render a shadow
+        hwaccel   : false,     // Whether to use hardware acceleration
         className : 'spinner', // The CSS class to assign to the spinner
-        zIndex    : 2e9, // The z-index (defaults to 2000000000)
-        top       : 'auto', // Top position relative to parent in px
-        left      : 'auto' // Left position relative to parent in px
+        zIndex    : 2e9,       // The z-index (defaults to 2000000000)
+        top       : 'auto',    // Top position relative to parent in px
+        left      : 'auto'     // Left position relative to parent in px
     };
 
     var spinner = new Spinner(spinnerOpts);
 
     // Elements
 
-    var $queryDiv             =  $('div#query');
+    var $queryDiv                =  $('div#query');
 
-    var $spinnerSurfaceDiv    =  $('div#spinnerSurface');
-    var $spinnerInfoDiv       =  $('div#spinnerInfo');
-    var $spinnerInfoMessageBlock  =  $('p#spinnerInfoMessage');
+    var $formOverlayDiv          =  $('div#formOverlay');
 
-    var $urlEntryForm         =  $('form#urlEntry');
-    var $goButton             =  $('input#goButton');
-    var $convertButton        =  $('input#convertButton');
+    var $spinnerInfoDiv          =  $('div#spinnerInfo');
+    var $spinnerInfoMessageBlock =  $('p#spinnerInfoMessage');
 
-    var $detailsEntryForm     =  $('form#detailsEntry');
-    var $urlText              =  $('input#urlText');
-    var $titleText            =  $('input#titleText');
+    var $urlEntryForm            =  $('form#urlEntry');
+    var $goButton                =  $('input#goButton');
+    var $convertButton           =  $('input#convertButton');
 
-    var $convertedFileDiv     =  $('div#convertedFile');
+    var $detailsEntryForm        =  $('form#detailsEntry');
+    var $urlText                 =  $('input#urlText');
+    var $titleText               =  $('input#titleText');
 
-    var $loadingTitleProgress =  $('progress#loadingTitle');
+    var $convertedFileDiv        =  $('div#convertedFile');
 
-    var $convertedElems       =  $('.converted');
+    var $loadingTitleProgress    =  $('progress#loadingTitle');
+
+    var $convertedElems          =  $('.converted');
 
     // Fields
 
@@ -124,41 +125,49 @@ document.getElementById('#{h2id}').innerHTML = "";
 
     // Helpers
 
-    showSpinner = function (msg) {
-        var height = $queryDiv.outerHeight() - 10;
+    showFormOverlay = function () {
         var width  = $queryDiv.outerWidth() - 15;
-        var position = $spinnerSurfaceDiv.position();
+        var height = $queryDiv.outerHeight() - 10;
 
-        $spinnerSurfaceDiv.stop(true, true, false);
+        $formOverlayDiv.stop(true, true, false);
 
-        $spinnerSurfaceDiv.height(height);
-        $spinnerSurfaceDiv.width(width);
+        $formOverlayDiv.height(height);
+        $formOverlayDiv.width(width);
 
-        $spinnerSurfaceDiv.fadeIn(500);
+        $formOverlayDiv.fadeIn(500);
+
+        return { 'width':  width, 'height': height };
+    }
+
+    showSpinner = function (msg) {
+
+        var position = $formOverlayDiv.position();
+
+        var size = showFormOverlay();
 
         $spinnerInfoDiv
-        .css({ 
-            top: position.top + height,
-            width: width,
-        })
-        .fadeIn(500);
+            .css({ 
+                top: position.top + size.height,
+                width: size.width,
+            })
+            .fadeIn(500);
         
         $spinnerInfoMessageBlock.text(msg);
 
-        var target = $spinnerSurfaceDiv.get(0);
+        var target = $formOverlayDiv.get(0);
         spinner.spin(target);
     }
 
     hideSpinner = function (fast) {
-        $spinnerSurfaceDiv.stop(true, true, false);
+        $formOverlayDiv.stop(true, true, false);
         $spinnerInfoDiv.stop(true, true, false);
 
         if (fast) { 
-        $spinnerSurfaceDiv.hide();
-        $spinnerInfoDiv.hide();
+            $formOverlayDiv.hide();
+            $spinnerInfoDiv.hide();
         } else {
-        $spinnerSurfaceDiv.fadeOut(500);
-        $spinnerInfoDiv.fadeOut(500);
+            $formOverlayDiv.fadeOut(500);
+            $spinnerInfoDiv.fadeOut(500);
         }
 
         $spinnerInfoMessageBlock.text("");

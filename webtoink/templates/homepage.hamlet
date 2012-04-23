@@ -1,6 +1,7 @@
 <div #query>
 
-  <div #spinnerSurface>
+  <div #formOverlay>
+
   <div #spinnerInfo>
     <p #spinnerInfoMessage>
 

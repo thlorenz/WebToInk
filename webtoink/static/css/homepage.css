@@ -22,9 +22,8 @@ div#query {
     padding-right  : 20px;
 }
 
-/* Spinner */
 
-div#spinnerSurface {
+div#formOverlay {
     background-color : #111;
     position         : absolute;
     opacity          : 0.7;
@@ -38,6 +37,8 @@ div#spinnerSurface {
     border-bottom-right-radius : 0px;
     border-bottom-left-radius  : 0px;
 }
+
+/* Spinner */
 
 div#spinnerInfo {
     background-color : #111;
