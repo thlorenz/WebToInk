@@ -50,7 +50,7 @@ getMobi url title author targetFolder = do
 
     result <- try go :: (Exception a) => IO (Either a FilePath)
     case result of
-        res@(Right fullFilePath)                            -> return res 
+        Right fullFilePath                                  -> return $ Right fullFilePath 
 
         Left TableOfContentsCouldNotBeDownloadedException   -> 
             putStrLn "TableOfContentsCouldNotBeDownloadedException."
@@ -72,6 +72,8 @@ getMobi url title author targetFolder = do
         -- TODO: handle the case where current user is not permitted to change permissions
         setFileMode path $ unionFileModes ownerModes otherExecuteMode
 
+        let targetFile = (filter isAscii title)<.>"mobi"
+
         result <- rawSystem "kindlegen" [ "-o", targetFile, combine path "book.opf" ]
         case result of
             ExitSuccess                 -> return (combine path targetFile)
@@ -79,7 +81,6 @@ getMobi url title author targetFolder = do
             -- TODO: For javascript related failures, remove javascripts and try again
             ExitFailure code            -> throwIO $ KindlegenException code
 
-    targetFile = (filter isAscii title)<.>"mobi"
 
 main = do
     result <- getMobi url title author targetFolder
