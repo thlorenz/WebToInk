@@ -1,170 +1,172 @@
 document.getElementById('#{h2id}').innerHTML = "";
 
-// Spinner
+(function ($) {
 
-var spinnerOpts = {
-    lines     : 13, // The number of lines to draw
-    length    : 15, // The length of each line
-    width     : 5, // The line thickness
-    radius    : 15, // The radius of the inner circle
-    rotate    : 7, // The rotation offset
-    color     : '#fff', // #rgb or #rrggbb
-    speed     : 1, // Rounds per second
-    trail     : 37, // Afterglow percentage
-    shadow    : true, // Whether to render a shadow
-    hwaccel   : false, // Whether to use hardware acceleration
-    className : 'spinner', // The CSS class to assign to the spinner
-    zIndex    : 2e9, // The z-index (defaults to 2000000000)
-    top       : 'auto', // Top position relative to parent in px
-    left      : 'auto' // Left position relative to parent in px
-};
+    // Spinner
 
-var spinner = new Spinner(spinnerOpts);
+    var spinnerOpts = {
+        lines     : 13, // The number of lines to draw
+        length    : 15, // The length of each line
+        width     : 5, // The line thickness
+        radius    : 15, // The radius of the inner circle
+        rotate    : 7, // The rotation offset
+        color     : '#fff', // #rgb or #rrggbb
+        speed     : 1, // Rounds per second
+        trail     : 37, // Afterglow percentage
+        shadow    : true, // Whether to render a shadow
+        hwaccel   : false, // Whether to use hardware acceleration
+        className : 'spinner', // The CSS class to assign to the spinner
+        zIndex    : 2e9, // The z-index (defaults to 2000000000)
+        top       : 'auto', // Top position relative to parent in px
+        left      : 'auto' // Left position relative to parent in px
+    };
 
-// Elements
+    var spinner = new Spinner(spinnerOpts);
 
-var $queryDiv             =  $('div#query');
+    // Elements
 
-var $spinnerSurfaceDiv    =  $('div#spinnerSurface');
-var $spinnerInfoDiv       =  $('div#spinnerInfo');
-var $spinnerInfoMessageBlock  =  $('p#spinnerInfoMessage');
+    var $queryDiv             =  $('div#query');
 
-var $urlEntryForm         =  $('form#urlEntry');
-var $goButton             =  $('input#goButton');
-var $convertButton        =  $('input#convertButton');
+    var $spinnerSurfaceDiv    =  $('div#spinnerSurface');
+    var $spinnerInfoDiv       =  $('div#spinnerInfo');
+    var $spinnerInfoMessageBlock  =  $('p#spinnerInfoMessage');
 
-var $detailsEntryForm     =  $('form#detailsEntry');
-var $urlText              =  $('input#urlText');
-var $titleText            =  $('input#titleText');
+    var $urlEntryForm         =  $('form#urlEntry');
+    var $goButton             =  $('input#goButton');
+    var $convertButton        =  $('input#convertButton');
 
-var $convertedFileDiv     =  $('div#convertedFile');
+    var $detailsEntryForm     =  $('form#detailsEntry');
+    var $urlText              =  $('input#urlText');
+    var $titleText            =  $('input#titleText');
 
-var $loadingTitleProgress =  $('progress#loadingTitle');
+    var $convertedFileDiv     =  $('div#convertedFile');
 
-var $convertedElems       =  $('.converted');
+    var $loadingTitleProgress =  $('progress#loadingTitle');
 
-// Fields
+    var $convertedElems       =  $('.converted');
 
-var serializedUrlEntryForm = "";
+    // Fields
 
-$urlEntryForm.submit(function () {
+    var serializedUrlEntryForm = "";
 
-    serializedUrlEntryForm = $urlEntryForm.serialize();
+    $urlEntryForm.submit(function () {
 
-    $.ajax({
-        type: 'GET',
-        dataType: 'json',
-        url: $urlEntryForm.attr('action'),
-        data: serializedUrlEntryForm,
-        beforeSend: function () {
-            console.log ($queryDiv);
-             
-            $goButton.attr("disabled", "disabled").hide();
+        serializedUrlEntryForm = $urlEntryForm.serialize();
 
-            showSpinner("Looking up page title, this should be quick ...");
-        },
-        success: function (data) {
-            $urlText
-              .attr("disabled", "disabled")
-              .attr('value', data.url);
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: $urlEntryForm.attr('action'),
+            data: serializedUrlEntryForm,
+            beforeSend: function () {
+                console.log ($queryDiv);
+                
+                $goButton.attr("disabled", "disabled").hide();
 
-            $titleText.attr('value', data.title);
-            $detailsEntryForm.fadeIn(500);
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            // TODO: alert user that an error occurred
-            console.log (jqXHR);
-            console.log (textStatus);
-            console.log (errorThrown);
-        },
-        complete: function () {
-            hideSpinner(true);
-        },
+                showSpinner("Looking up page title, this should be quick ...");
+            },
+            success: function (data) {
+                $urlText
+                .attr("disabled", "disabled")
+                .attr('value', data.url);
+
+                $titleText.attr('value', data.title);
+                $detailsEntryForm.fadeIn(500);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                // TODO: alert user that an error occurred
+                console.log (jqXHR);
+                console.log (textStatus);
+                console.log (errorThrown);
+            },
+            complete: function () {
+                hideSpinner(true);
+            },
+        });
+        return false;
     });
-    return false;
-});
 
-$detailsEntryForm.submit(function () {
+    $detailsEntryForm.submit(function () {
 
-    var combinedSerialize = $detailsEntryForm.serialize() + "&" + serializedUrlEntryForm; 
+        var combinedSerialize = $detailsEntryForm.serialize() + "&" + serializedUrlEntryForm; 
 
-    $.ajax({
-        type: 'GET',
-        dataType: 'json',
-        url: $detailsEntryForm.attr('action'),
-        data: combinedSerialize, 
-        beforeSend: function () {
-            showSpinner("Converting page. Depending on size this could take up to a few minutes ...");
-            $convertButton.attr("disabled", "disabled").hide();
-        },
-        success: function (data) {
-            console.log (data);
-            if (data.error) {
-                console.log ("An error occurred", data.error);
-            } else {
-                $convertedFileDiv.append(getLink(data.fileType, 'convertedFile', data.path, data.fileName));
-                $convertedElems.show(500);
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: $detailsEntryForm.attr('action'),
+            data: combinedSerialize, 
+            beforeSend: function () {
+                showSpinner("Converting page. Depending on size this could take up to a few minutes ...");
+                $convertButton.attr("disabled", "disabled").hide();
+            },
+            success: function (data) {
                 console.log (data);
-            }
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            // TODO: alert user that an error occurred
-            console.log (jqXHR);
-            console.log (textStatus);
-            console.log (errorThrown);
-        },
-        complete: function () {
-            hideSpinner(false); 
-        },
+                if (data.error) {
+                    console.log ("An error occurred", data.error);
+                } else {
+                    $convertedFileDiv.append(getLink(data.fileType, 'convertedFile', data.path, data.fileName));
+                    $convertedElems.show(500);
+                    console.log (data);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                // TODO: alert user that an error occurred
+                console.log (jqXHR);
+                console.log (textStatus);
+                console.log (errorThrown);
+            },
+            complete: function () {
+                hideSpinner(false); 
+            },
+        });
+        return false;
     });
-    return false;
-});
 
-// Helpers
+    // Helpers
 
-showSpinner = function (msg) {
-    var height = $queryDiv.outerHeight() - 10;
-    var width  = $queryDiv.outerWidth() - 15;
-    var position = $spinnerSurfaceDiv.position();
+    showSpinner = function (msg) {
+        var height = $queryDiv.outerHeight() - 10;
+        var width  = $queryDiv.outerWidth() - 15;
+        var position = $spinnerSurfaceDiv.position();
 
-    $spinnerSurfaceDiv.stop(true, true, false);
+        $spinnerSurfaceDiv.stop(true, true, false);
 
-    $spinnerSurfaceDiv.height(height);
-    $spinnerSurfaceDiv.width(width);
+        $spinnerSurfaceDiv.height(height);
+        $spinnerSurfaceDiv.width(width);
 
-    $spinnerSurfaceDiv.fadeIn(500);
+        $spinnerSurfaceDiv.fadeIn(500);
 
-    $spinnerInfoDiv
-      .css({ 
-        top: position.top + height,
-        width: width,
-      })
-      .fadeIn(500);
-    
-    $spinnerInfoMessageBlock.text(msg);
+        $spinnerInfoDiv
+        .css({ 
+            top: position.top + height,
+            width: width,
+        })
+        .fadeIn(500);
+        
+        $spinnerInfoMessageBlock.text(msg);
 
-    var target = $spinnerSurfaceDiv.get(0);
-    spinner.spin(target);
-}
-
-hideSpinner = function (fast) {
-    $spinnerSurfaceDiv.stop(true, true, false);
-    $spinnerInfoDiv.stop(true, true, false);
-
-    if (fast) { 
-      $spinnerSurfaceDiv.hide();
-      $spinnerInfoDiv.hide();
-    } else {
-      $spinnerSurfaceDiv.fadeOut(500);
-      $spinnerInfoDiv.fadeOut(500);
+        var target = $spinnerSurfaceDiv.get(0);
+        spinner.spin(target);
     }
 
-    $spinnerInfoMessageBlock.text("");
-    spinner.stop();    
-}
+    hideSpinner = function (fast) {
+        $spinnerSurfaceDiv.stop(true, true, false);
+        $spinnerInfoDiv.stop(true, true, false);
 
-getLink = function (id, clazz, href, name) {
-    return '<a id="' + id + '" class="' + clazz + '" href="' + href + '">'+ name + '</a>'
-};
+        if (fast) { 
+        $spinnerSurfaceDiv.hide();
+        $spinnerInfoDiv.hide();
+        } else {
+        $spinnerSurfaceDiv.fadeOut(500);
+        $spinnerInfoDiv.fadeOut(500);
+        }
 
-// showSpinner("hello world this is a fairly long text and the question is where it goes");
+        $spinnerInfoMessageBlock.text("");
+        spinner.stop();    
+    }
+
+    getLink = function (id, clazz, href, name) {
+        return '<a id="' + id + '" class="' + clazz + '" href="' + href + '">'+ name + '</a>'
+    };
+
+})(jQuery);
