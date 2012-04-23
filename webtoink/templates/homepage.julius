@@ -94,10 +94,14 @@ $detailsEntryForm.submit(function () {
         },
         success: function (data) {
             console.log (data);
-            $convertedFileDiv.append(getLink(data.fileType, 'convertedFile', data.path, data.fileName));
-            $convertedElems.show(500);
-            $urlText.attr("disabled", "disabled");
-            console.log (data);
+            if (data.error) {
+                console.log ("An error occurred", data.error);
+            } else {
+                $convertedFileDiv.append(getLink(data.fileType, 'convertedFile', data.path, data.fileName));
+                $convertedElems.show(500);
+                $urlText.attr("disabled", "disabled");
+                console.log (data);
+            }
         },
         error: function (jqXHR, textStatus, errorThrown) {
             // TODO: alert user that an error occurred

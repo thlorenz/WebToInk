@@ -14,5 +14,12 @@ getConvertR = do
     title   <- getStringFromField "titleText"
     author  <- getStringFromField "authorText"
     liftIO . putStrLn $ "Converting"
-    path <- liftIO $ getMobi url title author booksDir
-    jsonToRepJson . object . toTextPairs $ [("fileName", takeFileName path), ("fileType", "mobi"), ("path", path)] 
+    response <- liftIO (convertMobi url title author)
+    jsonToRepJson . object . toTextPairs $ response
+
+convertMobi url title author = do
+    result <- getMobi url title author booksDir
+    return $ case result of
+        Right path  -> [("fileName", takeFileName path), ("fileType", "mobi"), ("path", path)] 
+        Left  err ->   [("error", err)]
+
