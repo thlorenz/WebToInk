@@ -56,8 +56,9 @@ document.getElementById('#{h2id}').innerHTML = "";
     var serializedUrlEntryForm = "";
 
     $urlEntryForm.submit(function () {
-
         serializedUrlEntryForm = $urlEntryForm.serialize();
+
+        var error = null;
 
         $.ajax({
             type: 'GET',
@@ -75,18 +76,25 @@ document.getElementById('#{h2id}').innerHTML = "";
                 $urlText
                     .attr("disabled", "disabled")
                     .attr('value', data.url);
-
-                $titleText.attr('value', data.title);
-                $detailsEntryForm.fadeIn(500);
+                if (data.error) {
+                    error = data.error;
+                } else {
+                    $titleText.attr('value', data.title);
+                    $detailsEntryForm.fadeIn(500);
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                // TODO: alert user that an error occurred
                 console.log (jqXHR);
                 console.log (textStatus);
                 console.log (errorThrown);
             },
             complete: function () {
                 hideSpinner(true);
+
+                if (error) {
+                    console.log ("An error occurred", error);
+                    showErrorInfo (error);
+                }
             },
         });
         return false;
@@ -103,17 +111,15 @@ document.getElementById('#{h2id}').innerHTML = "";
             url: $detailsEntryForm.attr('action'),
             data: combinedSerialize, 
             beforeSend: function () {
-                showSpinner("Converting page. Depending on size this could take up to a few minutes ...");
+                showSpinner("Converting page. Depending on the page size this could take up to a few minutes ...");
                 $convertButton.attr("disabled", "disabled").hide();
             },
             success: function (data) {
-                console.log (data);
                 if (data.error) {
                     error = data.error;
                 } else {
                     $convertedFileDiv.append(getLink(data.fileType, 'convertedFile', data.path, data.fileName));
                     $convertedElems.show(500);
-                    console.log (data);
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
