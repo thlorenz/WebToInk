@@ -5,6 +5,10 @@
   <div #spinnerInfo>
     <p #spinnerInfoMessage>
 
+  <div #errorInfo>
+    <p #errorInfoMessage>
+    <a href=@{RootR}>Close
+
   <form #urlEntry action=@{InitUrlR}>
     <label for="url" id="url">Convert URL:
     <input type="url" id="urlText" name="urlText" required="required" placeholder="Enter URL of a page, blog or table of content" autofocus="autofocus">

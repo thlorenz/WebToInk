@@ -104,6 +104,7 @@ document.getElementById('#{h2id}').innerHTML = "";
                 console.log (data);
                 if (data.error) {
                     console.log ("An error occurred", data.error);
+                    showErrorInfo (data.error);
                 } else {
                     $convertedFileDiv.append(getLink(data.fileType, 'convertedFile', data.path, data.fileName));
                     $convertedElems.show(500);
@@ -125,6 +126,22 @@ document.getElementById('#{h2id}').innerHTML = "";
 
     // Helpers
 
+    showErrorInfo = function (error) {
+    }
+
+    showSpinner = function (msg) {
+        showInfo($spinnerInfoDiv, $spinnerInfoMessageBlock, msg);
+
+        var target = $formOverlayDiv.get(0);
+        spinner.spin(target);
+    }
+
+
+    hideSpinner = function (fast) {
+        hideInfo($spinnerInfoDiv, $spinnerInfoMessageBlock, fast);
+        spinner.stop();    
+    }
+
     showFormOverlay = function () {
         var width  = $queryDiv.outerWidth() - 15;
         var height = $queryDiv.outerHeight() - 10;
@@ -139,39 +156,34 @@ document.getElementById('#{h2id}').innerHTML = "";
         return { 'width':  width, 'height': height };
     }
 
-    showSpinner = function (msg) {
-
+    showInfo = function (infoDiv, infoMessageBlock, info) {
         var position = $formOverlayDiv.position();
 
         var size = showFormOverlay();
 
-        $spinnerInfoDiv
+        infoDiv
             .css({ 
                 top: position.top + size.height,
                 width: size.width,
             })
             .fadeIn(500);
         
-        $spinnerInfoMessageBlock.text(msg);
-
-        var target = $formOverlayDiv.get(0);
-        spinner.spin(target);
+        infoMessageBlock.text(info);
     }
 
-    hideSpinner = function (fast) {
+    hideInfo = function (infoDiv, infoMessageBlock, fast) {
         $formOverlayDiv.stop(true, true, false);
         $spinnerInfoDiv.stop(true, true, false);
 
         if (fast) { 
             $formOverlayDiv.hide();
-            $spinnerInfoDiv.hide();
+            infoDiv.hide();
         } else {
             $formOverlayDiv.fadeOut(500);
-            $spinnerInfoDiv.fadeOut(500);
+            infoDiv.fadeOut(500);
         }
 
-        $spinnerInfoMessageBlock.text("");
-        spinner.stop();    
+        infoMessageBlock.text("");
     }
 
     getLink = function (id, clazz, href, name) {

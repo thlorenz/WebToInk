@@ -38,6 +38,12 @@ div#formOverlay {
     border-bottom-left-radius  : 0px;
 }
 
+/* Error */
+
+div#errorInfo {
+    display : none;
+}
+
 /* Spinner */
 
 div#spinnerInfo {
