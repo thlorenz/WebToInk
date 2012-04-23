@@ -11,12 +11,15 @@ import System.IO.Temp (createTempDirectory)
 import System.FilePath (combine)
 
 import System.Cmd (rawSystem)
+import System.Exit (ExitCode (..))
 import System.Posix.Files (setFileMode, unionFileModes, ownerModes, otherExecuteMode)
 import System.FilePath(combine, (<.>))
 
 import Data.Char (isAscii)
 import Data.List.Utils (replace)
 import Data.List (isPrefixOf, nub)
+
+import Control.Exception (throwIO, try, SomeException (..), Exception)
 
 import WebToInk.Converter.HtmlPages 
 import WebToInk.Converter.Images (getImages)
@@ -25,6 +28,7 @@ import WebToInk.Converter.OpfGeneration (generateOpf)
 import WebToInk.Converter.TocGeneration (generateToc)
 import WebToInk.Converter.Types
 import WebToInk.Converter.Constants
+import WebToInk.Converter.Exceptions
 
 -- | Tries to download page at given url and resolve title.
 -- If anything goes wrong an empty string is returned.
@@ -39,34 +43,63 @@ getTitle url = do
 -- Downloads all the pages and their images.
 -- Then generates a .mobi file from it using the kindlegen tool
 -- Finally it returns the path to the generated mobi file from which it can be downloaded.
-getMobi :: Url -> String -> String -> FilePath -> IO FilePath
+getMobi :: Url -> String -> String -> FilePath -> IO (Either String FilePath)
 getMobi url title author targetFolder = do
     
-    -- TODO: wrap all this inside try catch
-
     putStrLn $ "Preparing " ++ title ++ " by " ++ author
-    path <- prepareKindleGeneration (Just title) (Just author) "en-us" url targetFolder
 
-    -- Allow all users to enter path and read from it since we want to make this available
-    -- TODO: handle the case where current user is not permitted to change permissions
-    setFileMode path $ unionFileModes ownerModes otherExecuteMode
+    result <- try go :: (Exception a) => IO (Either a FilePath)
+    case result of
+        res@(Right fullFilePath)                            -> return res 
 
-    rawSystem "kindlegen" [ "-o", targetFile, combine path "book.opf" ]
+        Left TableOfContentsCouldNotBeDownloadedException   -> 
+            putStrLn "TableOfContentsCouldNotBeDownloadedException."
+            >> (return $ Left "Could not download page. Please check the url and/or make sure that the server is available.")
 
-    return $ combine path targetFile
+        Left ex@(KindlegenException code)                   ->
+            print ex
+            >> (return $ Left "The kindlegen tool was unable to convert the page. Please try another format.")
 
-  where targetFile = (filter isAscii title)<.>"mobi"
+        Left ex                                             -> 
+            putStrLn ("Unknown Exception: " ++ (show ex)) 
+            >> (return $ Left "An unexcpected error occured. Please try again later.")
+
+  where 
+    go = do
+        path <- prepareKindleGeneration (Just title) (Just author) "en-us" url targetFolder 
+        
+        -- Allow all users to enter path and read from it since we want to make this available
+        -- TODO: handle the case where current user is not permitted to change permissions
+        setFileMode path $ unionFileModes ownerModes otherExecuteMode
+
+        result <- rawSystem "kindlegen" [ "-o", targetFile, combine path "book.opf" ]
+        case result of
+            ExitSuccess                 -> return (combine path targetFile)
+            ExitFailure 1               -> return (combine path targetFile)
+            -- TODO: For javascript related failures, remove javascripts and try again
+            ExitFailure code            -> throwIO $ KindlegenException code
+
+    targetFile = (filter isAscii title)<.>"mobi"
+
+main = do
+    result <- getMobi url title author targetFolder
+    case result of
+        Right filePath     -> putStrLn $ "Success: " ++ filePath
+        Left error         -> putStrLn $ "Error: " ++ error 
+    return ()
+  where 
+    url = "http://thorstenlorenz.wordpress.com/2012/03/02/lion-logging-to-growl-messages-from-haskell-using-hslogger-an-growlnotify/"
+    title = "Logging to Growl from Haskell running on Lion « Thorsten Lorenz"
+    author = "Thorsten Lorenz"
+    targetFolder = "../books"
     
 prepareKindleGeneration :: Maybe String -> Maybe String -> String -> Url -> FilePath -> IO FilePath 
 prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
 
-    targetFolder <- createTempDirectory folder "webtoink"
     maybeGetHtmlPagesResult <- getHtmlPages tocUrl
-
     case maybeGetHtmlPagesResult of
-        Just result   -> prepare result targetFolder
-        Nothing       -> putStrLn "Error could not download table of contents and processed no html pages!!!"
-                         >> return ""
+        Just result   -> createTempDirectory folder "webtoink" >>= prepare result
+        Nothing       -> throwIO TableOfContentsCouldNotBeDownloadedException -- "Error could not download table of contents and processed no html pages!!!"
   where 
     prepare (GetHtmlPagesResult tocContent pagesDic) targetFolder = do
         let author = resolveAuthor maybeAuthor tocContent
@@ -154,12 +187,3 @@ cleanAndLocalize imageUrls pageContents =
 prettifyList :: Show a => [a] -> String
 prettifyList = foldr ((++) . (++) "\n" . show) ""
 
-main = do  -- getMobi url title author targetFolder
-    
-   let cleanedTitle =  title 
-   putStrLn cleanedTitle 
-  where 
-    url = "http://thorstenlorenz.wordpress.com/2012/03/02/lion-logging-to-growl-messages-from-haskell-using-hslogger-an-growlnotify/"
-    title = "Logging to Growl from Haskell running on Lion « Thorsten Lorenz"
-    author = "Thorsten Lorenz"
-    targetFolder = "../books"

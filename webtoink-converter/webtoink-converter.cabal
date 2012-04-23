@@ -40,6 +40,7 @@ Library
                     , WebToInk.Converter.OpfGeneration
                     , WebToInk.Converter.TocGeneration
                     , WebToInk.Converter.Types
+                    , WebToInk.Converter.Exceptions
                     , WebToInk.Converter.Utils
   
 source-repository head

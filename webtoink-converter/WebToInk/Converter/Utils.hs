@@ -8,7 +8,7 @@ import qualified Data.ByteString.Lazy.UTF8 as U
 import Control.Monad.IO.Class (MonadIO)
 import Data.List.Utils (replace)
 
-import Control.Exception (try)
+import Control.Exception (try, Exception)
 
 import WebToInk.Converter.Types
 
@@ -21,18 +21,15 @@ openUrl url = do
 
 downloadByteString :: Url -> IO (Maybe L.ByteString)
 downloadByteString url = do
-    byteString <- try (simpleHttp url)
+    byteString <- try (simpleHttp url) :: (Exception a) => IO (Either a L.ByteString)
     case byteString of
         Right x                                   -> return (Just x)
         Left (StatusCodeException status headers) ->
             putStrLn ("An error occured while trying to download: " ++ url)
-            >> print status
-            >> return Nothing
+            >> print status >> return Nothing
         Left (InvalidUrlException status headers) -> 
             putStrLn ("An error occured while trying to download: " ++ url)
-            >> print status
-            >> print headers
-            >> return Nothing
+            >> print status >> print headers >> return Nothing
         Left a                                    -> 
             putStrLn ("An error occured while trying to download: " ++ url)
             >> print a >> return Nothing
