@@ -85,7 +85,7 @@ instance Yesod WebToInk where
     approot = ApprootMaster $ appRoot . settings
 
     -- Place the session key file in the config folder
-    encryptKey _ = fmap Just $ getKey "config/client_session_key.aes"
+    -- encryptKey _ = fmap Just $ getKey "config/client_session_key.aes"
 
     defaultLayout widget = do
         master <- getYesod
