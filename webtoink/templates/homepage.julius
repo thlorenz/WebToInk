@@ -1,4 +1,4 @@
-document.getElementById('#{h2id}').innerHTML = "";
+document.getElementById('#{aDomId}').innerHTML = "";
 
 (function ($) {
 

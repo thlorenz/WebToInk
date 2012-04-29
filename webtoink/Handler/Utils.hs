@@ -8,5 +8,5 @@ toTextPairs :: [(String, String)] -> [(Text, Text)]
 toTextPairs = map toTextPair
   where toTextPair (a, b) = (pack a, pack b)
 
-getStringFromField ::  Text -> GHandler sub WebToInk String
+getStringFromField ::  Text -> GHandler sub App String
 getStringFromField = fmap unpack . runInputGet . ireq textField 
