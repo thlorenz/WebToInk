@@ -82,13 +82,41 @@ executable         WebToInk
                 FlexibleContexts
                 EmptyDataDecls
 
-    build-depends: base                          >= 4          && < 5
-                 , yesod                         >= 1.0.1.5    && < 1.1
-                
+    build-depends:     base                          >= 4          && < 5
+                    ,  yesod-platform                >= 1.0        && < 1.1
+                    ,  yesod                         >= 1.0        && < 1.1
+                    ,  yesod-core                    >= 1.0        && < 1.1
+                    ,  yesod-auth                    >= 1.0        && < 1.1
+                    ,  yesod-static                  >= 1.0        && < 1.1
+                    ,  yesod-default                 >= 1.0        && < 1.1
+                    ,  yesod-form                    >= 1.0        && < 1.1
+                    ,  yesod-test                    >= 0.2        && < 0.3
+                    ,  clientsession                 >= 0.7.3      && < 0.8
+                    ,  bytestring                    >= 0.9        && < 0.10
+                    ,  text                          >= 0.11       && < 0.12
+                    ,  persistent                    >= 0.9        && < 0.10
+                    ,  persistent-sqlite             >= 0.9        && < 0.10
+                    ,  template-haskell
+                    ,  hamlet                        >= 1.0        && < 1.1
+                    ,  shakespeare-css               >= 1.0        && < 1.1
+                    ,  shakespeare-js                >= 1.0        && < 1.1
+                    ,  shakespeare-text              >= 1.0        && < 1.1
+                    ,  hjsmin                        >= 0.1        && < 0.2
+                    ,  monad-control                 >= 0.3        && < 0.4
+                    ,  wai-extra                     >= 1.2        && < 1.3
+                    ,  yaml                          >= 0.7        && < 0.8
+                    ,  http-conduit                  >= 1.4        && < 1.5
+                    ,  directory                     >= 1.1        && < 1.2
+                    ,  warp                          >= 1.2        && < 1.3
+
                  -- END Yesod framework dependencies --------------
 
-                 , webtoink-converter
-                 , filepath                      >= 1.2      && < 1.3
+                 -- WebtoInk Yesod related dependencies
+                 , mime-mail                         >= 0.3.0.3    && < 0.5
+
+                 -- WebtoInk other dependencies
+                    , webtoink-converter
+                    , filepath                      >= 1.2      && < 1.3
 
                  -- Fix versioning issues
                     -- cryptocipher 0.3.1 requires cpu that satisfies ==0.1.* right now there is no package
