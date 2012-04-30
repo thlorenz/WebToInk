@@ -14,7 +14,5 @@ getRootR = defaultLayout $ do
     aDomId <- lift newIdent
     setTitle "WebToInk homepage"
     $(widgetFile "homepage")
-    addScriptRemote "https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
-    -- TODO: somewhat hacky to abuse addScriptRemote for a local script, but addScript and addJavaScript
-    -- both take a Route instead of just a String (path
-    addScriptRemote "static/js/spin.min.js"
+    addStylesheet $ StaticR css_homepage_css
+    addScript $ StaticR js_spin_min_js
