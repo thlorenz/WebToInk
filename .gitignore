@@ -3,3 +3,4 @@ bin
 report.html
 *.sqlite3
 dist
+webtoink_old

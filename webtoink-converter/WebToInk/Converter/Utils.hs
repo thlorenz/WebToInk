@@ -1,6 +1,6 @@
 module WebToInk.Converter.Utils(openUrl, downloadByteString, getTabs, cleanFolderName) where
 
-import Network.HTTP.Enumerator (simpleHttp, HttpException(..))
+import Network.HTTP.Conduit (simpleHttp, HttpException(..))
 
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString.Lazy.UTF8 as U

@@ -1,11 +1,12 @@
 Default: &defaults
-  host: "localhost"
+  host: "*4" # any IPv4 host
   port: 3000
-  copyright: # WebToInk (Lorenz & Capistrano) 
-  # analytics: UA-YOURCODE
+  approot: "http://sb-webtoink:3000"
+  copyright: WebToInk
+  #analytics: UA-YOURCODE
 
 Development:
-  -- approot: "http://webtoink.thlorenz.com"
+  #approot: "http://webtoink.thlorenz.com"
   <<: *defaults
 
 Testing:

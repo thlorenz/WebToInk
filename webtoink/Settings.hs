@@ -23,6 +23,7 @@ import Data.Text (Text)
 import Data.Yaml
 import Control.Applicative
 import System.FilePath (combine)
+import Settings.Development
 
 -- | Which Persistent backend this site is using.
 type PersistConfig = SqliteConf
@@ -58,11 +59,8 @@ staticRoot conf = [st|#{appRoot conf}/static|]
 -- user.
 
 widgetFile :: String -> Q Exp
-#if DEVELOPMENT
-widgetFile = Yesod.Default.Util.widgetFileReload
-#else
-widgetFile = Yesod.Default.Util.widgetFileNoReload
-#endif
+widgetFile = if development then Yesod.Default.Util.widgetFileReload
+                            else Yesod.Default.Util.widgetFileNoReload
 
 data Extra = Extra
     { extraCopyright :: Text
