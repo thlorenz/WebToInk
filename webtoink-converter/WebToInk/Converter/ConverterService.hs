@@ -8,18 +8,15 @@ import System.Directory (createDirectoryIfMissing)
 import System.IO (writeFile)
 import System.IO.Temp (createTempDirectory)
 
-import System.FilePath (combine)
-
 import System.Cmd (rawSystem)
 import System.Exit (ExitCode (..))
 import System.Posix.Files (setFileMode, unionFileModes, ownerModes, otherExecuteMode)
 import System.FilePath(combine, (<.>))
 
 import Data.Char (isAscii)
-import Data.List.Utils (replace)
 import Data.List (isPrefixOf, nub)
 
-import Control.Exception (throwIO, try, SomeException (..), Exception)
+import Control.Exception (throwIO, try, Exception)
 
 import WebToInk.Converter.HtmlPages 
 import WebToInk.Converter.Images (getImages)
@@ -67,14 +64,29 @@ getMobi url title author targetFolder = do
         setFileMode path $ unionFileModes ownerModes otherExecuteMode
 
         let targetFile = (filter isAscii title)<.>"mobi"
+            
+        runKindlegen targetFile path True
 
+    runKindlegen targetFile path firstTime = do
         result <- rawSystem "kindlegen" [ "-o", targetFile, combine path "book.opf" ]
         case result of
             ExitSuccess                 -> return (combine path targetFile)
+            
+            -- In case of warnings (1) we are ok
             ExitFailure 1               -> return (combine path targetFile)
-            -- TODO: For javascript related failures, remove javascripts and try again
+            
+            -- In case of problems related to javascript (2) remove it from all pages and try again
+            ExitFailure 2               -> if firstTime 
+                                               then removeJavaScriptsAndTryAgain targetFile path
+                                               else throwIO $ KindlegenException 2
+                                               
+            -- All others are problematic and need to be raised
             ExitFailure code            -> throwIO $ KindlegenException code
 
+    removeJavaScriptsAndTryAgain targetFile path = do
+        putStrLn "removing scripts"
+        runKindlegen targetFile path False
+            
 main = do
     result <- getMobi url title author targetFolder
     case result of
@@ -82,9 +94,9 @@ main = do
         Left error         -> putStrLn $ "Error: " ++ error 
     return ()
   where 
-    url = "http://thorstenlorenz.wordpress.com/2012/03/02/lion-logging-to-growl-messages-from-haskell-using-hslogger-an-growlnotify/"
-    title = "Logging to Growl from Haskell running on Lion « Thorsten Lorenz"
-    author = "Thorsten Lorenz"
+    url = "http://static.springsource.org/spring/docs/current/spring-framework-reference/html/overview.html"
+    title = "Spring"
+    author = "Team"
     targetFolder = "../books"
     
 prepareKindleGeneration :: Maybe String -> Maybe String -> String -> Url -> FilePath -> IO FilePath 
@@ -176,7 +188,7 @@ processPage pi pageContents targetFolder = do
 
 cleanAndLocalize :: [Url] -> PageContents -> PageContents
 cleanAndLocalize imageUrls pageContents = 
-    {- removeScripts . -} removeBaseHref .  localizeSrcUrls ("../" ++ imagesFolder) imageUrls $ pageContents 
+    removeBaseHref .  localizeSrcUrls ("../" ++ imagesFolder) imageUrls $ pageContents 
 
 prettifyList :: Show a => [a] -> String
 prettifyList = foldr ((++) . (++) "\n" . show) ""
