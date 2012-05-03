@@ -15,7 +15,9 @@ import System.FilePath(combine, takeExtension, (<.>))
 
 import Data.Char (isAscii)
 import Data.List (isPrefixOf, nub)
+import Data.Functor ((<$>))
 
+import Control.Applicative((<*>))
 import Control.Exception (throwIO, try, Exception)
 
 import qualified Data.ByteString.Char8 as C
@@ -87,22 +89,23 @@ getMobi url title author targetFolder = do
             ExitFailure code            -> throwIO $ KindlegenException code
 
     removeJavaScriptsAndTryAgain targetFile path = do
-        putStrLn "removing scripts"
          
         htmlFiles <- (fmap getHtmlFilePaths) . getDirectoryContents $ pagesFullPath
-        mapM removeScriptFromFile htmlFiles
+        mapM removeScriptsFromFileAndSave htmlFiles
         
         runKindlegen targetFile path False
-      where 
-            removeScriptFromFile fullPath = do
-                fileContents <- C.readFile fullPath 
-                let contentsWithoutScripts = removeScripts . C.unpack $ fileContents 
-                C.writeFile (fullPath) (C.pack contentsWithoutScripts)
 
-            getHtmlFilePaths =  map (combine pagesFullPath) . filter isHtmlFile
-            isHtmlFile file = let extension = takeExtension file
-                              in  extension == ".html" || extension == ".htm"
-            pagesFullPath = combine path pagesFolder
+      where 
+        removeScriptsFromFileAndSave fullPath = (removeScriptsFromFile fullPath) >>= (saveContentsToFile fullPath)
+
+        removeScriptsFromFile = fmap (removeScripts . C.unpack) . C.readFile
+
+        saveContentsToFile fullPath = (C.writeFile fullPath) . C.pack
+
+        getHtmlFilePaths =  map (combine pagesFullPath) . filter isHtmlFile
+        pagesFullPath = combine path pagesFolder
+        isHtmlFile file = let extension = takeExtension file
+                            in  extension == ".html" || extension == ".htm"
 
 main = do
     result <- getMobi url title author targetFolder
