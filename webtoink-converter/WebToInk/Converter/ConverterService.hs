@@ -3,7 +3,6 @@ module WebToInk.Converter.ConverterService  ( prepareKindleGeneration
                                             , getMobi
                                             ) where
 
-
 import System.Directory (createDirectoryIfMissing, getDirectoryContents)
 import System.IO (writeFile)
 import System.IO.Temp (createTempDirectory)
@@ -67,7 +66,7 @@ getMobi url title author targetFolder = do
         -- TODO: handle the case where current user is not permitted to change permissions
         -- setFileMode path $ unionFileModes ownerModes otherExecuteMode
 
-        let targetFile = (filter isAscii title)<.>"mobi"
+        let targetFile = filter isAscii title<.>"mobi"
             
         -- runKindlegen targetFile path True
         runKindlegen targetFile "/Users/thlorenz/dev/haskell/projects/WebToInk/books/spring" True
@@ -90,17 +89,17 @@ getMobi url title author targetFolder = do
 
     removeJavaScriptsAndTryAgain targetFile path = do
          
-        htmlFiles <- (fmap getHtmlFilePaths) . getDirectoryContents $ pagesFullPath
-        mapM removeScriptsFromFileAndSave htmlFiles
+        htmlFiles <- fmap getHtmlFilePaths . getDirectoryContents $ pagesFullPath
+        mapM_ removeScriptsFromFileAndSave htmlFiles
         
         runKindlegen targetFile path False
 
       where 
-        removeScriptsFromFileAndSave fullPath = (removeScriptsFromFile fullPath) >>= (saveContentsToFile fullPath)
+        removeScriptsFromFileAndSave fullPath = removeScriptsFromFile fullPath >>= saveContentsToFile fullPath
 
         removeScriptsFromFile = fmap (removeScripts . C.unpack) . C.readFile
 
-        saveContentsToFile fullPath = (C.writeFile fullPath) . C.pack
+        saveContentsToFile fullPath = C.writeFile fullPath . C.pack
 
         getHtmlFilePaths =  map (combine pagesFullPath) . filter isHtmlFile
         pagesFullPath = combine path pagesFolder
@@ -141,9 +140,9 @@ prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
       where 
         correctFolder targetFolder (filePath, url) = (combine targetFolder filePath, url)
         createKindleStructure title author topPagesDic topPages targetFolder = do
-            putStrLn $ "creating temp folder in " ++ (show folder)
+            putStrLn $ "creating temp folder in " ++ show folder
 
-            putStrLn $ "created temp folder" ++ (show targetFolder)
+            putStrLn $ "created temp folder" ++ show targetFolder
              
             putStrLn "Starting to download pages"
 
@@ -156,10 +155,10 @@ prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
             putStrLn   "----------------\n"
 
             putStr "Successfully downloaded:"
-            putStrLn $ (prettifyList goodTopPages) ++ "\n"
+            putStrLn $ prettifyList goodTopPages ++ "\n"
 
             putStr "Failed to download:"
-            putStrLn $ (prettifyList failedFileNames) ++"\n"
+            putStrLn $ prettifyList failedFileNames ++"\n"
 
             putStrLn "Generating book.opf"
             let opfString = generateOpf goodTopPages (allImageUrls result) title language author 
@@ -180,11 +179,11 @@ downloadPages tocUrl topPagesDic targetFolder = do
         tryProcessPage (PageInfo rootUrl pageUrl fileName) targetFolder) topPagesDic 
     
     let uniqueImageUrls = 
-            map (getSrcFilePath "") . nub . concat . map allImageUrls $ downloadResults 
-    let allFailedPages = concat . map failedPages $ downloadResults
+            map (getSrcFilePath "") . nub . concatMap allImageUrls $ downloadResults 
+    let allFailedPages = concatMap failedPages downloadResults
     return $ DownloadPagesResult uniqueImageUrls allFailedPages
 
-tryProcessPage :: PageInfo -> FilePath -> IO (DownloadPagesResult)
+tryProcessPage :: PageInfo -> FilePath -> IO DownloadPagesResult
 tryProcessPage pi targetFolder = do
     maybePageContents <- downloadPage (piPageUrl pi)
 
@@ -224,7 +223,7 @@ handleException exception = do
                                                               , "Could not download page. Please check the url and/or make sure that the server is available.")
             ex@(KindlegenException code)                   -> ( show ex
                                                               , "The kindlegen tool was unable to convert the page. Please try another format.")
-            ex                                             -> ( "Unknown Exception: " ++ (show ex)
+            ex                                             -> ( "Unknown Exception: " ++ show ex
                                                               , "An unexcpected error occured. Please try again later.")
 
 
