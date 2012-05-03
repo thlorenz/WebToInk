@@ -4,19 +4,21 @@ module WebToInk.Converter.ConverterService  ( prepareKindleGeneration
                                             ) where
 
 
-import System.Directory (createDirectoryIfMissing)
+import System.Directory (createDirectoryIfMissing, getDirectoryContents)
 import System.IO (writeFile)
 import System.IO.Temp (createTempDirectory)
 
 import System.Cmd (rawSystem)
 import System.Exit (ExitCode (..))
 import System.Posix.Files (setFileMode, unionFileModes, ownerModes, otherExecuteMode)
-import System.FilePath(combine, (<.>))
+import System.FilePath(combine, takeExtension, (<.>))
 
 import Data.Char (isAscii)
 import Data.List (isPrefixOf, nub)
 
 import Control.Exception (throwIO, try, Exception)
+
+import qualified Data.ByteString.Char8 as C
 
 import WebToInk.Converter.HtmlPages 
 import WebToInk.Converter.Images (getImages)
@@ -57,15 +59,16 @@ getMobi url title author targetFolder = do
         Left  exception     -> handleException exception
   where 
     go = do
-        path <- prepareKindleGeneration (Just title) (Just author) "en-us" url targetFolder 
+        -- path <- prepareKindleGeneration (Just title) (Just author) "en-us" url targetFolder 
         
         -- Allow all users to enter path and read from it since we want to make this available
         -- TODO: handle the case where current user is not permitted to change permissions
-        setFileMode path $ unionFileModes ownerModes otherExecuteMode
+        -- setFileMode path $ unionFileModes ownerModes otherExecuteMode
 
         let targetFile = (filter isAscii title)<.>"mobi"
             
-        runKindlegen targetFile path True
+        -- runKindlegen targetFile path True
+        runKindlegen targetFile "/Users/thlorenz/dev/haskell/projects/WebToInk/books/spring" True
 
     runKindlegen targetFile path firstTime = do
         result <- rawSystem "kindlegen" [ "-o", targetFile, combine path "book.opf" ]
@@ -85,8 +88,22 @@ getMobi url title author targetFolder = do
 
     removeJavaScriptsAndTryAgain targetFile path = do
         putStrLn "removing scripts"
+         
+        htmlFiles <- (fmap getHtmlFilePaths) . getDirectoryContents $ pagesFullPath
+        mapM removeScriptFromFile htmlFiles
+        
         runKindlegen targetFile path False
-            
+      where 
+            removeScriptFromFile fullPath = do
+                fileContents <- C.readFile fullPath 
+                let contentsWithoutScripts = removeScripts . C.unpack $ fileContents 
+                C.writeFile (fullPath) (C.pack contentsWithoutScripts)
+
+            getHtmlFilePaths =  map (combine pagesFullPath) . filter isHtmlFile
+            isHtmlFile file = let extension = takeExtension file
+                              in  extension == ".html" || extension == ".htm"
+            pagesFullPath = combine path pagesFolder
+
 main = do
     result <- getMobi url title author targetFolder
     case result of
