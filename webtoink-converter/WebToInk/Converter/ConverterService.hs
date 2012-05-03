@@ -61,7 +61,7 @@ getMobi url title author targetFolder = do
         Left  exception     -> handleException exception
   where 
     go = do
-        -- path <- prepareKindleGeneration (Just title) (Just author) "en-us" url targetFolder 
+        path <- prepareKindleGeneration (Just title) (Just author) "en-us" url targetFolder 
         
         -- Allow all users to enter path and read from it since we want to make this available
         -- TODO: handle the case where current user is not permitted to change permissions
@@ -69,8 +69,7 @@ getMobi url title author targetFolder = do
 
         let targetFile = (filter isAscii title)<.>"mobi"
             
-        -- runKindlegen targetFile path True
-        runKindlegen targetFile "/Users/thlorenz/dev/haskell/projects/WebToInk/books/spring" True
+        runKindlegen targetFile path True
 
     runKindlegen targetFile path firstTime = do
         result <- rawSystem "kindlegen" [ "-o", targetFile, combine path "book.opf" ]
