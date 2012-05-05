@@ -53,7 +53,6 @@ getTitle url = do
 -- Finally it returns the path to the generated mobi file from which it can be downloaded.
 getMobi :: Url -> String -> String -> FilePath -> IO (Either String FilePath)
 getMobi url title author targetFolder = do
-    initLogger "debug"
     logi $ "Preparing " ++ title ++ " by " ++ author
 
     result <- try go :: (Exception a) => IO (Either a FilePath)
@@ -108,7 +107,6 @@ getMobi url title author targetFolder = do
                             in  extension == ".html" || extension == ".htm"
 
 main = do
-    initLogger "debug"
     result <- getMobi url title author targetFolder
     case result of
         Right filePath     -> logi $ "Success: " ++ filePath
