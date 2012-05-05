@@ -28,6 +28,8 @@ Library
                     , bytestring                    >= 0.9      && < 1.0
                     , temporary                     >= 1.1      && < 1.2 
                     , unix                          >= 2.4      && < 2.5
+                    , hslogger                      >= 1.1.4    && < 1.2
+                    , log-colorhandler              >= 0.1      && < 0.2
                                                     
 
   Other-modules:      Data.List.Utils

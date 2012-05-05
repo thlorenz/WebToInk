@@ -29,6 +29,8 @@ import WebToInk.Converter.TocGeneration (generateToc)
 import WebToInk.Converter.Types
 import WebToInk.Converter.Constants
 import WebToInk.Converter.Exceptions
+import WebToInk.Converter.Utils
+
 
 -- | Tries to download page at given url and resolve title.
 -- If anything goes wrong an empty string is returned.
@@ -51,8 +53,8 @@ getTitle url = do
 -- Finally it returns the path to the generated mobi file from which it can be downloaded.
 getMobi :: Url -> String -> String -> FilePath -> IO (Either String FilePath)
 getMobi url title author targetFolder = do
-    
-    putStrLn $ "Preparing " ++ title ++ " by " ++ author
+    initLogger "debug"
+    logi $ "Preparing " ++ title ++ " by " ++ author
 
     result <- try go :: (Exception a) => IO (Either a FilePath)
     case result of
@@ -106,10 +108,11 @@ getMobi url title author targetFolder = do
                             in  extension == ".html" || extension == ".htm"
 
 main = do
+    initLogger "debug"
     result <- getMobi url title author targetFolder
     case result of
-        Right filePath     -> putStrLn $ "Success: " ++ filePath
-        Left error         -> putStrLn $ "Error: " ++ error 
+        Right filePath     -> logi $ "Success: " ++ filePath
+        Left error         -> loge $ "Error: " ++ error 
     return ()
   where 
     url = "http://static.springsource.org/spring/docs/current/spring-framework-reference/html/overview.html"
@@ -119,11 +122,13 @@ main = do
     
 prepareKindleGeneration :: Maybe String -> Maybe String -> String -> Url -> FilePath -> IO FilePath 
 prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
-
+    logd $ "Getting pages from: " ++ tocUrl
     maybeGetHtmlPagesResult <- getHtmlPages tocUrl
     case maybeGetHtmlPagesResult of
-        Just result   -> createTempDirectory folder "webtoink" >>= prepare result
-        Nothing       -> throwIO TableOfContentsCouldNotBeDownloadedException -- "Error could not download table of contents and processed no html pages!!!"
+        Just result   -> logd ("Got pages, creating webtoink temp directory at: " ++ folder)
+                         >> createTempDirectory folder "webtoink" >>= prepare result
+        Nothing       -> loge "Could not download table of contents and processed no html pages"
+                         >> throwIO TableOfContentsCouldNotBeDownloadedException
   where 
     prepare (GetHtmlPagesResult tocContent pagesDic) targetFolder = do
         let author = resolveAuthor maybeAuthor tocContent
@@ -132,38 +137,40 @@ prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
         let topPagesDic = filter (isTopLink . fst) pagesDic
         let topPages = map fst topPagesDic
 
-        putStrLn $ prettifyList topPagesDic
+        logd $  "Preparing for kindlegen" ++
+                "\n\tAuthor: " ++ show author ++  
+                "\n\tTitle: " ++ show title
+
+        logt $ prettifyList topPagesDic
         
         createKindleStructure title author topPagesDic topPages targetFolder
 
       where 
         correctFolder targetFolder (filePath, url) = (combine targetFolder filePath, url)
         createKindleStructure title author topPagesDic topPages targetFolder = do
-            putStrLn $ "creating temp folder in " ++ show folder
-
-            putStrLn $ "created temp folder" ++ show targetFolder
+            logd $ "created temp folder" ++ show targetFolder
              
-            putStrLn "Starting to download pages"
+            logi "Starting to download pages"
 
             result <- downloadPages tocUrl topPagesDic targetFolder
             
             let failedFileNames = map piFileName $ failedPages result
             let goodTopPages = filter (`notElem` failedFileNames) topPages
 
-            putStrLn "\nDownload Summary"
-            putStrLn   "----------------\n"
+            logd "\nDownload Summary"
+            logd   "----------------\n"
 
-            putStr "Successfully downloaded:"
-            putStrLn $ prettifyList goodTopPages ++ "\n"
+            logd "Successfully downloaded:"
+            logd $ prettifyList goodTopPages ++ "\n"
 
-            putStr "Failed to download:"
-            putStrLn $ prettifyList failedFileNames ++"\n"
+            logt "Failed to download:"
+            logt $ prettifyList failedFileNames ++"\n"
 
-            putStrLn "Generating book.opf"
+            logd "Generating book.opf"
             let opfString = generateOpf goodTopPages (allImageUrls result) title language author 
             writeFile (combine targetFolder "book.opf") opfString
 
-            putStrLn "Generating toc.ncx"
+            logd "Generating toc.ncx"
             let tocString = generateToc goodTopPages title language author
             writeFile (combine targetFolder "toc.ncx") tocString
 
@@ -213,7 +220,7 @@ prettifyList = foldr ((++) . (++) "\n" . show) ""
 
 handleException exception = do
     let exceptionInfo = getExceptionInfo exception
-    putStrLn (fst exceptionInfo) 
+    loge (fst exceptionInfo) 
     return $ Left (snd exceptionInfo)
   where
     getExceptionInfo exception = 
