@@ -6,12 +6,10 @@ import Control.Concurrent (forkIO)
 import System.Directory (doesFileExist, removeFile)
 import System.Exit (exitSuccess)
 import Control.Concurrent (threadDelay)
-import WebToInk.Converter.Utils
 
 main :: IO ()
 main = do
-    initLogger "debug"
-    logi "Starting WebToInk in development mode ..."
+    putStrLn "Starting WebToInk in development mode ..."
     (port, app) <- getApplicationDev
     forkIO $ runSettings defaultSettings
         { settingsPort = port
