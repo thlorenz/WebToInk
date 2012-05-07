@@ -1,0 +1,18 @@
+Default: &defaults
+  host: "*4" # any IPv4 host
+  port: 3000
+  approot: "http://webtoink.thlorenz.com"
+  copyright: WebToInk
+  #analytics: UA-YOURCODE
+
+Development:
+  <<: *defaults
+
+Testing:
+  <<: *defaults
+
+Staging:
+  <<: *defaults
+
+Production:
+  <<: *defaults
