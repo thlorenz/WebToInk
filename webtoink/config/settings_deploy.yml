@@ -1,13 +1,11 @@
 Default: &defaults
   host: "*4" # any IPv4 host
   port: 3000
-  approot: "http://localhost:3000"
-  # approot: "http://sb-webtoink:3000"
+  approot: "http://webtoink.thlorenz.com"
   copyright: WebToInk
   #analytics: UA-YOURCODE
 
 Development:
-  #approot: "http://webtoink.thlorenz.com"
   <<: *defaults
 
 Testing:
@@ -17,5 +15,4 @@ Staging:
   <<: *defaults
 
 Production:
-  approot: "http://webtoink.thlorenz.com"
   <<: *defaults

@@ -1,0 +1,23 @@
+server {
+
+	server_name webtoink.thlocal.com;
+
+    # Proxy pass to webtoink running via yesod on port 3000
+	location / {
+        proxy_pass http://127.0.0.1:3000;
+	}
+
+    # Serve static content directly through nginx to bypass cookie overhead
+    location /static {
+        root /home/tlorenz/dev/haskell/webtoink/webtoink;
+        expires max;
+    }
+
+	# error_page 404 /404.html;
+
+	# redirect server error pages to the static page /50x.html
+	error_page 500 502 503 504 /50x.html;
+	location = /50x.html {
+		root /usr/share/nginx/www;
+	}
+}
