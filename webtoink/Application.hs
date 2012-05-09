@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -fno-warn-orphans #-}
+
 module Application
     ( makeApplication
     , getApplicationDev
@@ -16,6 +16,8 @@ import Network.Wai.Middleware.RequestLogger (logCallback, logCallbackDev)
 import qualified Database.Persist.Store
 import Database.Persist.GenericSql (runMigration)
 import Network.HTTP.Conduit (newManager, def)
+
+import WebToInk.Converter.Utils (initLogger)
 
 -- Import all relevant handler modules here.
 import Handler.Root
@@ -35,6 +37,7 @@ mkYesodDispatch "App" resourcesApp
 -- migrations handled by Yesod.
 makeApplication :: AppConfig DefaultEnv Extra -> Logger -> IO Application
 makeApplication conf logger = do
+    initLogger "debug" (Just "./converter.log")
     foundation <- makeFoundation conf setLogger
     app <- toWaiAppPlain foundation
     return $ logWare app
