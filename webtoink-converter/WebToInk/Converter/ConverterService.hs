@@ -106,7 +106,17 @@ getMobi url title author targetFolder = do
         isHtmlFile file = let extension = takeExtension file
                             in  extension == ".html" || extension == ".htm"
 
+
 main = do
+    initLogger "debug" (Just "./debug.log")
+    logi "hello world"
+    logd "hello world"
+    loge "hello world"
+    logt "hello world"
+
+testmain = do
+    initLogger "debug" (Just "./debug.log")
+
     result <- getMobi url title author targetFolder
     case result of
         Right filePath     -> logi $ "Success: " ++ filePath

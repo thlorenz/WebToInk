@@ -16,7 +16,10 @@ import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString.Lazy.UTF8 as U
 
 import System.Log.Logger
-import System.Log.Handler.Color
+import System.Log.Handler.Simple
+import System.Log.Handler (setFormatter)
+import System.Log.Formatter
+
 import Data.Char (toUpper)
 
 import Control.Monad (when)
@@ -59,10 +62,15 @@ cleanFolderName = replace "/" "_"
 tracing = True
 loggerName = "Converter"
 
-initLogger ::  String -> IO ()
-initLogger p = do
-    updateGlobalLogger loggerName (setLevel prio)
-    updateGlobalLogger rootLoggerName . addHandler $ colorHandler
+initLogger ::  String -> Maybe FilePath -> IO ()
+initLogger p mbFilePath =
+    updateGlobalLogger loggerName (setLevel prio) 
+    >>  case mbFilePath of
+            Nothing     -> return ()
+            Just path   -> do
+                h <- fileHandler path DEBUG >>= \lh -> return $
+                    setFormatter lh (simpleLogFormatter "[$time $loggername  $prio\t$tid] $msg")
+                updateGlobalLogger loggerName (addHandler h)
     where prio = stringToPriority p
           stringToPriority = read . map toUpper :: String -> Priority
 
