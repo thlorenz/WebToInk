@@ -17,7 +17,7 @@ import qualified Database.Persist.Store
 import Database.Persist.GenericSql (runMigration)
 import Network.HTTP.Conduit (newManager, def)
 
--- import WebToInk.Converter.Logger (initLogger, logi)
+import WebToInk.Converter.Logger (initLogger, logi)
 
 -- Import all relevant handler modules here.
 import Handler.Root
@@ -37,14 +37,14 @@ mkYesodDispatch "App" resourcesApp
 -- migrations handled by Yesod.
 makeApplication :: AppConfig DefaultEnv Extra -> Logger -> IO Application
 makeApplication conf logger = do
-    -- initLogger "debug" (Just converterLog)
-    -- logi $ "Initialized converter logger at: " ++ converterLog
+    initLogger "debug" (Just converterLog)
+    logi $ "Initialized converter logger at: " ++ converterLog
     foundation <- makeFoundation conf setLogger
     app <- toWaiAppPlain foundation
     return $ logWare app
 
   where
---    converterLog = "./webtoink.log"
+    converterLog = "./webtoink.log"
     setLogger = if development then logger else toProduction logger
     logWare   = if development then logCallbackDev (logBS setLogger)
                                else logCallback    (logBS setLogger)
