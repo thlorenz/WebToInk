@@ -28,16 +28,16 @@ downloadByteString :: Url -> IO (Maybe L.ByteString)
 downloadByteString url = do
     byteString <- try (simpleHttp url) :: (Exception a) => IO (Either a L.ByteString)
     case byteString of
-        Right x                                   -> logd "simpleHttp success" >> return (Just x)
+        Right x                                   -> return (Just x)
         Left (StatusCodeException status headers) ->
-            loge ("An error occured while trying to download: " ++ url)
-            >> loge (show status) >> return Nothing
+            logw ("An error occured while trying to download: " ++ url)
+            >> logw (show status) >> return Nothing
         Left (InvalidUrlException status headers) -> 
-            loge ("An error occured while trying to download: " ++ url)
-            >> loge (show status) >> loge (show headers) >> return Nothing
+            logw ("An error occured while trying to download: " ++ url)
+            >> logw (show status) >> logw (show headers) >> return Nothing
         Left a                                    -> 
-            loge ("An error occured while trying to download: " ++ url)
-            >> loge (show a) >> return Nothing
+            logw ("An error occured while trying to download: " ++ url)
+            >> logw (show a) >> return Nothing
 
 getTabs indent = replicate (indent * 2) ' '
 
