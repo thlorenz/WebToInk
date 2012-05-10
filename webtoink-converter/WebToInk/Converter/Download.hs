@@ -17,6 +17,7 @@ import Test.HUnit
 import WebToInk.Converter.Types
 import WebToInk.Converter.Constants (pagesFolder, imagesFolder)
 import WebToInk.Converter.Utils (openUrl, downloadByteString)
+import WebToInk.Converter.Logger
 
 downloadAndSaveImages :: FilePath ->  Url -> Url -> [Url] -> IO [()]
 downloadAndSaveImages targetFolder rootUrl pageUrl imageUrls = do
@@ -61,7 +62,7 @@ resolveUrl rootUrl pageUrl url
 cleanUrl = takeWhile (\x -> x /= '?' && x /= '#')
 
 getSrcFilePath :: FilePath -> Url -> FilePath
-getSrcFilePath targetFolder url = (combine targetFolder $ takeFileName url)
+getSrcFilePath targetFolder url = combine targetFolder $ takeFileName url
 
 -----------------------
 -- ----  Tests  ---- --

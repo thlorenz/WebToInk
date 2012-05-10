@@ -30,12 +30,15 @@ import WebToInk.Converter.Types
 import WebToInk.Converter.Constants
 import WebToInk.Converter.Exceptions
 import WebToInk.Converter.Utils
+import WebToInk.Converter.Logger
+
 
 
 -- | Tries to download page at given url and resolve title.
 -- If anything goes wrong an empty string is returned.
 getTitle :: Url -> IO (Either String String)
 getTitle url = do 
+    logi $ "Getting title for: " ++ url
     result <- try go :: (Exception a) => IO (Either a String)
     case result of
         Right title     -> return $ Right title
@@ -43,6 +46,7 @@ getTitle url = do
   where
     go = do
         maybeToc <- downloadPage url
+        logt "Downloaded page, resolving title"
         return $ case maybeToc of
             Just toc -> resolveTitle Nothing toc
             Nothing  -> ""
@@ -107,14 +111,15 @@ getMobi url title author targetFolder = do
                             in  extension == ".html" || extension == ".htm"
 
 
-main = do
+testmain = do
     initLogger "debug" (Just "./debug.log")
     logi "hello world"
     logd "hello world"
     loge "hello world"
-    logt "hello world"
+    logw "hello world"
 
-testmain = do
+
+main = do
     initLogger "debug" (Just "./debug.log")
 
     result <- getMobi url title author targetFolder
