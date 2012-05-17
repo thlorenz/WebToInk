@@ -1,6 +1,6 @@
 server {
 
-	server_name webtoink.thlocal.com;
+	server_name webtoink.udesktop.com;
 
     # Proxy pass to webtoink running via yesod on port 3000
 	location / {
