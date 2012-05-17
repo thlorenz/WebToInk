@@ -16,7 +16,7 @@ getConvertR = do
 
     liftIO . logi $ "GET Convert (url:" ++ url ++ ", title:" ++ title ++ "author:" ++ author ++ ")"
     response <- liftIO (convertMobi url title author)
-    liftIO . logd $ "GET Convert - Response: " ++ show response
+    liftIO . logi $ "GET Convert - Response: " ++ show response
     jsonToRepJson . object . toTextPairs $ response
 
 convertMobi url title author = do
