@@ -17,6 +17,7 @@ import Test.HUnit
 import WebToInk.Converter.Types
 import WebToInk.Converter.Constants (pagesFolder, imagesFolder)
 import WebToInk.Converter.Utils (openUrl, downloadByteString)
+import WebToInk.Converter.Logger
 
 downloadAndSaveImages :: FilePath ->  Url -> Url -> [Url] -> IO [()]
 downloadAndSaveImages targetFolder rootUrl pageUrl imageUrls = do
@@ -42,7 +43,7 @@ downloadAndSaveImage targetFolder rootUrl pageUrl url = do
     if imageWasDownloadedBefore 
         then return undefined
         else do 
-            putStrLn $ "Downloading image: " ++ fullUrl
+            logt $ "Downloading image: " ++ fullUrl
             byteString <- downloadByteString fullUrl
             case byteString of 
                 Nothing      -> return () 

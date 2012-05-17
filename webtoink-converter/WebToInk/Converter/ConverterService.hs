@@ -38,7 +38,7 @@ import WebToInk.Converter.Logger
 -- If anything goes wrong an empty string is returned.
 getTitle :: Url -> IO (Either String String)
 getTitle url = do 
-    logi $ "Getting title for: " ++ url
+    logd $ "Getting title for: " ++ url
     result <- try go :: (Exception a) => IO (Either a String)
     case result of
         Right title     -> return $ Right title
@@ -57,7 +57,7 @@ getTitle url = do
 -- Finally it returns the path to the generated mobi file from which it can be downloaded.
 getMobi :: Url -> String -> String -> FilePath -> IO (Either String FilePath)
 getMobi url title author targetFolder = do
-    logi $ "Preparing " ++ title ++ " by " ++ author
+    logd $ "Preparing " ++ title ++ " by " ++ author
 
     result <- try go :: (Exception a) => IO (Either a FilePath)
     case result of
@@ -111,15 +111,18 @@ getMobi url title author targetFolder = do
                             in  extension == ".html" || extension == ".htm"
 
 
-testmain = do
+main = testConverter
+
+testLogger = do
     initLogger "debug" (Just "./debug.log")
     logi "hello world"
     logd "hello world"
+    logt "hello world"
     loge "hello world"
     logw "hello world"
 
 
-main = do
+testConverter = do
     initLogger "debug" (Just "./debug.log")
 
     result <- getMobi url title author targetFolder
@@ -150,11 +153,8 @@ prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
         let topPagesDic = filter (isTopLink . fst) pagesDic
         let topPages = map fst topPagesDic
 
-        logd $  "Preparing for kindlegen" ++
-                "\n\tAuthor: " ++ show author ++  
-                "\n\tTitle: " ++ show title
-
-        logt $ prettifyList topPagesDic
+        logd $  "Preparing for kindlegen " ++ "(Author: " ++ show author ++  "Title: " ++ show title ++ ")"
+        logt $ prettifyList ", " topPagesDic
         
         createKindleStructure title author topPagesDic topPages targetFolder
 
@@ -163,21 +163,16 @@ prepareKindleGeneration maybeTitle maybeAuthor language tocUrl folder = do
         createKindleStructure title author topPagesDic topPages targetFolder = do
             logd $ "created temp folder" ++ show targetFolder
              
-            logi "Starting to download pages"
+            logd "Starting to download pages"
 
             result <- downloadPages tocUrl topPagesDic targetFolder
             
             let failedFileNames = map piFileName $ failedPages result
             let goodTopPages = filter (`notElem` failedFileNames) topPages
 
-            logd "\nDownload Summary"
-            logd   "----------------\n"
+            logt $ "Successfully downloaded: " ++ (prettifyList ", " goodTopPages)
 
-            logd "Successfully downloaded:"
-            logd $ prettifyList goodTopPages ++ "\n"
-
-            logt "Failed to download:"
-            logt $ prettifyList failedFileNames ++"\n"
+            logt $ "Failed to download: " ++ (prettifyList ", " failedFileNames)
 
             logd "Generating book.opf"
             let opfString = generateOpf goodTopPages (allImageUrls result) title language author 
@@ -228,8 +223,8 @@ cleanAndLocalize :: [Url] -> PageContents -> PageContents
 cleanAndLocalize imageUrls pageContents = 
     removeBaseHref .  localizeSrcUrls ("../" ++ imagesFolder) imageUrls $ pageContents 
 
-prettifyList :: Show a => [a] -> String
-prettifyList = foldr ((++) . (++) "\n" . show) ""
+prettifyList :: Show a => String -> [a]  -> String
+prettifyList delim = foldr ((++) . (++) delim . show) ""
 
 handleException exception = do
     let exceptionInfo = getExceptionInfo exception

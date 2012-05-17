@@ -17,6 +17,8 @@ import Control.Monad (when)
 tracing = True
 loggerName = "Converter"
 
+debugColor   =  80
+traceColor   =  1 
 errorColor   =  91
 infoColor    =  93
 warningColor =  94
@@ -28,24 +30,35 @@ initLogger p mbFilePath =
             Nothing     -> return ()
             Just path   -> do
                 h <- fileHandler path DEBUG >>= \lh -> return $
-                    setFormatter lh (simpleLogFormatter "$time $loggername $prio $tid   \t$msg")
+                    setFormatter lh (simpleLogFormatter "$time $loggername $tid $msg")
                 updateGlobalLogger loggerName (addHandler h)
     where prio = stringToPriority p
           stringToPriority = read . map toUpper :: String -> Priority
 
 logd ::  String -> IO ()
-logd = debugM loggerName
-
 logi ::  String -> IO ()
-logi = infoM loggerName . surroundWithColor infoColor
-
 logw ::  String -> IO ()
-logw = warningM loggerName . surroundWithColor warningColor
-
 loge ::  String -> IO ()
-loge = errorM loggerName . surroundWithColor errorColor
-
 logt ::  String -> IO ()
-logt msg = when tracing (logd msg)
+
+logd = debugM loggerName   . surroundWithColor debugColor   . ("[DBG] " ++)
+logi = infoM loggerName    . surroundWithColor infoColor    . ("[INF] " ++)
+logw = warningM loggerName . surroundWithColor warningColor . ("[WRN] " ++)
+loge = errorM loggerName   . surroundWithColor errorColor   . ("[ERR] " ++)
+logt msg = when tracing (debugM loggerName . surroundWithColor traceColor . ("[TRC] " ++) $ msg)
 
 surroundWithColor color msg = "\ESC[" ++ show color ++ "m" ++ msg ++ "\ESC[0m"
+
+main = do
+    go 255
+    where 
+        go index = 
+            if index > 0 
+                then do
+                    putStr (surroundWithColor index ( show index ++ ", "))
+                    go (index - 1)
+                else
+                    return ()
+
+
+

@@ -17,8 +17,6 @@ import qualified Database.Persist.Store
 import Database.Persist.GenericSql (runMigration)
 import Network.HTTP.Conduit (newManager, def)
 
-import WebToInk.Converter.Logger (initLogger, logi)
-
 -- Import all relevant handler modules here.
 import Handler.Root
 import Handler.AboutUs
